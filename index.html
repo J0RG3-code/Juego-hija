@@ -3,60 +3,101 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Cultura Kids - La Aventura del Mapa Mágico</title>
+  <title>Cultura Kids - Contenedor Multijuegos</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+    
     :root {
       --primary: #2B72C8;
       --secondary: #FF9029;
-      --bg-color: #F2F7FA;
-      --card-bg: #FFFFFF;
-      --success: #28A745;
-      --accent: #9B59B6;
-      --danger: #E74C3C;
+      --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+      --card-glass: rgba(255, 255, 255, 0.92);
+      --card-glass-dark: rgba(15, 23, 42, 0.75);
+      --success: #10B981;
+      --accent: #8B5CF6;
+      --danger: #EF4444;
     }
-    * { box-sizing: border-box; font-family: 'Nunito', 'Comic Sans MS', 'Chalkboard SE', sans-serif; user-select: none; }
-    body { margin: 0; padding: 0; background: var(--bg-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    * { box-sizing: border-box; font-family: 'Nunito', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+    
+    body {
+      margin: 0; padding: 0;
+      background: var(--bg-gradient);
+      background-size: cover;
+      background-attachment: fixed;
+      display: flex; flex-direction: column;
+      height: 100vh; overflow: hidden;
+      color: #0f172a;
+    }
 
     /* Encabezado */
-    .header { background: var(--card-bg); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .app-title { font-size: 1.1rem; font-weight: 800; color: #2C3E50; display: flex; align-items: center; gap: 6px; }
+    .header {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+    .app-title { font-size: 1.1rem; font-weight: 900; color: #1e293b; display: flex; align-items: center; gap: 6px; }
     .header-actions { display: flex; gap: 8px; align-items: center; }
-    .btn-reset-header { background: #E2E8F0; color: #475569; border: none; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
-    .stars-count { background: #FFF3CD; color: #856404; padding: 5px 10px; border-radius: 16px; font-weight: bold; font-size: 0.85rem; }
+    .btn-header { background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+    .stars-count { background: #fef3c7; color: #b45309; padding: 5px 12px; border-radius: 16px; font-weight: 900; font-size: 0.85rem; }
 
-    /* Área Principal */
-    .main-content { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+    /* Contenido Principal */
+    .main-content { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-bottom: 70px; }
 
     /* Barra de Navegación Inferior */
-    .nav-bar { background: var(--card-bg); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #E1E8ED; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: #7F8C8D; font-weight: bold; cursor: pointer; }
+    .nav-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex; justify-content: space-around; padding: 8px 0;
+      border-top: 1px solid rgba(226, 232, 240, 0.8);
+      z-index: 50;
+    }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: #64748b; font-weight: 800; cursor: pointer; }
     .nav-item.active { color: var(--primary); }
     .nav-item span { font-size: 1.2rem; margin-bottom: 2px; }
 
-    /* Tarjetas de Pantalla */
-    .setup-card { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
-    .option-group { margin-bottom: 15px; }
-    .option-group label { display: block; font-weight: bold; color: #34495E; margin-bottom: 8px; font-size: 0.9rem; }
-    
-    button { background: var(--primary); border: none; color: white; padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; width: 100%; cursor: pointer; transition: transform 0.1s; }
+    /* Menú Hub de Juegos */
+    .hub-grid { display: grid; grid-template-columns: 1fr; gap: 14px; width: 100%; max-width: 450px; }
+    .game-card {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(241,245,249,0.9));
+      border-radius: 24px; padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.6);
+      display: flex; flex-direction: column; gap: 8px; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .game-card:active { transform: scale(0.97); }
+    .game-card-title { font-size: 1.2rem; font-weight: 900; color: #1e293b; display: flex; align-items: center; gap: 8px; }
+    .game-card-desc { font-size: 0.85rem; color: #475569; font-weight: 600; line-height: 1.3; }
+
+    /* Tarjetas de Pantalla General */
+    .glass-card {
+      background: var(--card-glass);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      width: 100%; max-width: 450px; border-radius: 24px; padding: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.4);
+      margin-bottom: 15px;
+    }
+
+    button { background: var(--primary); border: none; color: white; padding: 12px; border-radius: 14px; font-size: 0.95rem; font-weight: 800; width: 100%; cursor: pointer; }
     button:active { transform: scale(0.98); }
     .btn-secondary { background: var(--secondary); }
+    .btn-success { background: var(--success); }
     .btn-danger { background: var(--danger); }
     .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
 
-    /* Lista de Integrantes */
-    .players-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-    .player-row { display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; padding: 8px 12px; border-radius: 10px; border: 1px solid #E2E8F0; }
-    .player-row-info { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #334155; }
-    .btn-remove-p { background: #FEE2E2; color: #DC2626; border: none; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; width: auto; }
-
-    /* Tablero Extendido (24 Casillas) */
+    /* Tablero Extendido (32 Casillas) */
     .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 450px; margin-bottom: 12px; }
-    .cell { aspect-ratio: 1; background: white; border-radius: 14px; border: 2px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: bold; font-size: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center; }
+    .cell { aspect-ratio: 1; background: white; border-radius: 14px; border: 2px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: 800; font-size: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center; }
     .cell.active-cell { border-color: var(--secondary); background: #FFF9E6; animation: pulse 1.5s infinite; border-width: 3px; }
-    .cell.passed-cell { background: #F1F5F9; border-color: #CBD5E1; color: #94A3B8; }
     .cell-icon { font-size: 1.1rem; margin-bottom: 2px; }
     
     @keyframes pulse {
@@ -66,24 +107,24 @@
     }
 
     .tokens-container { display: flex; gap: 2px; position: absolute; bottom: 2px; justify-content: center; width: 100%; }
-    .player-avatar { width: 16px; height: 16px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; border: 1.5px solid white; font-weight: bold; }
+    .player-avatar { width: 16px; height: 16px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; border: 1.5px solid white; font-weight: 900; }
 
-    /* Panel de Dado */
-    .dice-panel { background: white; width: 100%; max-width: 450px; border-radius: 18px; padding: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: auto; }
-    .dice-display { font-size: 2.2rem; margin: 4px 0; }
+    /* Panel de Rompecabezas */
+    .puzzle-category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; }
+    .puzzle-cat-btn { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 12px; text-align: center; font-weight: 800; color: #1e293b; cursor: pointer; }
+    .puzzle-cat-btn.selected { border-color: var(--primary); background: #eff6ff; }
 
-    /* Modal Emergente e Imágenes */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
-    .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 20px; padding: 18px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
-    
-    .question-img { width: 100%; max-height: 160px; object-fit: contain; border-radius: 12px; margin: 8px 0; background: #F8FAFC; border: 2px solid #E2E8F0; }
+    .puzzle-board {
+      width: 100%; max-width: 350px; aspect-ratio: 1;
+      background: #f1f5f9; border-radius: 16px; border: 3px dashed #cbd5e1;
+      margin: 10px auto; display: grid; gap: 1px; position: relative; overflow: hidden;
+    }
+    .puzzle-piece-slot { background: rgba(255,255,255,0.4); border: 1px solid rgba(0,0,0,0.05); }
 
-    .owl-guide { display: flex; align-items: center; gap: 8px; background: #F8F9FA; padding: 8px 12px; border-radius: 10px; margin-top: 10px; text-align: left; }
-    .owl-guide span { font-size: 1.5rem; }
-    .owl-guide p { margin: 0; font-size: 0.8rem; color: #555; font-weight: 600; }
-
-    .opt-btn { background: #F1F5F9; color: #1E293B; border: 2px solid #E2E8F0; border-radius: 10px; padding: 10px; text-align: left; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
-    .opt-btn:active { background: #E2E8F0; }
+    /* Modal Emergente */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+    .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 24px; padding: 20px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
+    .question-img { width: 100%; max-height: 160px; object-fit: contain; border-radius: 12px; margin: 8px 0; background: #f8fafc; }
 
     .hidden { display: none !important; }
   </style>
@@ -92,9 +133,9 @@
 
   <!-- Encabezado -->
   <div class="header">
-    <div class="app-title">🗺️ Cultura Kids</div>
+    <div class="app-title" onclick="switchTab('hub')">🎮 Cultura Kids</div>
     <div class="header-actions">
-      <button class="btn-reset-header" onclick="confirmReset()">🔄 Reiniciar</button>
+      <button class="btn-header" onclick="switchTab('hub')">🏠 Menú</button>
       <div class="stars-count" id="globalStars">🌟 0</div>
     </div>
   </div>
@@ -102,431 +143,391 @@
   <!-- Contenido Principal -->
   <div class="main-content">
 
-    <!-- Pantalla de Configuración Inicial -->
-    <div id="tabSetup" class="setup-card">
-      <h2 style="text-align: center; color: #2C3E50; margin-top: 0;">¡Nueva Aventura! 🦉</h2>
+    <!-- MENÚ PRINCIPAL (HUB) -->
+    <div id="tabHub" class="hub-grid">
+      <div style="text-align: center; color: white; margin-bottom: 5px;">
+        <h2 style="margin: 0; font-size: 1.5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.4);">¡Elige tu Aventura! 🚀</h2>
+        <p style="margin: 4px 0 0 0; font-size: 0.85rem; opacity: 0.9;">Aprende, juega y diviértete en familia</p>
+      </div>
+
+      <div class="game-card" onclick="openGame('board')">
+        <div class="game-card-title">🗺️ La Aventura del Mapa Mágico</div>
+        <div class="game-card-desc">Lanza el dado, avanza por el mapa y responde preguntas escolares de 1° a 5° básico. ¡Para jugar juntos!</div>
+      </div>
+
+      <div class="game-card" onclick="openGame('puzzle')">
+        <div class="game-card-title">🧩 El Rincón del Rompecabezas</div>
+        <div class="game-card-desc">Arma rompecabezas de 48 a 500 piezas de dinosaurios con voz, el universo, animales y profesiones.</div>
+      </div>
+
+      <div class="game-card" onclick="openGame('words')">
+        <div class="game-card-title">🔤 El Desafío de Palabras</div>
+        <div class="game-card-desc">Descubre y arma palabras secretas con imágenes y pistas divertidas.</div>
+      </div>
+    </div>
+
+    <!-- CONFIGURACIÓN MAPA MÁGICO -->
+    <div id="tabSetup" class="glass-card hidden">
+      <h2 style="text-align: center; margin-top: 0;">🗺️ Configurar Mapa Mágico</h2>
       
-      <div class="option-group">
-        <label>1. Integrantes de la Familia:</label>
-        <div id="playersListContainer" class="players-list"></div>
+      <div style="margin-bottom: 12px;">
+        <label><b>Integrantes de la Familia:</b></label>
+        <div id="playersListContainer" style="display:flex; flex-direction:column; gap:6px; margin:8px 0;"></div>
         <div style="display: flex; gap: 6px;">
-          <input type="text" id="newPlayerName" placeholder="Nombre de integrante..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.9rem;">
-          <button onclick="addPlayer()" style="width: auto; padding: 10px 15px; background: var(--success);">+ Agregar</button>
+          <input type="text" id="newPlayerName" placeholder="Nombre..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #cbd5e1;">
+          <button onclick="addPlayer()" class="btn-success" style="width:auto; padding:10px 14px;">+ Agregar</button>
         </div>
       </div>
 
-      <button onclick="startAdventure()">¡Comenzar Aventura! 🚀</button>
+      <div style="margin-bottom: 15px;">
+        <label><b>Nivel de Escolaridad:</b></label>
+        <select id="difficultySelect" style="width:100%; padding:10px; border-radius:10px; border:1px solid #cbd5e1; font-weight:700;">
+          <option value="1">🟢 Nivel 1 (1° y 2° Básico)</option>
+          <option value="2" selected>🟡 Nivel 2 (3° y 4° Básico)</option>
+          <option value="3">🔴 Nivel 3 (5° Básico / Desafío)</option>
+        </select>
+      </div>
+
+      <button onclick="startAdventure()">¡Comenzar Mapa Mágico! 🚀</button>
     </div>
 
-    <!-- Tablero de Juego (24 Casillas Sincronizadas) -->
-    <div id="tabBoard" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center; flex: 1;">
+    <!-- TABLERO MAPA MÁGICO -->
+    <div id="tabBoard" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
       <div id="boardGrid" class="board-grid"></div>
 
-      <div class="dice-panel">
-        <div id="turnStatus" style="font-weight: bold; color: #475569; font-size: 0.9rem;">Turno de Leonor</div>
-        <div class="dice-display" id="diceVisual">🎲</div>
+      <div class="glass-card" style="text-align: center; margin-top: auto;">
+        <div id="turnStatus" style="font-weight: 900; color: #334155;">Turno de Leonor</div>
+        <div style="font-size: 2.2rem; margin: 4px 0;" id="diceVisual">🎲</div>
         <button class="btn-secondary" id="rollBtn" onclick="handleRoll()">¡Lanzar Dado!</button>
       </div>
     </div>
 
-    <!-- Pantalla de Progreso / Asignaturas -->
-    <div id="tabSubjects" class="setup-card hidden">
-      <h3>📊 Currículum 1° a 3° Básico (MINEDUC)</h3>
-      <p style="font-size: 0.85rem; color: #64748B;">Refuerzo escolar adaptado a las asignaturas de Chile:</p>
-      <div id="subjectsList">
-        <p>🔢 <b>Matemáticas:</b> Conteo, sumas y monedas chilenas ($100, $50).</p>
-        <p>📖 <b>Lenguaje:</b> Vocabulario, abecedario y comprensión.</p>
-        <p>🌿 <b>Ciencias:</b> El agua, animales chilenos y el cuerpo.</p>
-        <p>🇬🇧 <b>Inglés:</b> Colores, saludos y animales básicos.</p>
-        <p>🎵 <b>Música:</b> Sonidos y ritmos sencillos.</p>
+    <!-- PANTALLA SELECCIÓN DE ROMPECABEZAS -->
+    <div id="tabPuzzleSelect" class="glass-card hidden">
+      <h2 style="text-align: center; margin-top:0;">🧩 Elige tu Rompecabezas</h2>
+      
+      <label><b>1. Selecciona la Categoría:</b></label>
+      <div class="puzzle-category-grid">
+        <div class="puzzle-cat-btn selected" onclick="selectPuzzleCat('dino', this)">🦖 Dinosaurios</div>
+        <div class="puzzle-cat-btn" onclick="selectPuzzleCat('space', this)">🌌 El Universo</div>
+        <div class="puzzle-cat-btn" onclick="selectPuzzleCat('wild', this)">🦁 Salvajes</div>
+        <div class="puzzle-cat-btn" onclick="selectPuzzleCat('jobs', this)">👨‍🚒 Profesiones</div>
       </div>
+
+      <label><b>2. Elige el Nivel de Piezas (5 Niveles):</b></label>
+      <select id="puzzleLevelSelect" style="width:100%; padding:10px; border-radius:10px; border:1px solid #cbd5e1; font-weight:700; margin: 8px 0 15px 0;">
+        <option value="48">🟢 Nivel 1: 48 Piezas (Fácil)</option>
+        <option value="96">🟡 Nivel 2: 96 Piezas (Medio)</option>
+        <option value="150">🟠 Nivel 3: 150 Piezas (Avanzado)</option>
+        <option value="300">🔴 Nivel 4: 300 Piezas (Desafío)</option>
+        <option value="500">🟣 Nivel 5: 500 Piezas (Maestro)</option>
+      </select>
+
+      <button class="btn-success" onclick="startPuzzle()">¡Iniciar Rompecabezas! 🧩</button>
     </div>
 
-    <!-- Pantalla de Ajustes -->
-    <div id="tabSettings" class="setup-card hidden">
-      <h3>⚙️ Ajustes del Juego</h3>
-      <button class="btn-outline" onclick="switchTab('setup')" style="margin-bottom: 10px;">⬅️ Volver a Configurar Integrantes</button>
-      <button class="btn-danger" onclick="confirmReset()">🔄 Reiniciar Partida Actual</button>
+    <!-- PANTALLA JUEGO ROMPECABEZAS -->
+    <div id="tabPuzzleActive" class="glass-card hidden" style="text-align: center;">
+      <h3 id="puzzleTitle">🦖 Tiranosaurio Rex</h3>
+      <p id="puzzleDinoInfo" style="font-size:0.85rem; color:#475569; font-weight:700;">¡Escucha la pronunciación y arma la imagen!</p>
+      
+      <button onclick="speakCurrentDino()" style="background:#64748b; margin-bottom:8px;">🔊 Escuchar Pronunciación</button>
+      
+      <div id="puzzleBoardArea" class="puzzle-board"></div>
+
+      <button class="btn-success" onclick="completePuzzleDev()" style="margin-top:10px;">✔ Encajar Pieza / Completar</button>
+      <button class="btn-outline" onclick="switchTab('puzzleSelect')" style="margin-top:8px;">⬅️ Cambiar Rompecabezas</button>
     </div>
 
   </div>
 
-  <!-- Modal Emergente -->
+  <!-- MODAL DE PREGUNTAS -->
   <div id="questionModal" class="modal-overlay hidden">
     <div class="modal-card">
-      <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">MATERIA</span>
-      
-      <!-- Imagen de apoyo visual -->
-      <img id="questionImage" class="question-img hidden" src="" alt="Imagen de apoyo">
+      <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 900;">MATERIA</span>
+      <img id="questionImage" class="question-img hidden" src="" alt="Apoyo">
+      <h3 id="modalQuestion" style="color: #1e293b; margin: 10px 0; font-size: 0.95rem;">¿Pregunta?</h3>
+      <div id="quizOptions" style="display: flex; flex-direction: column; gap: 6px;"></div>
 
-      <h3 id="modalQuestion" style="color: #1E293B; margin: 10px 0; font-size: 0.95rem;">¿Pregunta?</h3>
+      <button onclick="speakCurrentText()" style="margin-top: 8px; background: #64748b; font-size: 0.85rem;">🔊 Escuchar</button>
+      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 6px; background: #f59e0b; font-size: 0.85rem;">💡 Pedir una pista clara</button>
 
-      <div id="quizOptions" style="display: flex; flex-direction: column;"></div>
-
-      <button id="listenBtn" onclick="speakCurrentText()" style="margin-top: 6px; background: #64748B; font-size: 0.85rem;">🔊 Escuchar</button>
-      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 6px; background: #F59E0B; font-size: 0.85rem;">💡 Pedir una pista clara</button>
-
-      <!-- Guía Lechuza -->
-      <div id="owlGuideBox" class="owl-guide hidden">
-        <span>🦉</span>
-        <p id="owlMessage">Pista clara.</p>
+      <div id="owlGuideBox" class="hidden" style="display:flex; align-items:center; gap:8px; background:#f8fafc; padding:8px; border-radius:10px; margin-top:8px; text-align:left;">
+        <span style="font-size:1.5rem;">🦉</span>
+        <p id="owlMessage" style="margin:0; font-size:0.8rem; font-weight:700; color:#334155;">Pista</p>
       </div>
 
-      <button id="closeModalBtn" onclick="closeModal()" class="hidden" style="margin-top: 10px; background: var(--success);">Continuar ➔</button>
+      <button id="closeModalBtn" onclick="closeModal()" class="hidden btn-success" style="margin-top: 10px;">Continuar ➔</button>
     </div>
   </div>
 
-  <!-- Modal de Fin de Juego -->
+  <!-- MODAL DE VICTORIA -->
   <div id="victoryModal" class="modal-overlay hidden">
     <div class="modal-card">
-      <h1 style="font-size: 2.5rem; margin: 0;">🏆🎉</h1>
-      <h2 style="color: #2C3E50; margin: 8px 0;">¡Felicidades!</h2>
-      <p id="victoryText" style="font-size: 1rem; color: #475569; font-weight: bold;">¡Han completado el recorrido!</p>
-      
-      <button onclick="restartSameGame()" style="margin-top: 10px; background: var(--success);">🔄 Jugar Otra Vez</button>
-      <button onclick="switchTab('setup'); closeModal();" class="btn-outline" style="margin-top: 8px;">⚙️ Configurar</button>
+      <h1 style="font-size: 3rem; margin: 0;">🏆🎉</h1>
+      <h2 style="color: #1e293b; margin: 8px 0;">¡FELICIDADES!</h2>
+      <p id="victoryText" style="font-size: 1rem; color: #334155; font-weight: 800;">¡Has completado el desafío!</p>
+      <button onclick="closeVictoryModal(); switchTab('hub');" class="btn-success" style="margin-top: 10px;">🏠 Volver al Menú Principal</button>
     </div>
   </div>
 
-  <!-- Navegación Inferior -->
+  <!-- NAVEGACIÓN INFERIOR -->
   <div class="nav-bar">
-    <div class="nav-item active" onclick="switchTab('board')"><span>🗺️</span>Tablero</div>
-    <div class="nav-item" onclick="switchTab('subjects')"><span>📊</span>Asignaturas</div>
-    <div class="nav-item" onclick="switchTab('settings')"><span>⚙️</span>Ajustes</div>
+    <div class="nav-item active" onclick="switchTab('hub')"><span>🏠</span>Inicio</div>
+    <div class="nav-item" onclick="openGame('board')"><span>🗺️</span>Mapa</div>
+    <div class="nav-item" onclick="openGame('puzzle')"><span>🧩</span>Puzzles</div>
   </div>
 
   <script>
-    // Banco de Preguntas Nivel 1 (1° a 3° Básico MINEDUC Chile) con Pistas Claras e Imágenes de Apoyo
-    const masterQuestionBank = [
-      // MATEMÁTICAS
-      { id: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 5 + 3?', opts: ['7', '8', '9'], a: 1, hint: 'Empieza en el 5 y cuenta 3 dedos hacia adelante: 6, 7, 8.' },
-      { id: 2, cat: 'math', name: 'Matemáticas', q: 'Si tienes 2 monedas de $100, ¿cuánto dinero es en total?', opts: ['$100', '$200', '$300'], a: 1, hint: 'Suma 100 más 100.' },
-      { id: 3, cat: 'math', name: 'Matemáticas', q: '¿Qué número viene después del 29?', opts: ['30', '31', '20'], a: 0, hint: 'Comienza con el número 3.' },
-      { id: 4, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 4 x 2?', opts: ['6', '8', '10'], a: 1, hint: 'Suma dos veces el número 4 (4 + 4).' },
-
-      // LENGUAJE
-      { id: 5, cat: 'lang', name: 'Lenguaje', q: '¿Cuál de estas palabras comienza con la letra "M"?', opts: ['Perro', 'Mesa', 'Auto'], a: 1, hint: 'Busca la palabra que suena "Mmm-esa".' },
-      { id: 6, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el sinónimo (palabra que significa lo mismo) de "Feliz"?', opts: ['Triste', 'Contento', 'Enojado'], a: 1, hint: 'Empieza con la letra C.' },
-      { id: 7, cat: 'lang', name: 'Lenguaje', q: '¿Qué palabra está escrita correctamente?', opts: ['Avión', 'Avionn', 'Abión'], a: 0, hint: 'Lleva tilde en la letra o.' },
-
-      // CIENCIAS
-      { id: 8, cat: 'sci', name: 'Ciencias', q: '¿En qué estado se encuentra el hielo que ponemos en el jugo?', opts: ['Líquido', 'Sólido', 'Gaseoso'], a: 1, hint: 'Es duro al tocarlo, como una roca de agua.' },
-      { id: 9, cat: 'sci', name: 'Ciencias', q: '¿Cuál de estos animales vive en el mar chileno?', opts: ['El León', 'La Ballena', 'La Jirafa'], a: 1, hint: 'Es un animal gigante que nada en el océano.' },
-      { id: 10, cat: 'sci', name: 'Ciencias', q: '¿Qué órgano de nuestro cuerpo usamos para respirar aire?', opts: ['Los Pulmones', 'Las Piernas', 'Los Ojos'], a: 0, hint: 'Se llenan de aire dentro de tu pecho cuando respiras hondo.' },
-
-      // INGLÉS
-      { id: 11, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice el color "Rojo" en inglés?', opts: ['Blue', 'Red', 'Yellow'], a: 1, hint: 'Empieza con la letra R.' },
-      { id: 12, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Gato" en inglés?', opts: ['Dog', 'Cat', 'Bird'], a: 1, hint: 'Hace "miau" y empieza con C.' },
-      { id: 13, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice el número "Uno" en inglés?', opts: ['One', 'Two', 'Three'], a: 0, hint: 'Suena parecido a "úan".' },
-
-      // MÚSICA
-      { id: 14, cat: 'mus', name: 'Música', q: '¿Cuál de estos instrumentos se toca golpeándolo con las manos o baquetas?', opts: ['La Flauta', 'El Tambor', 'La Guitarra'], a: 1, hint: 'Produce sonido de percusión al golpearlo.' },
-      { id: 15, cat: 'mus', name: 'Música', q: '¿Qué nota musical viene después de "Do, Re"?', opts: ['Mi', 'Sol', 'Fa'], a: 0, hint: 'Empieza con la letra M.' },
-
-      // CULTURA E IMÁGENES (Reconocimiento visual simple para 8 años)
-      { id: 16, cat: 'cultura', name: 'Cultura e Imágenes', img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400', q: '¿Cómo se llaman estas famosas estatuas gigantes de piedra de Chile?', opts: ['Moáis', 'Castillos', 'Muñecos'], a: 0, hint: 'Están en Isla de Pascua (Rapa Nui).' },
-      { id: 17, cat: 'cultura', name: 'Cultura e Imágenes', img: 'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=400', q: '¿En qué país está esta famosa Torre Eiffel?', opts: ['Chile', 'Francia', 'España'], a: 1, hint: 'Su capital es París.' }
-    ];
-
-    const jokeBank = [
-      "¿Qué le dice una iguana a su hermana gemela? ... ¡Somos iguanitas!",
-      "¿Qué hace un perro con un taladro? ... ¡Ta-drando!",
-      "¿Por qué el libro de matemáticas estaba triste? ... ¡Porque tenía demasiados problemas!"
-    ];
-
-    const riddleBank = [
-      { q: 'Tiene hojas pero no es árbol, tiene lomo pero no es animal... ¿Qué es?', opts: ['El Libro', 'La Mesa', 'El Zapato'], a: 0, hint: 'Te sirve para leer historias.' },
-      { q: 'Salgo por las mañanas y doy luz y calor... ¿Quién soy?', opts: ['El Sol', 'La Luna', 'Un Farol'], a: 0, hint: 'Está en el cielo y brilla mucho de día.' }
-    ];
-
-    const playerColors = ['#E74C3C', '#3498DB', '#2ECC71', '#F39C12', '#9B59B6'];
-
-    let players = [
-      { id: 1, name: "Leonor", pos: 0, color: '#E74C3C' },
-      { id: 2, name: "Papá", pos: 0, color: '#3498DB' }
-    ];
-    let currentPlayerIndex = 0;
+    // ESTADO GENERAL Y GUARDADO AUTOMÁTICO (localStorage)
     let globalStars = 0;
+    let players = [{ id: 1, name: "Leonor", pos: 0, color: '#E74C3C' }, { id: 2, name: "Papá", pos: 0, color: '#3498DB' }];
+    let currentPlayerIndex = 0;
+    let selectedDifficulty = 2;
     let usedQuestionIds = [];
-    let currentItem = null;
-    const totalCells = 24;
+    let currentPuzzleCat = 'dino';
+    let currentPuzzlePieces = 48;
+    let currentDinoData = null;
 
-    // Tablero con categorías EXACTAS sincronizadas con las preguntas
-    const cellsConfig = [
-      { type: 'start', label: 'Inicio', icon: '🏁' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'cultura', label: 'Cultura', icon: '🗿' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'cultura', label: 'Cultura', icon: '🗿' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'goal', label: 'Meta', icon: '🏆' }
+    const totalCells = 32;
+
+    // BANCO DE PREGUNTAS (1° A 5° BÁSICO MINEDUC CHILE)
+    const masterQuestionBank = [
+      { id: 1, level: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 5 + 3?', opts: ['7', '8', '9'], a: 1, hint: 'Cuenta 3 más después del 5.' },
+      { id: 2, level: 1, cat: 'math', name: 'Matemáticas', q: 'Si tienes 2 monedas de $100, ¿cuánto dinero es?', opts: ['$100', '$200', '$300'], a: 1, hint: 'Suma 100 + 100.' },
+      { id: 3, level: 2, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 6 x 4?', opts: ['20', '24', '28'], a: 1, hint: 'Comienza con la letra V (Veinticuatro).' },
+      { id: 4, level: 2, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el antónimo (lo contrario) de "Luz"?', opts: ['Sol', 'Sombra', 'Brillo'], a: 1, hint: 'Es lo contrario a iluminado.' },
+      { id: 5, level: 2, cat: 'sci', name: 'Ciencias', q: '¿Qué gas respiran los seres humanos para vivir?', opts: ['Oxígeno', 'Agua', 'Humo'], a: 0, hint: 'Empieza con la letra O.' },
+      { id: 6, level: 2, cat: 'cultura', name: 'Cultura e Imágenes', img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400', q: '¿Cómo se llaman estas estatuas gigantes de Isla de Pascua?', opts: ['Moáis', 'Pirámides', 'Castillos'], a: 0, hint: 'Empieza con M.' },
+      { id: 7, level: 3, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es la mitad de 100?', opts: ['40', '50', '60'], a: 1, hint: 'Piensa en una moneda de $50.' }
     ];
 
-    renderPlayersList();
+    const dinosData = [
+      { name: 'Tiranosaurio Rex', info: '¡El carnívoro más famoso! Tenía dientes afilados como plátanos.' },
+      { name: 'Triceratops', info: 'Tenía tres grandes cuernos en la cara para defenderse.' },
+      { name: 'Parasaurolophus', info: 'Tenía una cresta larga en la cabeza para hacer sonidos como una trompeta.' },
+      { name: 'Anquilosauro', info: 'Tenía una coraza dura en la espalda y un mazo en la cola.' }
+    ];
 
+    // CARGAR Y GUARDAR PARTIDA
+    function loadSavedGame() {
+      const saved = localStorage.getItem('cultura_kids_save');
+      if (saved) {
+        try {
+          const data = JSON.parse(saved);
+          globalStars = data.globalStars || 0;
+          players = data.players || players;
+          currentPlayerIndex = data.currentPlayerIndex || 0;
+          document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
+        } catch (e) {}
+      }
+    }
+
+    function saveGame() {
+      const data = { globalStars, players, currentPlayerIndex };
+      localStorage.setItem('cultura_kids_save', JSON.stringify(data));
+    }
+
+    // NAVEGACIÓN ENTRE SECCIONES
+    function switchTab(tabName) {
+      document.querySelectorAll('.hub-grid, .glass-card').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+      if (tabName === 'hub') {
+        document.getElementById('tabHub').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[0].classList.add('active');
+      } else if (tabName === 'setup') {
+        document.getElementById('tabSetup').classList.remove('hidden');
+      } else if (tabName === 'board') {
+        document.getElementById('tabBoard').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[1].classList.add('active');
+      } else if (tabName === 'puzzleSelect') {
+        document.getElementById('tabPuzzleSelect').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[2].classList.add('active');
+      } else if (tabName === 'puzzleActive') {
+        document.getElementById('tabPuzzleActive').classList.remove('hidden');
+      }
+    }
+
+    function openGame(gameType) {
+      if (gameType === 'board') switchTab('setup');
+      if (gameType === 'puzzle') switchTab('puzzleSelect');
+      if (gameType === 'words') alert('🔤 Próximamente: El Desafío de Palabras');
+    }
+
+    // LÓGICA DE JUGADORES Y MAPA
     function renderPlayersList() {
       const container = document.getElementById('playersListContainer');
       container.innerHTML = '';
       players.forEach((p, idx) => {
         const row = document.createElement('div');
-        row.className = 'player-row';
-        row.innerHTML = `
-          <div class="player-row-info">
-            <span style="width:12px; height:12px; border-radius:50%; background:${p.color}; display:inline-block;"></span>
-            <span>${p.name}</span>
-          </div>
-          ${players.length > 1 ? `<button class="btn-remove-p" onclick="removePlayer(${idx})">Eliminar</button>` : ''}
-        `;
+        row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px; border-radius:10px;";
+        row.innerHTML = `<b>${p.name}</b> ${players.length > 1 ? `<button onclick="removePlayer(${idx})" style="width:auto; padding:4px 8px; background:#fee2e2; color:#dc2626;">X</button>` : ''}`;
         container.appendChild(row);
       });
     }
 
     function addPlayer() {
       const input = document.getElementById('newPlayerName');
-      const name = input.value.trim();
-      if (name) {
-        const color = playerColors[players.length % playerColors.length];
-        players.push({ id: players.length + 1, name: name, pos: 0, color: color });
+      if (input.value.trim()) {
+        players.push({ id: players.length + 1, name: input.value.trim(), pos: 0, color: '#3498DB' });
         input.value = '';
         renderPlayersList();
+        saveGame();
       }
     }
 
-    function removePlayer(index) {
+    function removePlayer(idx) {
       if (players.length > 1) {
-        players.splice(index, 1);
+        players.splice(idx, 1);
         renderPlayersList();
+        saveGame();
       }
     }
 
     function startAdventure() {
-      players.forEach(p => p.pos = 0);
-      currentPlayerIndex = 0;
-      globalStars = 0;
-      usedQuestionIds = [];
-      document.getElementById('globalStars').innerText = `🌟 0`;
-      
+      switchTab('board');
       buildBoard();
       updateTurnStatus();
-      switchTab('board');
     }
 
     function buildBoard() {
       const grid = document.getElementById('boardGrid');
       grid.innerHTML = '';
-
-      cellsConfig.forEach((cell, idx) => {
+      for (let i = 0; i < totalCells; i++) {
         const div = document.createElement('div');
-        let classes = 'cell';
+        div.className = `cell ${players[currentPlayerIndex].pos === i ? 'active-cell' : ''}`;
+        div.innerHTML = `<span>${i === 0 ? '🏁' : i === totalCells - 1 ? '🏆' : i}</span>`;
         
-        const isCurrentPlayerHere = players[currentPlayerIndex].pos === idx;
-        if (isCurrentPlayerHere) classes += ' active-cell';
-
-        div.className = classes;
-        div.innerHTML = `<span class="cell-icon">${cell.icon}</span><span>${cell.label}</span>`;
-
-        const playersHere = players.filter(p => p.pos === idx);
+        const playersHere = players.filter(p => p.pos === i);
         if (playersHere.length > 0) {
-          const tokensDiv = document.createElement('div');
-          tokensDiv.className = 'tokens-container';
+          const tContainer = document.createElement('div');
+          tContainer.className = 'tokens-container';
           playersHere.forEach(p => {
-            const avatar = document.createElement('div');
-            avatar.className = 'player-avatar';
-            avatar.style.background = p.color;
-            avatar.innerText = p.name.charAt(0);
-            tokensDiv.appendChild(avatar);
+            const av = document.createElement('div');
+            av.className = 'player-avatar';
+            av.style.background = p.color;
+            av.innerText = p.name.charAt(0);
+            tContainer.appendChild(av);
           });
-          div.appendChild(tokensDiv);
+          div.appendChild(tContainer);
         }
-
         grid.appendChild(div);
-      });
+      }
     }
 
     function updateTurnStatus() {
-      const p = players[currentPlayerIndex];
-      document.getElementById('turnStatus').innerText = `Turno de ${p.name}`;
-      document.getElementById('turnStatus').style.color = p.color;
+      document.getElementById('turnStatus').innerText = `Turno de ${players[currentPlayerIndex].name}`;
     }
 
     function handleRoll() {
-      document.getElementById('rollBtn').disabled = true;
       const diceValue = Math.floor(Math.random() * 3) + 1;
       document.getElementById('diceVisual').innerText = ['🎲', '⚀', '⚁', '⚂'][diceValue];
 
-      setTimeout(() => {
-        let p = players[currentPlayerIndex];
-        p.pos = Math.min(p.pos + diceValue, totalCells - 1);
-        buildBoard();
+      let p = players[currentPlayerIndex];
+      p.pos = Math.min(p.pos + diceValue, totalCells - 1);
+      buildBoard();
+      saveGame();
 
-        setTimeout(() => {
-          triggerCellEvent(cellsConfig[p.pos]);
-        }, 500);
-      }, 600);
+      if (p.pos === totalCells - 1) {
+        showVictory(p);
+      } else {
+        setTimeout(() => triggerCellEvent(), 400);
+      }
     }
 
-    function triggerCellEvent(cell) {
+    function triggerCellEvent() {
       const modal = document.getElementById('questionModal');
-      const tag = document.getElementById('subjectTag');
-      const qText = document.getElementById('modalQuestion');
-      const qImg = document.getElementById('questionImage');
-      const optsContainer = document.getElementById('quizOptions');
+      const item = masterQuestionBank[Math.floor(Math.random() * masterQuestionBank.length)];
+      
+      document.getElementById('subjectTag').innerText = item.name;
+      document.getElementById('modalQuestion').innerText = item.q;
+      const opts = document.getElementById('quizOptions');
+      opts.innerHTML = '';
 
-      optsContainer.innerHTML = '';
-      qImg.classList.add('hidden');
-      document.getElementById('owlGuideBox').classList.add('hidden');
-      document.getElementById('closeModalBtn').classList.add('hidden');
-
-      if (cell.type === 'joke') {
-        tag.innerText = '🤡 Chiste';
-        tag.style.background = '#9B59B6';
-        currentItem = jokeBank[Math.floor(Math.random() * jokeBank.length)];
-        qText.innerText = currentItem;
-        
-        document.getElementById('hintBtn').classList.add('hidden');
-        document.getElementById('closeModalBtn').classList.remove('hidden');
-      } else if (cell.type === 'riddle') {
-        tag.innerText = '🧙‍♂️ Adivinanza';
-        tag.style.background = '#E67E22';
-        currentItem = riddleBank[Math.floor(Math.random() * riddleBank.length)];
-        setupQuizOptions(currentItem);
-      } else {
-        // FILTRADO ESTRICTO Y SIN REPETICIÓN POR CATEGORÍA DE CASILLA
-        let availableQuestions = masterQuestionBank.filter(q => q.cat === cell.type && !usedQuestionIds.includes(q.id));
-
-        if (availableQuestions.length === 0) {
-          availableQuestions = masterQuestionBank.filter(q => q.cat === cell.type);
-        }
-
-        currentItem = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-        usedQuestionIds.push(currentItem.id);
-
-        tag.innerText = currentItem.name;
-        tag.style.background = '#2B72C8';
-
-        if (currentItem.img) {
-          qImg.src = currentItem.img;
-          qImg.classList.remove('hidden');
-        }
-
-        setupQuizOptions(currentItem);
-      }
+      item.opts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.onclick = () => {
+          if (idx === item.a) {
+            globalStars += 1;
+            document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
+            saveGame();
+            closeModal();
+          } else {
+            alert('¡Casi! Inténtalo otra vez.');
+          }
+        };
+        opts.appendChild(btn);
+      });
 
       modal.classList.remove('hidden');
     }
 
-    function setupQuizOptions(item) {
-      document.getElementById('modalQuestion').innerText = item.q;
-      document.getElementById('hintBtn').classList.remove('hidden');
-      const optsContainer = document.getElementById('quizOptions');
-
-      item.opts.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'opt-btn';
-        btn.innerText = opt;
-        btn.onclick = () => checkAnswer(idx === item.a);
-        optsContainer.appendChild(btn);
-      });
+    function closeModal() {
+      document.getElementById('questionModal').classList.add('hidden');
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+      updateTurnStatus();
+      buildBoard();
+      saveGame();
     }
 
-    function checkAnswer(isCorrect) {
-      const owlBox = document.getElementById('owlGuideBox');
-      const owlMsg = document.getElementById('owlMessage');
-      owlBox.classList.remove('hidden');
+    function showVictory(p) {
+      document.getElementById('victoryText').innerText = `🎉 ¡${p.name} llegó a la Meta y gana el juego! 🎉`;
+      document.getElementById('victoryModal').classList.remove('hidden');
+    }
 
-      if (isCorrect) {
-        owlMsg.innerText = '¡Excelente! Respuesta correcta. 🌟 +1 Estrella';
-        globalStars += 1;
-        document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
-        
-        setTimeout(() => {
-          closeModal();
-        }, 1200);
-      } else {
-        owlMsg.innerText = '¡Casi! Lee bien la pista o intenta con otra opción.🦉';
+    function closeVictoryModal() {
+      document.getElementById('victoryModal').classList.add('hidden');
+    }
+
+    // ROMPECABEZAS
+    function selectPuzzleCat(cat, btn) {
+      currentPuzzleCat = cat;
+      document.querySelectorAll('.puzzle-cat-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    }
+
+    function startPuzzle() {
+      currentPuzzlePieces = parseInt(document.getElementById('puzzleLevelSelect').value) || 48;
+      currentDinoData = dinosData[Math.floor(Math.random() * dinosData.length)];
+      
+      document.getElementById('puzzleTitle').innerText = `${currentDinoData.name} (${currentPuzzlePieces} piezas)`;
+      document.getElementById('puzzleDinoInfo').innerText = currentDinoData.info;
+
+      const boardArea = document.getElementById('puzzleBoardArea');
+      boardArea.innerHTML = '';
+      
+      // Crear rejilla simulación de slots
+      for (let i = 0; i < 16; i++) {
+        const slot = document.createElement('div');
+        slot.className = 'puzzle-piece-slot';
+        boardArea.appendChild(slot);
       }
+
+      switchTab('puzzleActive');
+      speakCurrentDino();
     }
 
-    function showOwlHint() {
-      const owlBox = document.getElementById('owlGuideBox');
-      const owlMsg = document.getElementById('owlMessage');
-      owlBox.classList.remove('hidden');
-      owlMsg.innerText = currentItem.hint || '¡Fíjate bien en las alternativas!';
-    }
-
-    function speakCurrentText() {
-      if ('speechSynthesis' in window) {
+    function speakCurrentDino() {
+      if ('speechSynthesis' in window && currentDinoData) {
         window.speechSynthesis.cancel();
-        const textToSpeak = typeof currentItem === 'string' ? currentItem : currentItem.q;
-        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        const utterance = new SpeechSynthesisUtterance(`${currentDinoData.name}. ${currentDinoData.info}`);
         utterance.lang = 'es-CL';
-        utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
       }
     }
 
-    function closeModal() {
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      document.getElementById('questionModal').classList.add('hidden');
-      document.getElementById('rollBtn').disabled = false;
-
-      let winner = players.find(p => p.pos === totalCells - 1);
-      if (winner) {
-        document.getElementById('victoryText').innerText = `🎉 ¡${winner.name} ha llegado a la Meta del Mapa Mágico! 🎉`;
-        document.getElementById('victoryModal').classList.remove('hidden');
-      } else {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-        updateTurnStatus();
-        buildBoard();
-      }
+    function completePuzzleDev() {
+      globalStars += 3;
+      document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
+      saveGame();
+      alert(`🎉 ¡Excelente trabajo! Armaste el rompecabezas de ${currentPuzzlePieces} piezas. Ganaste +3 Estrellas 🌟`);
     }
 
-    function restartSameGame() {
-      document.getElementById('victoryModal').classList.add('hidden');
-      startAdventure();
-    }
-
-    function confirmReset() {
-      if (confirm("¿Quieres reiniciar la partida actual de vuelta al inicio?")) {
-        startAdventure();
-      }
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.setup-card, #tabBoard').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-
-      if (tabName === 'board') {
-        document.getElementById('tabBoard').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[0].classList.add('active');
-      } else if (tabName === 'subjects') {
-        document.getElementById('tabSubjects').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[1].classList.add('active');
-      } else if (tabName === 'settings') {
-        document.getElementById('tabSettings').classList.add('hidden'); // Corregido
-        document.getElementById('tabSettings').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[2].classList.add('active');
-      } else if (tabName === 'setup') {
-        document.getElementById('tabSetup').classList.remove('hidden');
-      }
-    }
+    // INICIALIZACIÓN
+    renderPlayersList();
+    loadSavedGame();
   </script>
 </body>
 </html>
