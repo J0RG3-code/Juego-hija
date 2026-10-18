@@ -14,61 +14,73 @@
       --card-bg: #FFFFFF;
       --success: #28A745;
       --accent: #9B59B6;
+      --danger: #E74C3C;
     }
     * { box-sizing: border-box; font-family: 'Nunito', 'Comic Sans MS', 'Chalkboard SE', sans-serif; user-select: none; }
     body { margin: 0; padding: 0; background: var(--bg-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
     /* Encabezado */
-    .header { background: var(--card-bg); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-    .app-title { font-size: 1.1rem; font-weight: 800; color: #2C3E50; display: flex; align-items: center; gap: 8px; }
-    .stars-count { background: #FFF3CD; color: #856404; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+    .header { background: var(--card-bg); padding: 10px 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .app-title { font-size: 1.1rem; font-weight: 800; color: #2C3E50; display: flex; align-items: center; gap: 6px; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .btn-reset-header { background: #E2E8F0; color: #475569; border: none; padding: 6px 12px; border-radius: 12px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
+    .stars-count { background: #FFF3CD; color: #856404; padding: 5px 10px; border-radius: 16px; font-weight: bold; font-size: 0.85rem; }
 
-    /* Área Principal de Contenido */
-    .main-content { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
-    
-    /* Pestañas / Navegación Inferior */
-    .nav-bar { background: var(--card-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #E1E8ED; }
+    /* Área Principal */
+    .main-content { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+
+    /* Barra de Navegación Inferior */
+    .nav-bar { background: var(--card-bg); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid #E1E8ED; }
     .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: #7F8C8D; font-weight: bold; cursor: pointer; }
     .nav-item.active { color: var(--primary); }
-    .nav-item span { font-size: 1.3rem; margin-bottom: 2px; }
+    .nav-item span { font-size: 1.2rem; margin-bottom: 2px; }
 
-    /* Pantalla de Setup */
-    .setup-card { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    /* Targetas de Pantalla */
+    .setup-card { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
     .option-group { margin-bottom: 15px; }
-    .option-group label { display: block; font-weight: bold; color: #34495E; margin-bottom: 8px; font-size: 0.95rem; }
+    .option-group label { display: block; font-weight: bold; color: #34495E; margin-bottom: 8px; font-size: 0.9rem; }
     
-    button { background: var(--primary); border: none; color: white; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: bold; width: 100%; cursor: pointer; transition: transform 0.1s; }
+    button { background: var(--primary); border: none; color: white; padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: bold; width: 100%; cursor: pointer; transition: transform 0.1s; }
     button:active { transform: scale(0.98); }
     .btn-secondary { background: var(--secondary); }
+    .btn-danger { background: var(--danger); }
+    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
 
-    /* Tablero y Mapa */
-    .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 450px; margin-bottom: 15px; }
-    .cell { aspect-ratio: 1; background: white; border-radius: 16px; border: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: bold; font-size: 0.8rem; box-shadow: 0 3px 6px rgba(0,0,0,0.03); }
-    .cell.active-cell { border-color: var(--secondary); background: #FFF9E6; animation: pulse 1.5s infinite; }
-    .cell.passed-cell { background: #E8F8F5; border-color: #A3E4D7; }
-    .cell-icon { font-size: 1.3rem; margin-bottom: 2px; }
+    /* Lista de Integrantes */
+    .players-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
+    .player-row { display: flex; justify-content: space-between; align-items: center; background: #F8FAFC; padding: 8px 12px; border-radius: 10px; border: 1px solid #E2E8F0; }
+    .player-row-info { display: flex; align-items: center; gap: 8px; font-weight: bold; color: #334155; }
+    .btn-remove-p { background: #FEE2E2; color: #DC2626; border: none; padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 0.75rem; width: auto; }
+
+    /* Tablero Extendido (24 Casillas) */
+    .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; max-width: 450px; margin-bottom: 12px; }
+    .cell { aspect-ratio: 1; background: white; border-radius: 14px; border: 2px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: bold; font-size: 0.75rem; box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center; }
+    .cell.active-cell { border-color: var(--secondary); background: #FFF9E6; animation: pulse 1.5s infinite; border-width: 3px; }
+    .cell.passed-cell { background: #F1F5F9; border-color: #CBD5E1; color: #94A3B8; }
+    .cell-icon { font-size: 1.1rem; margin-bottom: 2px; }
     
     @keyframes pulse {
       0% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0.6); }
-      70% { box-shadow: 0 0 0 10px rgba(255, 144, 41, 0); }
+      70% { box-shadow: 0 0 0 8px rgba(255, 144, 41, 0); }
       100% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0); }
     }
 
-    .player-avatar { width: 22px; height: 22px; border-radius: 50%; background: #E74C3C; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; position: absolute; bottom: -5px; right: -5px; border: 2px solid white; font-weight: bold; }
+    .tokens-container { display: flex; gap: 2px; position: absolute; bottom: 2px; justify-content: center; width: 100%; }
+    .player-avatar { width: 16px; height: 16px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; border: 1.5px solid white; font-weight: bold; }
 
     /* Panel de Dado */
-    .dice-panel { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 15px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: auto; }
-    .dice-display { font-size: 2.5rem; margin: 5px 0; }
+    .dice-panel { background: white; width: 100%; max-width: 450px; border-radius: 18px; padding: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: auto; }
+    .dice-display { font-size: 2.2rem; margin: 4px 0; }
 
-    /* Modal de Pregunta */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
-    .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 24px; padding: 20px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
+    /* Modal Emergente */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
+    .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 20px; padding: 18px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
     
-    .owl-guide { display: flex; align-items: center; gap: 10px; background: #F8F9FA; padding: 10px; border-radius: 12px; margin-top: 10px; text-align: left; }
-    .owl-guide span { font-size: 2rem; }
-    .owl-guide p { margin: 0; font-size: 0.85rem; color: #555; font-weight: 600; }
+    .owl-guide { display: flex; align-items: center; gap: 8px; background: #F8F9FA; padding: 8px 12px; border-radius: 10px; margin-top: 10px; text-align: left; }
+    .owl-guide span { font-size: 1.5rem; }
+    .owl-guide p { margin: 0; font-size: 0.8rem; color: #555; font-weight: 600; }
 
-    .opt-btn { background: #F1F5F9; color: #1E293B; border: 2px solid #E2E8F0; border-radius: 12px; padding: 12px; text-align: left; margin-bottom: 8px; font-weight: 600; }
+    .opt-btn { background: #F1F5F9; color: #1E293B; border: 2px solid #E2E8F0; border-radius: 10px; padding: 10px; text-align: left; margin-bottom: 6px; font-weight: 600; font-size: 0.9rem; }
     .opt-btn:active { background: #E2E8F0; }
 
     .hidden { display: none !important; }
@@ -79,7 +91,10 @@
   <!-- Encabezado -->
   <div class="header">
     <div class="app-title">🗺️ Cultura Kids</div>
-    <div class="stars-count" id="globalStars">🌟 0 Estrellas</div>
+    <div class="header-actions">
+      <button class="btn-reset-header" onclick="confirmReset()">🔄 Reiniciar</button>
+      <div class="stars-count" id="globalStars">🌟 0</div>
+    </div>
   </div>
 
   <!-- Contenido Principal -->
@@ -90,59 +105,55 @@
       <h2 style="text-align: center; color: #2C3E50; margin-top: 0;">¡Nueva Aventura! 🦉</h2>
       
       <div class="option-group">
-        <label>1. Nombre del Jugador:</label>
-        <input type="text" id="playerNameInput" value="Sofía" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 1rem;">
+        <label>1. Integrantes de la Familia:</label>
+        <div id="playersListContainer" class="players-list"></div>
+        <div style="display: flex; gap: 6px;">
+          <input type="text" id="newPlayerName" placeholder="Nombre de integrante..." style="flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.9rem;">
+          <button onclick="addPlayer()" style="width: auto; padding: 10px 15px; background: var(--success);">+ Agregar</button>
+        </div>
       </div>
 
       <div class="option-group">
-        <label>2. Modo de Juego Preferido:</label>
-        <select id="gameModeSelect" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.95rem;">
-          <option value="classic">🗺️ Modo Clásico (El Dado marca el Avance)</option>
-          <option value="subject_dice">🎲 Dado de Materia (El azar decide el tema)</option>
-          <option value="free_choice">🔀 Modo Libre (Eliges la materia que prefieras)</option>
-        </select>
-      </div>
-
-      <div class="option-group">
-        <label>3. Nivel de Dificultad Inicial:</label>
-        <select id="difficultySelect" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.95rem;">
-          <option value="easy">🟢 Explorador (Fácil con Pistas)</option>
-          <option value="medium">🟡 Aventurero (Moderado)</option>
-          <option value="hard">🔴 Maestro (Desafío)</option>
+        <label>2. Modo de Juego:</label>
+        <select id="gameModeSelect" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.9rem;">
+          <option value="classic">🗺️ Modo Clásico (Avance por Dado)</option>
+          <option value="subject_dice">🎲 Dado de Materia (Elección Aleatoria)</option>
         </select>
       </div>
 
       <button onclick="startAdventure()">¡Comenzar Aventura! 🚀</button>
     </div>
 
-    <!-- Tablero de Juego -->
+    <!-- Tablero de Juego (24 Casillas) -->
     <div id="tabBoard" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center; flex: 1;">
       <div id="boardGrid" class="board-grid"></div>
 
       <div class="dice-panel">
-        <div id="turnStatus" style="font-weight: bold; color: #475569; font-size: 0.9rem;">Turno de Sofía</div>
+        <div id="turnStatus" style="font-weight: bold; color: #475569; font-size: 0.9rem;">Turno de Leonor</div>
         <div class="dice-display" id="diceVisual">🎲</div>
         <button class="btn-secondary" id="rollBtn" onclick="handleRoll()">¡Lanzar Dado!</button>
       </div>
     </div>
 
-    <!-- Pantalla de Progreso por Asignatura -->
+    <!-- Pantalla de Progreso / Asignaturas -->
     <div id="tabSubjects" class="setup-card hidden">
       <h3>📊 Tu Progreso Educativo</h3>
-      <p style="font-size: 0.9rem; color: #64748B;">Monitorea cómo avanzas en el programa escolar chileno de 3° Básico:</p>
-      <div id="subjectsList"></div>
+      <p style="font-size: 0.85rem; color: #64748B;">Mapeo del programa escolar chileno de 3° Básico:</p>
+      <div id="subjectsList">
+        <p>🔢 <b>Matemáticas:</b> Tablas, Sumas y Monedas</p>
+        <p>📖 <b>Lenguaje:</b> Sinónimos, Sustantivos y Ortografía</p>
+        <p>🌿 <b>Ciencias:</b> Flora, Fauna de Chile y Ecosistemas</p>
+        <p>🇬🇧 <b>Inglés:</b> Vocabulario Básico y Colores</p>
+        <p>🎵 <b>Música:</b> Instrumentos y Ritmos</p>
+      </div>
     </div>
 
-    <!-- Pantalla de Álbum de Logros -->
-    <div id="tabAlbum" class="setup-card hidden">
-      <h3>🏆 Álbum de Estampas de Chile</h3>
-      <p style="font-size: 0.9rem; color: #64748B;">¡Juega para coleccionar todas las estampas de fauna y flora!</p>
-      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
-        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🌸 Copihue Chileno</div>
-        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🦌 Huemul del Sur</div>
-        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🐆 Puma Andino</div>
-        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🦅 Cóndor de los Andes</div>
-      </div>
+    <!-- Pantalla de Ajustes -->
+    <div id="tabSettings" class="setup-card hidden">
+      <h3>⚙️ Ajustes del Juego</h3>
+      <p style="font-size: 0.85rem; color: #64748B;">Opciones para reiniciar o cambiar integrantes:</p>
+      <button class="btn-outline" onclick="switchTab('setup')" style="margin-bottom: 10px;">⬅️ Volver a Configurar Integrantes</button>
+      <button class="btn-danger" onclick="confirmReset()">🔄 Reiniciar Partida Actual</button>
     </div>
 
   </div>
@@ -150,13 +161,13 @@
   <!-- Modal Emergente para Preguntas, Chistes y Adivinanzas -->
   <div id="questionModal" class="modal-overlay hidden">
     <div class="modal-card">
-      <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">MATERIA</span>
-      <h3 id="modalQuestion" style="color: #1E293B; margin: 15px 0;">¿Pregunta?</h3>
+      <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">MATERIA</span>
+      <h3 id="modalQuestion" style="color: #1E293B; margin: 12px 0; font-size: 1rem;">¿Pregunta?</h3>
 
       <div id="quizOptions" style="display: flex; flex-direction: column;"></div>
 
-      <button id="listenBtn" onclick="speakCurrentText()" style="margin-top: 10px; background: #64748B;">🔊 Escuchar</button>
-      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 8px; background: #F59E0B;">💡 Pedir una pista</button>
+      <button id="listenBtn" onclick="speakCurrentText()" style="margin-top: 8px; background: #64748B; font-size: 0.85rem;">🔊 Escuchar</button>
+      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 6px; background: #F59E0B; font-size: 0.85rem;">💡 Pedir una pista</button>
 
       <!-- Guía Lechuza -->
       <div id="owlGuideBox" class="owl-guide hidden">
@@ -164,7 +175,19 @@
         <p id="owlMessage">¡Hola! Estoy aquí para ayudarte.</p>
       </div>
 
-      <button id="closeModalBtn" onclick="closeModal()" class="hidden" style="margin-top: 15px; background: var(--success);">Continuar ➔</button>
+      <button id="closeModalBtn" onclick="closeModal()" class="hidden" style="margin-top: 12px; background: var(--success);">Continuar ➔</button>
+    </div>
+  </div>
+
+  <!-- Modal de Fin de Juego (Victoria) -->
+  <div id="victoryModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h1 style="font-size: 2.5rem; margin: 0;">🏆🎉</h1>
+      <h2 style="color: #2C3E50; margin: 8px 0;">¡Felicidades!</h2>
+      <p id="victoryText" style="font-size: 1rem; color: #475569; font-weight: bold;">¡Han completado la Aventura del Mapa Mágico!</p>
+      
+      <button onclick="restartSameGame()" style="margin-top: 10px; background: var(--success);">🔄 Jugar Otra Vez</button>
+      <button onclick="switchTab('setup'); closeModal();" class="btn-outline" style="margin-top: 8px;">⚙️ Cambiar Integrantes</button>
     </div>
   </div>
 
@@ -172,20 +195,19 @@
   <div class="nav-bar">
     <div class="nav-item active" onclick="switchTab('board')"><span>🗺️</span>Tablero</div>
     <div class="nav-item" onclick="switchTab('subjects')"><span>📊</span>Asignaturas</div>
-    <div class="nav-item" onclick="switchTab('album')"><span>🌟</span>Álbum</div>
-    <div class="nav-item" onclick="switchTab('setup')"><span>⚙️</span>Ajustes</div>
+    <div class="nav-item" onclick="switchTab('settings')"><span>⚙️</span>Ajustes</div>
   </div>
 
   <script>
-    // Banco Amplio de Preguntas por Asignatura (Chile - 3° Básico)
+    // Banco Amplio de Preguntas
     const questionBank = [
       { cat: 'math', name: 'Matemáticas', icon: '🔢', q: '¿Cuánto es 8 x 5?', opts: ['35', '40', '45'], a: 1, hint: 'Cuenta de 5 en 5 ocho veces.' },
       { cat: 'math', name: 'Matemáticas', icon: '🔢', q: 'Si tienes 4 monedas de $100, ¿cuánto dinero suma?', opts: ['$300', '$400', '$500'], a: 1, hint: 'Suma 100 cuatro veces.' },
       { cat: 'lang', name: 'Lenguaje', icon: '📖', q: '¿Cuál es el antónimo de "Gigante"?', opts: ['Enorme', 'Pequeño', 'Alto'], a: 1, hint: 'Es lo contrario a algo muy grande.' },
       { cat: 'lang', name: 'Lenguaje', icon: '📖', q: 'En la oración "El gato blanco salta", ¿cuál es el sustantivo?', opts: ['Gato', 'Blanco', 'Salta'], a: 0, hint: 'Es el animal de quien se habla.' },
       { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Cuál es el árbol nativo chileno que vive miles de años en el sur?', opts: ['Pino', 'Alerce', 'Eucalipto'], a: 1, hint: 'Crece muy lento en los bosques fríos.' },
-      { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Qué necesitan las plantas para hacer la fotosíntesis?', opts: ['Sol y Agua', 'Jugo y Leche', 'Sombras'], a: 0, hint: 'Viene del cielo y de la tierra.' },
-      { cat: 'eng', name: 'Inglés', icon: '🇬🇧', q: '¿Cómo se dice "Red" en español?', opts: ['Verde', 'Rojo', 'Azul'], a: 1, hint: 'Es el color del copihue o de la manzana.' },
+      { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Qué necesitan las plantas para vivir?', opts: ['Sol y Agua', 'Jugo y Leche', 'Sombras'], a: 0, hint: 'Viene del cielo y de la tierra.' },
+      { cat: 'eng', name: 'Inglés', icon: '🇬🇧', q: '¿Cómo se dice "Red" en español?', opts: ['Verde', 'Rojo', 'Azul'], a: 1, hint: 'Es el color del copihue.' },
       { cat: 'mus', name: 'Música', icon: '🎵', q: '¿Cuál de estos es un instrumento de viento?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas soplar aire para que suene.' }
     ];
 
@@ -200,15 +222,21 @@
       { q: 'Salgo por las mañanas y doy luz y calor... ¿Quién soy?', opts: ['El Sol', 'La Luna', 'Un Farol'], a: 0, hint: 'Está en el centro del sistema solar.' }
     ];
 
-    // Variables de Estado del Juego
-    let player = { name: "Sofía", pos: 0, stars: 0 };
-    let gameMode = "classic";
-    let difficulty = "easy";
+    // Colores para avatares
+    const playerColors = ['#E74C3C', '#3498DB', '#2ECC71', '#F39C12', '#9B59B6'];
+
+    // Estado del Juego
+    let players = [
+      { id: 1, name: "Leonor", pos: 0, color: '#E74C3C' },
+      { id: 2, name: "Papá", pos: 0, color: '#3498DB' }
+    ];
+    let currentPlayerIndex = 0;
+    let globalStars = 0;
     let currentMazo = [];
     let currentItem = null;
-    const totalCells = 12;
+    const totalCells = 24; // Tablero Extendido
 
-    // Configuración de Casillas del Mapa
+    // Tablero de 24 Casillas
     const cellsConfig = [
       { type: 'start', label: 'Inicio', icon: '🏁' },
       { type: 'math', label: 'Mates', icon: '🔢' },
@@ -221,19 +249,68 @@
       { type: 'math', label: 'Mates', icon: '🔢' },
       { type: 'joke', label: 'Chiste', icon: '🤡' },
       { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
       { type: 'goal', label: 'Meta', icon: '🏆' }
     ];
 
-    function startAdventure() {
-      player.name = document.getElementById('playerNameInput').value || 'Sofía';
-      gameMode = document.getElementById('gameModeSelect').value;
-      difficulty = document.getElementById('difficultySelect').value;
+    // Inicializar Vista de Integrantes
+    renderPlayersList();
 
-      document.getElementById('turnStatus').innerText = `Turno de ${player.name}`;
+    function renderPlayersList() {
+      const container = document.getElementById('playersListContainer');
+      container.innerHTML = '';
+      players.forEach((p, idx) => {
+        const row = document.createElement('div');
+        row.className = 'player-row';
+        row.innerHTML = `
+          <div class="player-row-info">
+            <span style="width:12px; height:12px; border-radius:50%; background:${p.color}; display:inline-block;"></span>
+            <span>${p.name}</span>
+          </div>
+          ${players.length > 1 ? `<button class="btn-remove-p" onclick="removePlayer(${idx})">Eliminar</button>` : ''}
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function addPlayer() {
+      const input = document.getElementById('newPlayerName');
+      const name = input.value.trim();
+      if (name) {
+        const color = playerColors[players.length % playerColors.length];
+        players.push({ id: players.length + 1, name: name, pos: 0, color: color });
+        input.value = '';
+        renderPlayersList();
+      }
+    }
+
+    function removePlayer(index) {
+      if (players.length > 1) {
+        players.splice(index, 1);
+        renderPlayersList();
+      }
+    }
+
+    function startAdventure() {
+      players.forEach(p => p.pos = 0);
+      currentPlayerIndex = 0;
+      globalStars = 0;
+      document.getElementById('globalStars').innerText = `🌟 0`;
       
-      // Barajar mazo sin repetición
       initMazo();
       buildBoard();
+      updateTurnStatus();
       switchTab('board');
     }
 
@@ -248,21 +325,37 @@
       cellsConfig.forEach((cell, idx) => {
         const div = document.createElement('div');
         let classes = 'cell';
-        if (idx === player.pos) classes += ' active-cell';
-        if (idx < player.pos) classes += ' passed-cell';
         
+        // Determinar si hay algún jugador activo en esta casilla
+        const isCurrentPlayerHere = players[currentPlayerIndex].pos === idx;
+        if (isCurrentPlayerHere) classes += ' active-cell';
+
         div.className = classes;
         div.innerHTML = `<span class="cell-icon">${cell.icon}</span><span>${cell.label}</span>`;
 
-        if (idx === player.pos) {
-          const avatar = document.createElement('div');
-          avatar.className = 'player-avatar';
-          avatar.innerText = player.name.charAt(0);
-          div.appendChild(avatar);
+        // Renderizar fichas de jugadores en esta casilla
+        const playersHere = players.filter(p => p.pos === idx);
+        if (playersHere.length > 0) {
+          const tokensDiv = document.createElement('div');
+          tokensDiv.className = 'tokens-container';
+          playersHere.forEach(p => {
+            const avatar = document.createElement('div');
+            avatar.className = 'player-avatar';
+            avatar.style.background = p.color;
+            avatar.innerText = p.name.charAt(0);
+            tokensDiv.appendChild(avatar);
+          });
+          div.appendChild(tokensDiv);
         }
 
         grid.appendChild(div);
       });
+    }
+
+    function updateTurnStatus() {
+      const p = players[currentPlayerIndex];
+      document.getElementById('turnStatus').innerText = `Turno de ${p.name}`;
+      document.getElementById('turnStatus').style.color = p.color;
     }
 
     function handleRoll() {
@@ -271,11 +364,12 @@
       document.getElementById('diceVisual').innerText = ['🎲', '⚀', '⚁', '⚂'][diceValue];
 
       setTimeout(() => {
-        player.pos = Math.min(player.pos + diceValue, totalCells - 1);
+        let p = players[currentPlayerIndex];
+        p.pos = Math.min(p.pos + diceValue, totalCells - 1);
         buildBoard();
 
         setTimeout(() => {
-          triggerCellEvent(cellsConfig[player.pos]);
+          triggerCellEvent(cellsConfig[p.pos]);
         }, 500);
       }, 600);
     }
@@ -304,7 +398,6 @@
         currentItem = riddleBank[Math.floor(Math.random() * riddleBank.length)];
         setupQuizOptions(currentItem);
       } else {
-        // Preguntas Normales (Sin Repetición)
         if (currentMazo.length === 0) initMazo();
         currentItem = currentMazo.pop();
         
@@ -336,15 +429,15 @@
       owlBox.classList.remove('hidden');
 
       if (isCorrect) {
-        owlMsg.innerText = '¡Fantástico! Respuesta correcta. 🌟 +1 Estrella';
-        player.stars += 1;
-        document.getElementById('globalStars').innerText = `🌟 ${player.stars} Estrellas`;
+        owlMsg.innerText = '¡Excelente! Respuesta correcta. 🌟 +1 Estrella';
+        globalStars += 1;
+        document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
         
         setTimeout(() => {
           closeModal();
         }, 1200);
       } else {
-        owlMsg.innerText = '¡Casi lo logras! Revisa la pista o inténtalo nuevamente.🦉';
+        owlMsg.innerText = '¡Casi lo logras! Puedes usar la pista 💡 o intentarlo de nuevo.';
       }
     }
 
@@ -352,7 +445,7 @@
       const owlBox = document.getElementById('owlGuideBox');
       const owlMsg = document.getElementById('owlMessage');
       owlBox.classList.remove('hidden');
-      owlMsg.innerText = currentItem.hint || '¡Piensa en lo que has estudiado en clases!';
+      owlMsg.innerText = currentItem.hint || '¡Piensa en lo que has aprendido!';
     }
 
     function speakCurrentText() {
@@ -371,8 +464,27 @@
       document.getElementById('questionModal').classList.add('hidden');
       document.getElementById('rollBtn').disabled = false;
 
-      if (player.pos === totalCells - 1) {
-        alert('🎉 ¡Felicidades! Llegaste a la Meta del Mapa Mágico 🎉');
+      // Verificar si alguien llegó a la Meta
+      let winner = players.find(p => p.pos === totalCells - 1);
+      if (winner) {
+        document.getElementById('victoryText').innerText = `🎉 ¡${winner.name} ha llegado a la Meta del Mapa Mágico! 🎉`;
+        document.getElementById('victoryModal').classList.remove('hidden');
+      } else {
+        // Siguiente turno
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+        updateTurnStatus();
+        buildBoard();
+      }
+    }
+
+    function restartSameGame() {
+      document.getElementById('victoryModal').classList.add('hidden');
+      startAdventure();
+    }
+
+    function confirmReset() {
+      if (confirm("¿Quieres reiniciar la partida actual de vuelta al inicio?")) {
+        startAdventure();
       }
     }
 
@@ -386,14 +498,14 @@
       } else if (tabName === 'subjects') {
         document.getElementById('tabSubjects').classList.remove('hidden');
         document.querySelectorAll('.nav-item')[1].classList.add('active');
-      } else if (tabName === 'album') {
-        document.getElementById('tabAlbum').classList.remove('hidden');
+      } else if (tabName === 'settings') {
+        document.getElementById('tabSettings').classList.remove('hidden');
         document.querySelectorAll('.nav-item')[2].classList.add('active');
       } else if (tabName === 'setup') {
         document.getElementById('tabSetup').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[3].classList.add('active');
       }
     }
   </script>
 </body>
 </html>
+
