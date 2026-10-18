@@ -35,7 +35,7 @@
     .nav-item.active { color: var(--primary); }
     .nav-item span { font-size: 1.2rem; margin-bottom: 2px; }
 
-    /* Targetas de Pantalla */
+    /* Tarjetas de Pantalla */
     .setup-card { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 15px; }
     .option-group { margin-bottom: 15px; }
     .option-group label { display: block; font-weight: bold; color: #34495E; margin-bottom: 8px; font-size: 0.9rem; }
@@ -76,7 +76,7 @@
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
     .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 20px; padding: 18px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
     
-    .question-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; margin: 10px 0; border: 2px solid #E2E8F0; }
+    .question-img { width: 100%; max-height: 160px; object-fit: contain; border-radius: 12px; margin: 8px 0; background: #F8FAFC; border: 2px solid #E2E8F0; }
 
     .owl-guide { display: flex; align-items: center; gap: 8px; background: #F8F9FA; padding: 8px 12px; border-radius: 10px; margin-top: 10px; text-align: left; }
     .owl-guide span { font-size: 1.5rem; }
@@ -118,7 +118,7 @@
       <button onclick="startAdventure()">¡Comenzar Aventura! 🚀</button>
     </div>
 
-    <!-- Tablero de Juego (24 Casillas) -->
+    <!-- Tablero de Juego (24 Casillas Sincronizadas) -->
     <div id="tabBoard" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center; flex: 1;">
       <div id="boardGrid" class="board-grid"></div>
 
@@ -131,62 +131,60 @@
 
     <!-- Pantalla de Progreso / Asignaturas -->
     <div id="tabSubjects" class="setup-card hidden">
-      <h3>📊 Tu Progreso Educativo</h3>
-      <p style="font-size: 0.85rem; color: #64748B;">Mapeo del programa escolar chileno de 3° Básico y Cultura General:</p>
+      <h3>📊 Currículum 1° a 3° Básico (MINEDUC)</h3>
+      <p style="font-size: 0.85rem; color: #64748B;">Refuerzo escolar adaptado a las asignaturas de Chile:</p>
       <div id="subjectsList">
-        <p>🔢 <b>Matemáticas:</b> Tablas, Sumas, Monedas y Geometría</p>
-        <p>📖 <b>Lenguaje:</b> Sinónimos, Sustantivos y Comprensión</p>
-        <p>🌿 <b>Ciencias y Chile:</b> Flora, Fauna y Monumentos Nacionales</p>
-        <p>🗿 <b>Cultura General e Imágenes:</b> Símbolos del mundo y Tradiciones</p>
-        <p>🇬🇧 <b>Inglés:</b> Vocabulario Básico y Colores</p>
-        <p>🎵 <b>Música:</b> Instrumentos y Ritmos</p>
+        <p>🔢 <b>Matemáticas:</b> Conteo, sumas y monedas chilenas ($100, $50).</p>
+        <p>📖 <b>Lenguaje:</b> Vocabulario, abecedario y comprensión.</p>
+        <p>🌿 <b>Ciencias:</b> El agua, animales chilenos y el cuerpo.</p>
+        <p>🇬🇧 <b>Inglés:</b> Colores, saludos y animales básicos.</p>
+        <p>🎵 <b>Música:</b> Sonidos y ritmos sencillos.</p>
       </div>
     </div>
 
     <!-- Pantalla de Ajustes -->
     <div id="tabSettings" class="setup-card hidden">
       <h3>⚙️ Ajustes del Juego</h3>
-      <p style="font-size: 0.85rem; color: #64748B;">Opciones para reiniciar o cambiar integrantes:</p>
       <button class="btn-outline" onclick="switchTab('setup')" style="margin-bottom: 10px;">⬅️ Volver a Configurar Integrantes</button>
       <button class="btn-danger" onclick="confirmReset()">🔄 Reiniciar Partida Actual</button>
     </div>
 
   </div>
 
-  <!-- Modal Emergente para Preguntas, Chistes y Adivinanzas -->
+  <!-- Modal Emergente -->
   <div id="questionModal" class="modal-overlay hidden">
     <div class="modal-card">
       <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">MATERIA</span>
       
-      <!-- Contenedor de Imagen de Reconocimiento -->
-      <img id="questionImage" class="question-img hidden" src="" alt="Imagen de referencia">
+      <!-- Imagen de apoyo visual -->
+      <img id="questionImage" class="question-img hidden" src="" alt="Imagen de apoyo">
 
-      <h3 id="modalQuestion" style="color: #1E293B; margin: 12px 0; font-size: 1rem;">¿Pregunta?</h3>
+      <h3 id="modalQuestion" style="color: #1E293B; margin: 10px 0; font-size: 0.95rem;">¿Pregunta?</h3>
 
       <div id="quizOptions" style="display: flex; flex-direction: column;"></div>
 
-      <button id="listenBtn" onclick="speakCurrentText()" style="margin-top: 8px; background: #64748B; font-size: 0.85rem;">🔊 Escuchar</button>
-      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 6px; background: #F59E0B; font-size: 0.85rem;">💡 Pedir una pista</button>
+      <button id="listenBtn" onclick="speakCurrentText()" style="margin-top: 6px; background: #64748B; font-size: 0.85rem;">🔊 Escuchar</button>
+      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 6px; background: #F59E0B; font-size: 0.85rem;">💡 Pedir una pista clara</button>
 
       <!-- Guía Lechuza -->
       <div id="owlGuideBox" class="owl-guide hidden">
         <span>🦉</span>
-        <p id="owlMessage">¡Hola! Estoy aquí para ayudarte.</p>
+        <p id="owlMessage">Pista clara.</p>
       </div>
 
-      <button id="closeModalBtn" onclick="closeModal()" class="hidden" style="margin-top: 12px; background: var(--success);">Continuar ➔</button>
+      <button id="closeModalBtn" onclick="closeModal()" class="hidden" style="margin-top: 10px; background: var(--success);">Continuar ➔</button>
     </div>
   </div>
 
-  <!-- Modal de Fin de Juego (Victoria) -->
+  <!-- Modal de Fin de Juego -->
   <div id="victoryModal" class="modal-overlay hidden">
     <div class="modal-card">
       <h1 style="font-size: 2.5rem; margin: 0;">🏆🎉</h1>
       <h2 style="color: #2C3E50; margin: 8px 0;">¡Felicidades!</h2>
-      <p id="victoryText" style="font-size: 1rem; color: #475569; font-weight: bold;">¡Han completado la Aventura del Mapa Mágico!</p>
+      <p id="victoryText" style="font-size: 1rem; color: #475569; font-weight: bold;">¡Han completado el recorrido!</p>
       
       <button onclick="restartSameGame()" style="margin-top: 10px; background: var(--success);">🔄 Jugar Otra Vez</button>
-      <button onclick="switchTab('setup'); closeModal();" class="btn-outline" style="margin-top: 8px;">⚙️ Cambiar Integrantes</button>
+      <button onclick="switchTab('setup'); closeModal();" class="btn-outline" style="margin-top: 8px;">⚙️ Configurar</button>
     </div>
   </div>
 
@@ -198,35 +196,36 @@
   </div>
 
   <script>
-    // Banco Ampliado de Preguntas con Identificación por Categoría e Imágenes
+    // Banco de Preguntas Nivel 1 (1° a 3° Básico MINEDUC Chile) con Pistas Claras e Imágenes de Apoyo
     const masterQuestionBank = [
-      // MATEMÁTICAS (math)
-      { id: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 8 x 5?', opts: ['35', '40', '45'], a: 1, hint: 'Cuenta de 5 en 5 ocho veces.' },
-      { id: 2, cat: 'math', name: 'Matemáticas', q: 'Si tienes 4 monedas de $100, ¿cuánto dinero suma?', opts: ['$300', '$400', '$500'], a: 1, hint: 'Suma 100 cuatro veces.' },
-      { id: 3, cat: 'math', name: 'Matemáticas', q: '¿Cuál es el doble de 15?', opts: ['25', '30', '35'], a: 1, hint: 'Suma 15 + 15.' },
-      { id: 4, cat: 'math', name: 'Matemáticas', q: '¿Cuántos lados tiene un triángulo?', opts: ['3', '4', '5'], a: 0, hint: 'Cuenta sus esquinas.' },
+      // MATEMÁTICAS
+      { id: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 5 + 3?', opts: ['7', '8', '9'], a: 1, hint: 'Empieza en el 5 y cuenta 3 dedos hacia adelante: 6, 7, 8.' },
+      { id: 2, cat: 'math', name: 'Matemáticas', q: 'Si tienes 2 monedas de $100, ¿cuánto dinero es en total?', opts: ['$100', '$200', '$300'], a: 1, hint: 'Suma 100 más 100.' },
+      { id: 3, cat: 'math', name: 'Matemáticas', q: '¿Qué número viene después del 29?', opts: ['30', '31', '20'], a: 0, hint: 'Comienza con el número 3.' },
+      { id: 4, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 4 x 2?', opts: ['6', '8', '10'], a: 1, hint: 'Suma dos veces el número 4 (4 + 4).' },
 
-      // LENGUAJE (lang)
-      { id: 5, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el antónimo de "Gigante"?', opts: ['Enorme', 'Pequeño', 'Alto'], a: 1, hint: 'Es lo contrario a algo muy grande.' },
-      { id: 6, cat: 'lang', name: 'Lenguaje', q: 'En la oración "El gato blanco salta", ¿cuál es el sustantivo?', opts: ['Gato', 'Blanco', 'Salta'], a: 0, hint: 'Es el animal de quien se habla.' },
-      { id: 7, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el sinónimo de la palabra "Nido"?', opts: ['Casa de ave', 'Árbol', 'Huevo'], a: 0, hint: 'Es el lugar donde viven las aves.' },
-      { id: 8, cat: 'lang', name: 'Lenguaje', q: '¿Qué tipo de palabra es "Rápido"?', opts: ['Sustantivo', 'Adjetivo', 'Verbo'], a: 1, hint: 'Nos dice CÓMO es una cosa o persona.' },
+      // LENGUAJE
+      { id: 5, cat: 'lang', name: 'Lenguaje', q: '¿Cuál de estas palabras comienza con la letra "M"?', opts: ['Perro', 'Mesa', 'Auto'], a: 1, hint: 'Busca la palabra que suena "Mmm-esa".' },
+      { id: 6, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el sinónimo (palabra que significa lo mismo) de "Feliz"?', opts: ['Triste', 'Contento', 'Enojado'], a: 1, hint: 'Empieza con la letra C.' },
+      { id: 7, cat: 'lang', name: 'Lenguaje', q: '¿Qué palabra está escrita correctamente?', opts: ['Avión', 'Avionn', 'Abión'], a: 0, hint: 'Lleva tilde en la letra o.' },
 
-      // CIENCIAS Y RECONOCIMIENTO VISUAL DE CULTURA (sci)
-      { id: 9, cat: 'sci', name: 'Ciencias y Cultura', img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400', q: '¿Qué escultura gigante de Isla de Pascua es esta?', opts: ['Moái', 'Pirámide', 'Estatua de la Libertad'], a: 0, hint: 'Están esculpidas en piedra en Rapa Nui.' },
-      { id: 10, cat: 'sci', name: 'Ciencias y Cultura', img: 'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=400', q: '¿En qué ciudad del mundo se encuentra esta famosa Torre Eiffel?', opts: ['Santiago', 'París', 'Londres'], a: 1, hint: 'Es la capital de Francia.' },
-      { id: 11, cat: 'sci', name: 'Ciencias y Cultura', q: '¿Cuál es el baile nacional de Chile?', opts: ['Tango', 'Cueca', 'Cumbia'], a: 1, hint: 'Se baila con un pañuelo blanco en la mano.' },
-      { id: 12, cat: 'sci', name: 'Ciencias y Cultura', img: 'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=400', q: '¿Qué animal nativo chileno es este?', opts: ['Puma', 'Huemul', 'Zorro Culpeo'], a: 0, hint: 'Es el felino más grande de Chile.' },
-      { id: 13, cat: 'sci', name: 'Ciencias', q: '¿Qué necesitan las plantas para hacer fotosíntesis?', opts: ['Sol y Agua', 'Jugo y Leche', 'Sombras'], a: 0, hint: 'Viene del cielo y de la tierra.' },
+      // CIENCIAS
+      { id: 8, cat: 'sci', name: 'Ciencias', q: '¿En qué estado se encuentra el hielo que ponemos en el jugo?', opts: ['Líquido', 'Sólido', 'Gaseoso'], a: 1, hint: 'Es duro al tocarlo, como una roca de agua.' },
+      { id: 9, cat: 'sci', name: 'Ciencias', q: '¿Cuál de estos animales vive en el mar chileno?', opts: ['El León', 'La Ballena', 'La Jirafa'], a: 1, hint: 'Es un animal gigante que nada en el océano.' },
+      { id: 10, cat: 'sci', name: 'Ciencias', q: '¿Qué órgano de nuestro cuerpo usamos para respirar aire?', opts: ['Los Pulmones', 'Las Piernas', 'Los Ojos'], a: 0, hint: 'Se llenan de aire dentro de tu pecho cuando respiras hondo.' },
 
-      // INGLÉS (eng)
-      { id: 14, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Red" en español?', opts: ['Verde', 'Rojo', 'Azul'], a: 1, hint: 'Es el color del copihue.' },
-      { id: 15, cat: 'eng', name: 'Inglés', q: '¿Qué significa la palabra "Apple"?', opts: ['Plátano', 'Manzana', 'Naranja'], a: 1, hint: 'Una fruta roja o verde muy sabrosa.' },
-      { id: 16, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Hermano" en inglés?', opts: ['Sister', 'Brother', 'Father'], a: 1, hint: 'Comienza con la letra B.' },
+      // INGLÉS
+      { id: 11, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice el color "Rojo" en inglés?', opts: ['Blue', 'Red', 'Yellow'], a: 1, hint: 'Empieza con la letra R.' },
+      { id: 12, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Gato" en inglés?', opts: ['Dog', 'Cat', 'Bird'], a: 1, hint: 'Hace "miau" y empieza con C.' },
+      { id: 13, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice el número "Uno" en inglés?', opts: ['One', 'Two', 'Three'], a: 0, hint: 'Suena parecido a "úan".' },
 
-      // MÚSICA (mus)
-      { id: 17, cat: 'mus', name: 'Música', q: '¿Cuál de estos es un instrumento de viento?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas soplar aire para que suene.' },
-      { id: 18, cat: 'mus', name: 'Música', q: '¿Cuántas notas musicales tiene la escala básica (Do, Re, Mi...)?', opts: ['5', '7', '10'], a: 1, hint: 'Do, Re, Mi, Fa, Sol, La, Si.' }
+      // MÚSICA
+      { id: 14, cat: 'mus', name: 'Música', q: '¿Cuál de estos instrumentos se toca golpeándolo con las manos o baquetas?', opts: ['La Flauta', 'El Tambor', 'La Guitarra'], a: 1, hint: 'Produce sonido de percusión al golpearlo.' },
+      { id: 15, cat: 'mus', name: 'Música', q: '¿Qué nota musical viene después de "Do, Re"?', opts: ['Mi', 'Sol', 'Fa'], a: 0, hint: 'Empieza con la letra M.' },
+
+      // CULTURA E IMÁGENES (Reconocimiento visual simple para 8 años)
+      { id: 16, cat: 'cultura', name: 'Cultura e Imágenes', img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400', q: '¿Cómo se llaman estas famosas estatuas gigantes de piedra de Chile?', opts: ['Moáis', 'Castillos', 'Muñecos'], a: 0, hint: 'Están en Isla de Pascua (Rapa Nui).' },
+      { id: 17, cat: 'cultura', name: 'Cultura e Imágenes', img: 'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=400', q: '¿En qué país está esta famosa Torre Eiffel?', opts: ['Chile', 'Francia', 'España'], a: 1, hint: 'Su capital es París.' }
     ];
 
     const jokeBank = [
@@ -236,23 +235,23 @@
     ];
 
     const riddleBank = [
-      { q: 'Tiene corteza pero no es árbol, tiene corazón pero no late... ¿Qué es?', opts: ['La Manzana', 'La Piedra', 'La Pelota'], a: 0, hint: 'Es una fruta roja y sabrosa.' },
-      { q: 'Salgo por las mañanas y doy luz y calor... ¿Quién soy?', opts: ['El Sol', 'La Luna', 'Un Farol'], a: 0, hint: 'Está en el centro del sistema solar.' }
+      { q: 'Tiene hojas pero no es árbol, tiene lomo pero no es animal... ¿Qué es?', opts: ['El Libro', 'La Mesa', 'El Zapato'], a: 0, hint: 'Te sirve para leer historias.' },
+      { q: 'Salgo por las mañanas y doy luz y calor... ¿Quién soy?', opts: ['El Sol', 'La Luna', 'Un Farol'], a: 0, hint: 'Está en el cielo y brilla mucho de día.' }
     ];
 
     const playerColors = ['#E74C3C', '#3498DB', '#2ECC71', '#F39C12', '#9B59B6'];
 
-    // Estado del Juego y Registro de Preguntas Utilizadas (Cero Repetición)
     let players = [
       { id: 1, name: "Leonor", pos: 0, color: '#E74C3C' },
       { id: 2, name: "Papá", pos: 0, color: '#3498DB' }
     ];
     let currentPlayerIndex = 0;
     let globalStars = 0;
-    let usedQuestionIds = []; // Mazo Global de Descarte
+    let usedQuestionIds = [];
     let currentItem = null;
     const totalCells = 24;
 
+    // Tablero con categorías EXACTAS sincronizadas con las preguntas
     const cellsConfig = [
       { type: 'start', label: 'Inicio', icon: '🏁' },
       { type: 'math', label: 'Mates', icon: '🔢' },
@@ -263,7 +262,7 @@
       { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
       { type: 'mus', label: 'Música', icon: '🎵' },
       { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'cultura', label: 'Cultura', icon: '🗿' },
       { type: 'sci', label: 'Ciencias', icon: '🌿' },
       { type: 'lang', label: 'Lenguaje', icon: '📖' },
       { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
@@ -271,9 +270,9 @@
       { type: 'mus', label: 'Música', icon: '🎵' },
       { type: 'joke', label: 'Chiste', icon: '🤡' },
       { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'cultura', label: 'Cultura', icon: '🗿' },
       { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
       { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
       { type: 'mus', label: 'Música', icon: '🎵' },
       { type: 'joke', label: 'Chiste', icon: '🤡' },
@@ -321,7 +320,7 @@
       players.forEach(p => p.pos = 0);
       currentPlayerIndex = 0;
       globalStars = 0;
-      usedQuestionIds = []; // Reiniciar preguntas descartadas para la nueva partida
+      usedQuestionIds = [];
       document.getElementById('globalStars').innerText = `🌟 0`;
       
       buildBoard();
@@ -409,22 +408,19 @@
         currentItem = riddleBank[Math.floor(Math.random() * riddleBank.length)];
         setupQuizOptions(currentItem);
       } else {
-        // FILTRAR ESTRICTAMENTE POR LA CATEGORÍA DE LA CASILLA
+        // FILTRADO ESTRICTO Y SIN REPETICIÓN POR CATEGORÍA DE CASILLA
         let availableQuestions = masterQuestionBank.filter(q => q.cat === cell.type && !usedQuestionIds.includes(q.id));
 
-        // Si se agotan las de esa categoría, permitir reutilizar de esa materia
         if (availableQuestions.length === 0) {
           availableQuestions = masterQuestionBank.filter(q => q.cat === cell.type);
         }
 
-        // Selección Aleatoria dentro del filtro de la asignatura
         currentItem = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
-        usedQuestionIds.push(currentItem.id); // Guardar en descarte global
+        usedQuestionIds.push(currentItem.id);
 
         tag.innerText = currentItem.name;
         tag.style.background = '#2B72C8';
 
-        // Mostrar Imagen si la pregunta la incluye
         if (currentItem.img) {
           qImg.src = currentItem.img;
           qImg.classList.remove('hidden');
@@ -464,7 +460,7 @@
           closeModal();
         }, 1200);
       } else {
-        owlMsg.innerText = '¡Casi lo logras! Puedes usar la pista 💡 o intentarlo de nuevo.';
+        owlMsg.innerText = '¡Casi! Lee bien la pista o intenta con otra opción.🦉';
       }
     }
 
@@ -472,7 +468,7 @@
       const owlBox = document.getElementById('owlGuideBox');
       const owlMsg = document.getElementById('owlMessage');
       owlBox.classList.remove('hidden');
-      owlMsg.innerText = currentItem.hint || '¡Piensa en lo que has aprendido!';
+      owlMsg.innerText = currentItem.hint || '¡Fíjate bien en las alternativas!';
     }
 
     function speakCurrentText() {
@@ -524,6 +520,7 @@
         document.getElementById('tabSubjects').classList.remove('hidden');
         document.querySelectorAll('.nav-item')[1].classList.add('active');
       } else if (tabName === 'settings') {
+        document.getElementById('tabSettings').classList.add('hidden'); // Corregido
         document.getElementById('tabSettings').classList.remove('hidden');
         document.querySelectorAll('.nav-item')[2].classList.add('active');
       } else if (tabName === 'setup') {
