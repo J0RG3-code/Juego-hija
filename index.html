@@ -72,10 +72,12 @@
     .dice-panel { background: white; width: 100%; max-width: 450px; border-radius: 18px; padding: 12px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: auto; }
     .dice-display { font-size: 2.2rem; margin: 4px 0; }
 
-    /* Modal Emergente */
+    /* Modal Emergente e Imágenes */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 100; }
     .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 20px; padding: 18px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
     
+    .question-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 12px; margin: 10px 0; border: 2px solid #E2E8F0; }
+
     .owl-guide { display: flex; align-items: center; gap: 8px; background: #F8F9FA; padding: 8px 12px; border-radius: 10px; margin-top: 10px; text-align: left; }
     .owl-guide span { font-size: 1.5rem; }
     .owl-guide p { margin: 0; font-size: 0.8rem; color: #555; font-weight: 600; }
@@ -113,14 +115,6 @@
         </div>
       </div>
 
-      <div class="option-group">
-        <label>2. Modo de Juego:</label>
-        <select id="gameModeSelect" style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.9rem;">
-          <option value="classic">🗺️ Modo Clásico (Avance por Dado)</option>
-          <option value="subject_dice">🎲 Dado de Materia (Elección Aleatoria)</option>
-        </select>
-      </div>
-
       <button onclick="startAdventure()">¡Comenzar Aventura! 🚀</button>
     </div>
 
@@ -138,11 +132,12 @@
     <!-- Pantalla de Progreso / Asignaturas -->
     <div id="tabSubjects" class="setup-card hidden">
       <h3>📊 Tu Progreso Educativo</h3>
-      <p style="font-size: 0.85rem; color: #64748B;">Mapeo del programa escolar chileno de 3° Básico:</p>
+      <p style="font-size: 0.85rem; color: #64748B;">Mapeo del programa escolar chileno de 3° Básico y Cultura General:</p>
       <div id="subjectsList">
-        <p>🔢 <b>Matemáticas:</b> Tablas, Sumas y Monedas</p>
-        <p>📖 <b>Lenguaje:</b> Sinónimos, Sustantivos y Ortografía</p>
-        <p>🌿 <b>Ciencias:</b> Flora, Fauna de Chile y Ecosistemas</p>
+        <p>🔢 <b>Matemáticas:</b> Tablas, Sumas, Monedas y Geometría</p>
+        <p>📖 <b>Lenguaje:</b> Sinónimos, Sustantivos y Comprensión</p>
+        <p>🌿 <b>Ciencias y Chile:</b> Flora, Fauna y Monumentos Nacionales</p>
+        <p>🗿 <b>Cultura General e Imágenes:</b> Símbolos del mundo y Tradiciones</p>
         <p>🇬🇧 <b>Inglés:</b> Vocabulario Básico y Colores</p>
         <p>🎵 <b>Música:</b> Instrumentos y Ritmos</p>
       </div>
@@ -162,6 +157,10 @@
   <div id="questionModal" class="modal-overlay hidden">
     <div class="modal-card">
       <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase;">MATERIA</span>
+      
+      <!-- Contenedor de Imagen de Reconocimiento -->
+      <img id="questionImage" class="question-img hidden" src="" alt="Imagen de referencia">
+
       <h3 id="modalQuestion" style="color: #1E293B; margin: 12px 0; font-size: 1rem;">¿Pregunta?</h3>
 
       <div id="quizOptions" style="display: flex; flex-direction: column;"></div>
@@ -199,16 +198,35 @@
   </div>
 
   <script>
-    // Banco Amplio de Preguntas
-    const questionBank = [
-      { cat: 'math', name: 'Matemáticas', icon: '🔢', q: '¿Cuánto es 8 x 5?', opts: ['35', '40', '45'], a: 1, hint: 'Cuenta de 5 en 5 ocho veces.' },
-      { cat: 'math', name: 'Matemáticas', icon: '🔢', q: 'Si tienes 4 monedas de $100, ¿cuánto dinero suma?', opts: ['$300', '$400', '$500'], a: 1, hint: 'Suma 100 cuatro veces.' },
-      { cat: 'lang', name: 'Lenguaje', icon: '📖', q: '¿Cuál es el antónimo de "Gigante"?', opts: ['Enorme', 'Pequeño', 'Alto'], a: 1, hint: 'Es lo contrario a algo muy grande.' },
-      { cat: 'lang', name: 'Lenguaje', icon: '📖', q: 'En la oración "El gato blanco salta", ¿cuál es el sustantivo?', opts: ['Gato', 'Blanco', 'Salta'], a: 0, hint: 'Es el animal de quien se habla.' },
-      { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Cuál es el árbol nativo chileno que vive miles de años en el sur?', opts: ['Pino', 'Alerce', 'Eucalipto'], a: 1, hint: 'Crece muy lento en los bosques fríos.' },
-      { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Qué necesitan las plantas para vivir?', opts: ['Sol y Agua', 'Jugo y Leche', 'Sombras'], a: 0, hint: 'Viene del cielo y de la tierra.' },
-      { cat: 'eng', name: 'Inglés', icon: '🇬🇧', q: '¿Cómo se dice "Red" en español?', opts: ['Verde', 'Rojo', 'Azul'], a: 1, hint: 'Es el color del copihue.' },
-      { cat: 'mus', name: 'Música', icon: '🎵', q: '¿Cuál de estos es un instrumento de viento?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas soplar aire para que suene.' }
+    // Banco Ampliado de Preguntas con Identificación por Categoría e Imágenes
+    const masterQuestionBank = [
+      // MATEMÁTICAS (math)
+      { id: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 8 x 5?', opts: ['35', '40', '45'], a: 1, hint: 'Cuenta de 5 en 5 ocho veces.' },
+      { id: 2, cat: 'math', name: 'Matemáticas', q: 'Si tienes 4 monedas de $100, ¿cuánto dinero suma?', opts: ['$300', '$400', '$500'], a: 1, hint: 'Suma 100 cuatro veces.' },
+      { id: 3, cat: 'math', name: 'Matemáticas', q: '¿Cuál es el doble de 15?', opts: ['25', '30', '35'], a: 1, hint: 'Suma 15 + 15.' },
+      { id: 4, cat: 'math', name: 'Matemáticas', q: '¿Cuántos lados tiene un triángulo?', opts: ['3', '4', '5'], a: 0, hint: 'Cuenta sus esquinas.' },
+
+      // LENGUAJE (lang)
+      { id: 5, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el antónimo de "Gigante"?', opts: ['Enorme', 'Pequeño', 'Alto'], a: 1, hint: 'Es lo contrario a algo muy grande.' },
+      { id: 6, cat: 'lang', name: 'Lenguaje', q: 'En la oración "El gato blanco salta", ¿cuál es el sustantivo?', opts: ['Gato', 'Blanco', 'Salta'], a: 0, hint: 'Es el animal de quien se habla.' },
+      { id: 7, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el sinónimo de la palabra "Nido"?', opts: ['Casa de ave', 'Árbol', 'Huevo'], a: 0, hint: 'Es el lugar donde viven las aves.' },
+      { id: 8, cat: 'lang', name: 'Lenguaje', q: '¿Qué tipo de palabra es "Rápido"?', opts: ['Sustantivo', 'Adjetivo', 'Verbo'], a: 1, hint: 'Nos dice CÓMO es una cosa o persona.' },
+
+      // CIENCIAS Y RECONOCIMIENTO VISUAL DE CULTURA (sci)
+      { id: 9, cat: 'sci', name: 'Ciencias y Cultura', img: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=400', q: '¿Qué escultura gigante de Isla de Pascua es esta?', opts: ['Moái', 'Pirámide', 'Estatua de la Libertad'], a: 0, hint: 'Están esculpidas en piedra en Rapa Nui.' },
+      { id: 10, cat: 'sci', name: 'Ciencias y Cultura', img: 'https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=400', q: '¿En qué ciudad del mundo se encuentra esta famosa Torre Eiffel?', opts: ['Santiago', 'París', 'Londres'], a: 1, hint: 'Es la capital de Francia.' },
+      { id: 11, cat: 'sci', name: 'Ciencias y Cultura', q: '¿Cuál es el baile nacional de Chile?', opts: ['Tango', 'Cueca', 'Cumbia'], a: 1, hint: 'Se baila con un pañuelo blanco en la mano.' },
+      { id: 12, cat: 'sci', name: 'Ciencias y Cultura', img: 'https://images.unsplash.com/photo-1534188753412-3e26d0d618d6?w=400', q: '¿Qué animal nativo chileno es este?', opts: ['Puma', 'Huemul', 'Zorro Culpeo'], a: 0, hint: 'Es el felino más grande de Chile.' },
+      { id: 13, cat: 'sci', name: 'Ciencias', q: '¿Qué necesitan las plantas para hacer fotosíntesis?', opts: ['Sol y Agua', 'Jugo y Leche', 'Sombras'], a: 0, hint: 'Viene del cielo y de la tierra.' },
+
+      // INGLÉS (eng)
+      { id: 14, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Red" en español?', opts: ['Verde', 'Rojo', 'Azul'], a: 1, hint: 'Es el color del copihue.' },
+      { id: 15, cat: 'eng', name: 'Inglés', q: '¿Qué significa la palabra "Apple"?', opts: ['Plátano', 'Manzana', 'Naranja'], a: 1, hint: 'Una fruta roja o verde muy sabrosa.' },
+      { id: 16, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Hermano" en inglés?', opts: ['Sister', 'Brother', 'Father'], a: 1, hint: 'Comienza con la letra B.' },
+
+      // MÚSICA (mus)
+      { id: 17, cat: 'mus', name: 'Música', q: '¿Cuál de estos es un instrumento de viento?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas soplar aire para que suene.' },
+      { id: 18, cat: 'mus', name: 'Música', q: '¿Cuántas notas musicales tiene la escala básica (Do, Re, Mi...)?', opts: ['5', '7', '10'], a: 1, hint: 'Do, Re, Mi, Fa, Sol, La, Si.' }
     ];
 
     const jokeBank = [
@@ -222,21 +240,19 @@
       { q: 'Salgo por las mañanas y doy luz y calor... ¿Quién soy?', opts: ['El Sol', 'La Luna', 'Un Farol'], a: 0, hint: 'Está en el centro del sistema solar.' }
     ];
 
-    // Colores para avatares
     const playerColors = ['#E74C3C', '#3498DB', '#2ECC71', '#F39C12', '#9B59B6'];
 
-    // Estado del Juego
+    // Estado del Juego y Registro de Preguntas Utilizadas (Cero Repetición)
     let players = [
       { id: 1, name: "Leonor", pos: 0, color: '#E74C3C' },
       { id: 2, name: "Papá", pos: 0, color: '#3498DB' }
     ];
     let currentPlayerIndex = 0;
     let globalStars = 0;
-    let currentMazo = [];
+    let usedQuestionIds = []; // Mazo Global de Descarte
     let currentItem = null;
-    const totalCells = 24; // Tablero Extendido
+    const totalCells = 24;
 
-    // Tablero de 24 Casillas
     const cellsConfig = [
       { type: 'start', label: 'Inicio', icon: '🏁' },
       { type: 'math', label: 'Mates', icon: '🔢' },
@@ -264,7 +280,6 @@
       { type: 'goal', label: 'Meta', icon: '🏆' }
     ];
 
-    // Inicializar Vista de Integrantes
     renderPlayersList();
 
     function renderPlayersList() {
@@ -306,16 +321,12 @@
       players.forEach(p => p.pos = 0);
       currentPlayerIndex = 0;
       globalStars = 0;
+      usedQuestionIds = []; // Reiniciar preguntas descartadas para la nueva partida
       document.getElementById('globalStars').innerText = `🌟 0`;
       
-      initMazo();
       buildBoard();
       updateTurnStatus();
       switchTab('board');
-    }
-
-    function initMazo() {
-      currentMazo = [...questionBank].sort(() => Math.random() - 0.5);
     }
 
     function buildBoard() {
@@ -326,14 +337,12 @@
         const div = document.createElement('div');
         let classes = 'cell';
         
-        // Determinar si hay algún jugador activo en esta casilla
         const isCurrentPlayerHere = players[currentPlayerIndex].pos === idx;
         if (isCurrentPlayerHere) classes += ' active-cell';
 
         div.className = classes;
         div.innerHTML = `<span class="cell-icon">${cell.icon}</span><span>${cell.label}</span>`;
 
-        // Renderizar fichas de jugadores en esta casilla
         const playersHere = players.filter(p => p.pos === idx);
         if (playersHere.length > 0) {
           const tokensDiv = document.createElement('div');
@@ -378,9 +387,11 @@
       const modal = document.getElementById('questionModal');
       const tag = document.getElementById('subjectTag');
       const qText = document.getElementById('modalQuestion');
+      const qImg = document.getElementById('questionImage');
       const optsContainer = document.getElementById('quizOptions');
 
       optsContainer.innerHTML = '';
+      qImg.classList.add('hidden');
       document.getElementById('owlGuideBox').classList.add('hidden');
       document.getElementById('closeModalBtn').classList.add('hidden');
 
@@ -398,11 +409,27 @@
         currentItem = riddleBank[Math.floor(Math.random() * riddleBank.length)];
         setupQuizOptions(currentItem);
       } else {
-        if (currentMazo.length === 0) initMazo();
-        currentItem = currentMazo.pop();
-        
+        // FILTRAR ESTRICTAMENTE POR LA CATEGORÍA DE LA CASILLA
+        let availableQuestions = masterQuestionBank.filter(q => q.cat === cell.type && !usedQuestionIds.includes(q.id));
+
+        // Si se agotan las de esa categoría, permitir reutilizar de esa materia
+        if (availableQuestions.length === 0) {
+          availableQuestions = masterQuestionBank.filter(q => q.cat === cell.type);
+        }
+
+        // Selección Aleatoria dentro del filtro de la asignatura
+        currentItem = availableQuestions[Math.floor(Math.random() * availableQuestions.length)];
+        usedQuestionIds.push(currentItem.id); // Guardar en descarte global
+
         tag.innerText = currentItem.name;
         tag.style.background = '#2B72C8';
+
+        // Mostrar Imagen si la pregunta la incluye
+        if (currentItem.img) {
+          qImg.src = currentItem.img;
+          qImg.classList.remove('hidden');
+        }
+
         setupQuizOptions(currentItem);
       }
 
@@ -464,13 +491,11 @@
       document.getElementById('questionModal').classList.add('hidden');
       document.getElementById('rollBtn').disabled = false;
 
-      // Verificar si alguien llegó a la Meta
       let winner = players.find(p => p.pos === totalCells - 1);
       if (winner) {
         document.getElementById('victoryText').innerText = `🎉 ¡${winner.name} ha llegado a la Meta del Mapa Mágico! 🎉`;
         document.getElementById('victoryModal').classList.remove('hidden');
       } else {
-        // Siguiente turno
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
         updateTurnStatus();
         buildBoard();
@@ -508,4 +533,3 @@
   </script>
 </body>
 </html>
-
