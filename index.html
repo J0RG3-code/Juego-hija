@@ -41,8 +41,8 @@
     .btn-header { background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
     .stars-count { background: #fef3c7; color: #b45309; padding: 5px 12px; border-radius: 16px; font-weight: 900; font-size: 0.85rem; }
 
-    /* Área Principal Única */
-    .main-content { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-bottom: 70px; }
+    /* Área Principal */
+    .main-content { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-bottom: 80px; }
 
     /* Barra de Navegación Inferior Fija */
     .nav-bar {
@@ -53,11 +53,11 @@
       z-index: 100;
       box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
     }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: #64748b; font-weight: 800; cursor: pointer; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: #64748b; font-weight: 800; cursor: pointer; width: 33%; }
     .nav-item.active { color: var(--primary); }
-    .nav-item span { font-size: 1.2rem; margin-bottom: 2px; }
+    .nav-item span { font-size: 1.3rem; margin-bottom: 2px; }
 
-    /* Tarjetas Generales aisladas */
+    /* Vistas aisladas */
     .view-panel { width: 100%; max-width: 450px; display: flex; flex-direction: column; align-items: center; }
     
     .glass-card {
@@ -82,15 +82,37 @@
     .btn-success { background: var(--success); }
     .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
 
-    /* Tablero Extendido */
+    /* Tablero Temático Animado */
     .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 12px; }
-    .cell { aspect-ratio: 1; background: white; border-radius: 14px; border: 2px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: 800; font-size: 0.75rem; text-align: center; }
-    .cell.active-cell { border-color: var(--secondary); background: #FFF9E6; border-width: 3px; }
+    .cell {
+      aspect-ratio: 1; background: #f8fafc; border-radius: 16px; border: 2px solid #cbd5e1;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      position: relative; font-weight: 800; font-size: 0.75rem; text-align: center; color: #334155;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+    }
+    .cell.active-cell { border-color: var(--secondary); background: #fff7ed; border-width: 3px; animation: pulse 1.5s infinite; }
+    .cell-icon { font-size: 1.2rem; margin-bottom: 2px; }
 
-    .tokens-container { display: flex; gap: 2px; position: absolute; bottom: 2px; justify-content: center; width: 100%; }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0.6); }
+      70% { box-shadow: 0 0 0 8px rgba(255, 144, 41, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0); }
+    }
+
+    /* Dado Animado Rebote */
+    .dice-box { font-size: 3rem; margin: 8px 0; transition: transform 0.1s; display: inline-block; }
+    .dice-rolling { animation: rollAndBounce 0.6s ease-in-out infinite alternate; }
+
+    @keyframes rollAndBounce {
+      0% { transform: translateY(0) rotate(0deg) scale(1); }
+      50% { transform: translateY(-18px) rotate(180deg) scale(1.15); }
+      100% { transform: translateY(0) rotate(360deg) scale(1); }
+    }
+
+    .tokens-container { display: flex; gap: 2px; position: absolute; bottom: 3px; justify-content: center; width: 100%; }
     .player-avatar { width: 16px; height: 16px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; border: 1.5px solid white; font-weight: 900; }
 
-    /* Rompecabezas */
+    /* Rompecabezas Gráfico */
     .puzzle-category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; width: 100%; }
     .puzzle-cat-btn { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 12px; text-align: center; font-weight: 800; color: #1e293b; cursor: pointer; }
     .puzzle-cat-btn.selected { border-color: var(--primary); background: #eff6ff; }
@@ -100,11 +122,19 @@
     .dino-item.selected { background: #dbeafe; border-color: #3b82f6; color: #1e40af; }
 
     .puzzle-board {
-      width: 100%; max-width: 320px; aspect-ratio: 1;
-      background: #f1f5f9; border-radius: 16px; border: 3px dashed #cbd5e1;
-      margin: 10px auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; position: relative; overflow: hidden; padding: 4px;
+      width: 100%; max-width: 330px; aspect-ratio: 1;
+      background: #e2e8f0; border-radius: 16px; border: 3px dashed #94a3b8;
+      margin: 10px auto; display: grid; gap: 3px; position: relative; overflow: hidden; padding: 4px;
     }
-    .puzzle-piece-slot { background: white; border: 1px solid #cbd5e1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
+    .puzzle-piece-slot {
+      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: #475569;
+    }
+
+    /* Búho Guía */
+    .owl-box { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: 12px; margin-top: 10px; text-align: left; }
+    .owl-box span { font-size: 1.8rem; }
+    .owl-box p { margin: 0; font-size: 0.85rem; font-weight: 700; color: #166534; }
 
     /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 200; }
@@ -129,7 +159,7 @@
     </div>
   </div>
 
-  <!-- Contenido Principal (Un solo panel visible a la vez) -->
+  <!-- Contenido Principal -->
   <div class="main-content">
 
     <!-- 1. MENÚ PRINCIPAL (HUB) -->
@@ -141,12 +171,12 @@
 
       <div class="game-card" onclick="showView('setup')">
         <div class="game-card-title">🗺️ La Aventura del Mapa Mágico</div>
-        <div class="game-card-desc">Lanza el dado, avanza por el mapa y responde preguntas escolares de 1° a 5° básico.</div>
+        <div class="game-card-desc">Lanza el dado con animación, avanza por el mapa y responde preguntas escolares de 1° a 5° básico.</div>
       </div>
 
       <div class="game-card" onclick="showView('puzzleSelect')">
         <div class="game-card-title">🧩 El Rincón del Rompecabezas</div>
-        <div class="game-card-desc">Arma rompecabezas jurásicos, marinos con tiburón, el universo y profesiones.</div>
+        <div class="game-card-desc">Arma rompecabezas de 48 a 500 piezas de dinosaurios, marinos, el universo y profesiones.</div>
       </div>
 
       <div class="game-card" onclick="alert('🔤 Próximamente: El Desafío de Palabras')">
@@ -183,7 +213,7 @@
       </div>
     </div>
 
-    <!-- 3. TABLERO DE JUEGO (MAPA) -->
+    <!-- 3. TABLERO DE JUEGO (MAPA MÁGICO) -->
     <div id="viewBoard" class="view-panel hidden">
       <div style="width: 100%; display:flex; justify-content:space-between; margin-bottom:8px;">
         <button class="btn-outline" onclick="showView('setup')" style="width:auto; padding:6px 12px; font-size:0.8rem; background:white;">⬅️ Configurar</button>
@@ -194,7 +224,7 @@
 
       <div class="glass-card" style="text-align: center; margin-top: auto;">
         <div id="turnStatus" style="font-weight: 900; color: #334155;">Turno de Leonor</div>
-        <div style="font-size: 2.2rem; margin: 4px 0;" id="diceVisual">🎲</div>
+        <div class="dice-box" id="diceVisual">🎲</div>
         <button class="btn-secondary" id="rollBtn" onclick="handleRoll()">¡Lanzar Dado!</button>
       </div>
     </div>
@@ -207,7 +237,7 @@
         
         <label><b>1. Selecciona la Categoría:</b></label>
         <div class="puzzle-category-grid">
-          <div class="puzzle-cat-btn selected" onclick="selectPuzzleCat('dino', this)">🦖 Dinosaurios</div>
+          <div class="puzzle-cat-btn selected" onclick="selectPuzzleCat('dino', this)">REX Dinosaurios</div>
           <div class="puzzle-cat-btn" onclick="selectPuzzleCat('sea', this)">🦈 Marinos y Tiburón</div>
           <div class="puzzle-cat-btn" onclick="selectPuzzleCat('space', this)">🌌 El Universo</div>
           <div class="puzzle-cat-btn" onclick="selectPuzzleCat('jobs', this)">👨‍🚒 Profesiones</div>
@@ -240,7 +270,7 @@
         </div>
 
         <h3 id="puzzleTitle">🦖 Tiranosaurio Rex</h3>
-        <p id="puzzleDinoInfo" style="font-size:0.85rem; color:#475569; font-weight:700;">¡Escucha con voz divertida y arma la imagen!</p>
+        <p id="puzzleDinoInfo" style="font-size:0.85rem; color:#475569; font-weight:700;">¡Escucha con voz de Minion y arma las piezas!</p>
         
         <div style="display:flex; gap:6px; margin-bottom:8px;">
           <button onclick="speakMinionVoice()" style="background:#64748b; flex:1;">🍌 Voz Minion</button>
@@ -255,14 +285,22 @@
 
   </div>
 
-  <!-- Modal de Preguntas -->
+  <!-- Modal de Preguntas con Búho Guía -->
   <div id="questionModal" class="modal-overlay hidden">
     <div class="modal-card">
       <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 900;">MATERIA</span>
       <h3 id="modalQuestion" style="color: #1e293b; margin: 12px 0; font-size: 0.95rem;">¿Pregunta?</h3>
+      
       <div id="quizOptions" style="display: flex; flex-direction: column; gap: 6px;"></div>
 
-      <button onclick="speakMinionVoice(currentQuestionText)" style="margin-top: 8px; background: #64748b; font-size: 0.85rem;">🍌 Escuchar Voz Minion</button>
+      <button onclick="speakMinionVoice(currentQuestionText)" style="margin-top: 8px; background: #64748b; font-size: 0.85rem;">🍌 Escuchar Pregunta Minion</button>
+      <button onclick="showOwlHint()" style="margin-top: 6px; background: #f59e0b; font-size: 0.85rem;">💡 Pedir Pista al Búho Sabio</button>
+
+      <!-- Guía del Búho -->
+      <div id="owlGuideBox" class="owl-box hidden">
+        <span>🦉</span>
+        <p id="owlMessage">¡Hola! Te ayudaré con una pista.</p>
+      </div>
 
       <button id="closeModalBtn" onclick="closeModal()" class="hidden btn-success" style="margin-top: 10px;">Continuar ➔</button>
     </div>
@@ -276,12 +314,9 @@
   </div>
 
   <script>
-    // CONTROL ÚNICO Y ESTRICTO DE PANTALLAS (Evita mezclar vistas)
+    // NAVEGACIÓN ÚNICA
     function showView(viewId) {
-      // Detener música de fondo al cambiar
       stopAllMusic();
-
-      // Ocultar todas las pantallas
       document.querySelectorAll('.view-panel').forEach(panel => panel.classList.add('hidden'));
       document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
 
@@ -305,7 +340,6 @@
       }
     }
 
-    // CONTROL DE MÚSICA REAL MP3
     function stopAllMusic() {
       ['audioJumanji', 'audioShark', 'audioJurassic'].forEach(id => {
         const audio = document.getElementById(id);
@@ -316,20 +350,19 @@
     function playMusic(id) {
       stopAllMusic();
       const audio = document.getElementById(id);
-      if (audio) {
-        audio.play().catch(e => console.log("Audio esperando interacción"));
-      }
+      if (audio) { audio.play().catch(e => console.log("Esperando clic de usuario")); }
     }
 
-    // VOZ TIPO MINION (Sintetizador Agudo y Rápido)
+    // VOZ TIPO MINION COMICA
     function speakMinionVoice(textToSpeak) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const text = textToSpeak || (currentItemData ? `${currentItemData.name}. ${currentItemData.info}` : '¡Hola!');
-        const utterance = new SpeechSynthesisUtterance(text);
+        const baseText = textToSpeak || (currentItemData ? `${currentItemData.name}. ${currentItemData.info}` : '¡Banana! ¡Bello!');
+        const minionText = `¡Bello! Banana... ${baseText}`;
+        const utterance = new SpeechSynthesisUtterance(minionText);
         utterance.lang = 'es-CL';
-        utterance.pitch = 1.8; // Voz aguda chistosa Minion
-        utterance.rate = 1.2;  // Habla rápida Minion
+        utterance.pitch = 1.9;
+        utterance.rate = 1.25;
         window.speechSynthesis.speak(utterance);
       }
     }
@@ -342,19 +375,63 @@
     let selectedDinoIndex = 0;
     let currentPuzzlePieces = 48;
     let currentItemData = null;
+    let currentQuestionItem = null;
     let currentQuestionText = "";
+    let usedQuestionIds = [];
     const totalCells = 32;
 
+    // CONFIGURACIÓN DE CASILLAS CON ICONOS TEMÁTICOS
+    const cellsConfig = [
+      { type: 'start', label: 'Inicio', icon: '🏁' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'cultura', label: 'Cultura', icon: '🗿' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'cultura', label: 'Cultura', icon: '🗿' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'cultura', label: 'Cultura', icon: '🗿' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'goal', label: 'Meta', icon: '🏆' }
+    ];
+
     const dinosData = [
-      { name: 'Tiranosaurio Rex', icon: '🦖', info: '¡El rey carnívoro! Tenía dientes enormes de 30 centímetros.' },
-      { name: 'Brachiosaurio', icon: '🦕', info: '¡Un gigante de cuello largo que comía las copas de los árboles altos!' },
+      { name: 'Tiranosaurio Rex', icon: '🦖', info: '¡El rey carnívoro! Tenía dientes de 30 centímetros.' },
+      { name: 'Brachiosaurio', icon: '🦕', info: '¡Un gigante de cuello largo que comía de los árboles altos!' },
       { name: 'Velociraptor', icon: '🌾', info: '¡Súper rápido y cazaba en manadas!' },
       { name: 'Triceratops', icon: '🛡️', info: '¡Tenía tres cuernos para defenderse!' }
     ];
 
+    // BANCO AMPLIO DE PREGUNTAS
     const masterQuestionBank = [
-      { cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 5 + 3?', opts: ['7', '8', '9'], a: 1 },
-      { cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el antónimo de "Luz"?', opts: ['Sol', 'Sombra', 'Brillo'], a: 1 }
+      { id: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 5 + 3?', opts: ['7', '8', '9'], a: 1, hint: 'Comienza en el 5 y suma 3.' },
+      { id: 2, cat: 'math', name: 'Matemáticas', q: 'Si tienes 2 monedas de $100, ¿cuánto es?', opts: ['$100', '$200', '$300'], a: 1, hint: 'Suma 100 + 100.' },
+      { id: 3, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el antónimo de "Luz"?', opts: ['Sol', 'Sombra', 'Brillo'], a: 1, hint: 'Empieza con la letra S.' },
+      { id: 4, cat: 'lang', name: 'Lenguaje', q: 'En la oración "El gato salta", ¿cuál es el verbo?', opts: ['Gato', 'Salta', 'El'], a: 1, hint: 'Es la acción de saltar.' },
+      { id: 5, cat: 'sci', name: 'Ciencias', q: '¿Qué gas respiran los seres humanos?', opts: ['Oxígeno', 'Agua', 'Humo'], a: 0, hint: 'Empieza con la letra O.' },
+      { id: 6, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Rojo" en inglés?', opts: ['Blue', 'Red', 'Yellow'], a: 1, hint: 'Empieza con R.' },
+      { id: 7, cat: 'mus', name: 'Música', q: '¿Qué instrumento se toca soplando?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas aire para hacerla sonar.' }
     ];
 
     function renderPlayersList() {
@@ -385,6 +462,7 @@
     }
 
     function startAdventure() {
+      usedQuestionIds = [];
       showView('board');
       buildBoard();
       updateTurnStatus();
@@ -393,12 +471,12 @@
     function buildBoard() {
       const grid = document.getElementById('boardGrid');
       grid.innerHTML = '';
-      for (let i = 0; i < totalCells; i++) {
+      cellsConfig.forEach((cell, idx) => {
         const div = document.createElement('div');
-        div.className = `cell ${players[currentPlayerIndex].pos === i ? 'active-cell' : ''}`;
-        div.innerHTML = `<span>${i === 0 ? '🏁' : i === totalCells - 1 ? '🏆' : i}</span>`;
+        div.className = `cell ${players[currentPlayerIndex].pos === idx ? 'active-cell' : ''}`;
+        div.innerHTML = `<span class="cell-icon">${cell.icon}</span><span>${cell.label}</span>`;
         
-        const playersHere = players.filter(p => p.pos === i);
+        const playersHere = players.filter(p => p.pos === idx);
         if (playersHere.length > 0) {
           const tContainer = document.createElement('div');
           tContainer.className = 'tokens-container';
@@ -412,7 +490,7 @@
           div.appendChild(tContainer);
         }
         grid.appendChild(div);
-      }
+      });
     }
 
     function updateTurnStatus() {
@@ -420,47 +498,73 @@
     }
 
     function handleRoll() {
-      const diceValue = Math.floor(Math.random() * 3) + 1;
-      document.getElementById('diceVisual').innerText = ['🎲', '⚀', '⚁', '⚂'][diceValue];
+      const diceBtn = document.getElementById('rollBtn');
+      const diceEl = document.getElementById('diceVisual');
+      diceBtn.disabled = true;
+      
+      // Animación de rebote del dado
+      diceEl.classList.add('dice-rolling');
 
-      let p = players[currentPlayerIndex];
-      p.pos = Math.min(p.pos + diceValue, totalCells - 1);
-      buildBoard();
+      setTimeout(() => {
+        diceEl.classList.remove('dice-rolling');
+        const diceValue = Math.floor(Math.random() * 3) + 1;
+        diceEl.innerText = ['🎲', '⚀', '⚁', '⚂'][diceValue];
 
-      if (p.pos === totalCells - 1) {
-        alert(`🎉 ¡${p.name} llegó a la Meta y gana el juego! 🎉`);
-        showView('hub');
-      } else {
-        setTimeout(() => triggerCellEvent(), 400);
-      }
+        let p = players[currentPlayerIndex];
+        p.pos = Math.min(p.pos + diceValue, totalCells - 1);
+        buildBoard();
+
+        if (p.pos === totalCells - 1) {
+          alert(`🎉 ¡${p.name} llegó a la Meta y gana el juego! 🎉`);
+          showView('hub');
+        } else {
+          setTimeout(() => triggerCellEvent(cellsConfig[p.pos]), 400);
+        }
+        diceBtn.disabled = false;
+      }, 700);
     }
 
-    function triggerCellEvent() {
+    function triggerCellEvent(cell) {
       const modal = document.getElementById('questionModal');
-      const item = masterQuestionBank[Math.floor(Math.random() * masterQuestionBank.length)];
-      currentQuestionText = item.q;
+      document.getElementById('owlGuideBox').classList.add('hidden');
 
-      document.getElementById('subjectTag').innerText = item.name;
-      document.getElementById('modalQuestion').innerText = item.q;
+      // Filtrar preguntas sin repetir
+      let available = masterQuestionBank.filter(q => !usedQuestionIds.includes(q.id));
+      if (available.length === 0) available = masterQuestionBank;
+
+      currentQuestionItem = available[Math.floor(Math.random() * available.length)];
+      usedQuestionIds.push(currentQuestionItem.id);
+      currentQuestionText = currentQuestionItem.q;
+
+      document.getElementById('subjectTag').innerText = currentQuestionItem.name;
+      document.getElementById('modalQuestion').innerText = currentQuestionItem.q;
+      
       const opts = document.getElementById('quizOptions');
       opts.innerHTML = '';
 
-      item.opts.forEach((opt, idx) => {
+      currentQuestionItem.opts.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.innerText = opt;
         btn.onclick = () => {
-          if (idx === item.a) {
+          if (idx === currentQuestionItem.a) {
             globalStars += 1;
             document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
             closeModal();
           } else {
-            alert('¡Casi! Inténtalo otra vez.');
+            alert('¡Casi! Inténtalo otra vez o pide pista al Búho 🦉');
           }
         };
         opts.appendChild(btn);
       });
 
       modal.classList.remove('hidden');
+    }
+
+    function showOwlHint() {
+      const owlBox = document.getElementById('owlGuideBox');
+      const owlMsg = document.getElementById('owlMessage');
+      owlBox.classList.remove('hidden');
+      owlMsg.innerText = currentQuestionItem.hint || '¡Revisa bien las opciones!';
     }
 
     function closeModal() {
@@ -510,10 +614,15 @@
 
       const boardArea = document.getElementById('puzzleBoardArea');
       boardArea.innerHTML = '';
-      for (let i = 0; i < 16; i++) {
+      
+      // Construir cuadrícula según el número de piezas seleccionado
+      const cols = currentPuzzlePieces >= 150 ? 5 : 4;
+      boardArea.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+
+      for (let i = 1; i <= Math.min(currentPuzzlePieces, 20); i++) {
         const slot = document.createElement('div');
         slot.className = 'puzzle-piece-slot';
-        slot.innerText = currentItemData.icon;
+        slot.innerText = `🧩 #${i}`;
         boardArea.appendChild(slot);
       }
 
@@ -532,7 +641,7 @@
       alert(`🎉 ¡Excelente trabajo! Armaste el rompecabezas de ${currentPuzzlePieces} piezas. Ganaste +3 Estrellas 🌟`);
     }
 
-    // INICIAR SIEMPRE EN EL HUB CON JUMANJI
+    // INICIAR EN EL HUB CON MÚSICA
     renderPlayersList();
     showView('hub');
   </script>
