@@ -3,312 +3,396 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>La Aventura del Mapa Mágico</title>
+  <title>Cultura Kids - La Aventura del Mapa Mágico</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <style>
     :root {
-      --primary: #4A90E2;
-      --secondary: #FF9F43;
-      --success: #2ECC71;
-      --bg: #F0F4F8;
+      --primary: #2B72C8;
+      --secondary: #FF9029;
+      --bg-color: #F2F7FA;
       --card-bg: #FFFFFF;
+      --success: #28A745;
+      --accent: #9B59B6;
     }
-    * { box-sizing: border-box; font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial', sans-serif; user-select: none; }
-    body { margin: 0; padding: 15px; background: var(--bg); display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-    h1 { color: #2C3E50; margin: 10px 0; font-size: 1.5rem; text-align: center; }
+    * { box-sizing: border-box; font-family: 'Nunito', 'Comic Sans MS', 'Chalkboard SE', sans-serif; user-select: none; }
+    body { margin: 0; padding: 0; background: var(--bg-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+    /* Encabezado */
+    .header { background: var(--card-bg); padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .app-title { font-size: 1.1rem; font-weight: 800; color: #2C3E50; display: flex; align-items: center; gap: 8px; }
+    .stars-count { background: #FFF3CD; color: #856404; padding: 5px 12px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+
+    /* Área Principal de Contenido */
+    .main-content { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
     
-    .setup-screen, .game-screen { width: 100%; max-width: 500px; background: var(--card-bg); padding: 20px; border-radius: 20px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+    /* Pestañas / Navegación Inferior */
+    .nav-bar { background: var(--card-bg); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #E1E8ED; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: #7F8C8D; font-weight: bold; cursor: pointer; }
+    .nav-item.active { color: var(--primary); }
+    .nav-item span { font-size: 1.3rem; margin-bottom: 2px; }
+
+    /* Pantalla de Setup */
+    .setup-card { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+    .option-group { margin-bottom: 15px; }
+    .option-group label { display: block; font-weight: bold; color: #34495E; margin-bottom: 8px; font-size: 0.95rem; }
+    
+    button { background: var(--primary); border: none; color: white; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: bold; width: 100%; cursor: pointer; transition: transform 0.1s; }
+    button:active { transform: scale(0.98); }
+    .btn-secondary { background: var(--secondary); }
+
+    /* Tablero y Mapa */
+    .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; max-width: 450px; margin-bottom: 15px; }
+    .cell { aspect-ratio: 1; background: white; border-radius: 16px; border: 3px solid #E2E8F0; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; font-weight: bold; font-size: 0.8rem; box-shadow: 0 3px 6px rgba(0,0,0,0.03); }
+    .cell.active-cell { border-color: var(--secondary); background: #FFF9E6; animation: pulse 1.5s infinite; }
+    .cell.passed-cell { background: #E8F8F5; border-color: #A3E4D7; }
+    .cell-icon { font-size: 1.3rem; margin-bottom: 2px; }
+    
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0.6); }
+      70% { box-shadow: 0 0 0 10px rgba(255, 144, 41, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0); }
+    }
+
+    .player-avatar { width: 22px; height: 22px; border-radius: 50%; background: #E74C3C; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; position: absolute; bottom: -5px; right: -5px; border: 2px solid white; font-weight: bold; }
+
+    /* Panel de Dado */
+    .dice-panel { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 15px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-top: auto; }
+    .dice-display { font-size: 2.5rem; margin: 5px 0; }
+
+    /* Modal de Pregunta */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+    .modal-card { background: white; width: 100%; max-width: 420px; border-radius: 24px; padding: 20px; text-align: center; position: relative; max-height: 90vh; overflow-y: auto; }
+    
+    .owl-guide { display: flex; align-items: center; gap: 10px; background: #F8F9FA; padding: 10px; border-radius: 12px; margin-top: 10px; text-align: left; }
+    .owl-guide span { font-size: 2rem; }
+    .owl-guide p { margin: 0; font-size: 0.85rem; color: #555; font-weight: 600; }
+
+    .opt-btn { background: #F1F5F9; color: #1E293B; border: 2px solid #E2E8F0; border-radius: 12px; padding: 12px; text-align: left; margin-bottom: 8px; font-weight: 600; }
+    .opt-btn:active { background: #E2E8F0; }
+
     .hidden { display: none !important; }
-    
-    button { background: var(--secondary); border: none; color: white; padding: 12px 20px; border-radius: 12px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: transform 0.1s; margin: 5px 0; width: 100%; }
-    button:active { transform: scale(0.96); }
-    .btn-alt { background: var(--primary); }
-    .btn-hint { background: #F1C40F; color: #333; }
-    .btn-joke { background: #9B59B6; color: white; }
-    .btn-riddle { background: #E67E22; color: white; }
-
-    .status-bar { display: flex; justify-content: space-between; background: #E1E8ED; padding: 10px 15px; border-radius: 12px; margin-bottom: 15px; font-weight: bold; font-size: 0.9rem; }
-
-    .board-container { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 15px; }
-    .cell { aspect-ratio: 1; background: #D5DBDB; border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold; position: relative; border: 2px solid #BDC3C7; text-align: center; }
-    .cell.active { border-color: var(--secondary); background: #FFEAA7; }
-    .cell.joke-cell { background: #E8DAEF; border-color: #8E44AD; }
-    .cell.riddle-cell { background: #FDEBD0; border-color: #E67E22; }
-    .player-token { width: 12px; height: 12px; border-radius: 50%; display: inline-block; position: absolute; bottom: 4px; }
-
-    .card { background: #FFF; border: 3px solid var(--primary); border-radius: 15px; padding: 15px; text-align: center; margin-top: 10px; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 12px; color: white; font-size: 0.8rem; margin-bottom: 8px; text-transform: uppercase; }
-    .badge-math { background: #E74C3C; }
-    .badge-lang { background: #3498DB; }
-    .badge-eng { background: #9B59B6; }
-    .badge-sci { background: #2ECC71; }
-    .badge-mus { background: #F39C12; }
-    .badge-joke { background: #8E44AD; }
-    .badge-riddle { background: #E67E22; }
-    
-    .options { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
-    .opt-btn { background: #ECF0F1; color: #2C3E50; border: 2px solid #BDC3C7; text-align: left; padding: 10px 15px; border-radius: 8px; font-size: 0.95rem; }
-
-    .feedback { margin-top: 10px; padding: 10px; border-radius: 8px; font-weight: bold; text-align: center; }
-    .feedback.correct { background: #D4EDDA; color: #155724; }
-    .feedback.retry { background: #FFF3CD; color: #856404; }
   </style>
 </head>
 <body>
 
-  <h1>🗺️ La Aventura del Mapa Mágico</h1>
-
-  <!-- Pantalla de Configuración Inicial -->
-  <div id="setupScreen" class="setup-screen">
-    <h3>¡Bienvenidos a la Aventura!</h3>
-    <label><b>Selecciona el modo de juego:</b></label>
-    <button onclick="startGame(1)">Un Jugador (Aventura)</button>
-    <button class="btn-alt" onclick="startGame(2)">Modo Familiar (2 Jugadores)</button>
+  <!-- Encabezado -->
+  <div class="header">
+    <div class="app-title">🗺️ Cultura Kids</div>
+    <div class="stars-count" id="globalStars">🌟 0 Estrellas</div>
   </div>
 
-  <!-- Pantalla Principal del Juego -->
-  <div id="gameScreen" class="game-screen hidden">
-    <div class="status-bar">
-      <span id="turnInfo">Turno: Jugador 1</span>
-      <span id="starsInfo">🌟 0</span>
-    </div>
+  <!-- Contenido Principal -->
+  <div class="main-content">
 
-    <!-- Tablero de 15 Casillas -->
-    <div class="board-container" id="board"></div>
-
-    <button id="diceBtn" onclick="rollDice()">🎲 Lanzar Dado</button>
-
-    <!-- Modal/Tarjeta de Preguntas, Chistes y Adivinanzas -->
-    <div id="questionCard" class="card hidden">
-      <span id="subjectBadge" class="badge">Materia</span>
-      <p id="questionText" style="font-size: 1.1rem; font-weight: bold; margin: 10px 0;"></p>
-
-      <!-- Sección Chistes -->
-      <div id="jokeSection" class="hidden">
-        <button class="btn-joke" onclick="speakText(currentText)">🔊 Escuchar Chiste</button>
-        <button onclick="closeModal()" style="margin-top: 10px; background: var(--success);">¡Entendido y a reír! 😄</button>
+    <!-- Pantalla de Configuración Inicial -->
+    <div id="tabSetup" class="setup-card">
+      <h2 style="text-align: center; color: #2C3E50; margin-top: 0;">¡Nueva Aventura! 🦉</h2>
+      
+      <div class="option-group">
+        <label>1. Nombre del Jugador:</label>
+        <input type="text" id="playerNameInput" value="Sofía" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 1rem;">
       </div>
 
-      <!-- Sección Adivinanzas y Preguntas -->
-      <div id="quizSection">
-        <button id="audioBtn" class="btn-alt" onclick="speakText(currentText)" style="margin-bottom: 10px;">🔊 Escuchar</button>
-        <div id="optionsContainer" class="options"></div>
-        <button class="btn-hint" onclick="showHint()" style="margin-top: 10px;">💡 Pedir una pista</button>
-        <p id="hintText" style="font-style: italic; color: #7F8C8D; font-size: 0.85rem; display: none; margin-top: 5px;"></p>
-        <div id="feedbackMsg" class="feedback hidden"></div>
+      <div class="option-group">
+        <label>2. Modo de Juego Preferido:</label>
+        <select id="gameModeSelect" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.95rem;">
+          <option value="classic">🗺️ Modo Clásico (El Dado marca el Avance)</option>
+          <option value="subject_dice">🎲 Dado de Materia (El azar decide el tema)</option>
+          <option value="free_choice">🔀 Modo Libre (Eliges la materia que prefieras)</option>
+        </select>
+      </div>
+
+      <div class="option-group">
+        <label>3. Nivel de Dificultad Inicial:</label>
+        <select id="difficultySelect" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #CBD5E1; font-size: 0.95rem;">
+          <option value="easy">🟢 Explorador (Fácil con Pistas)</option>
+          <option value="medium">🟡 Aventurero (Moderado)</option>
+          <option value="hard">🔴 Maestro (Desafío)</option>
+        </select>
+      </div>
+
+      <button onclick="startAdventure()">¡Comenzar Aventura! 🚀</button>
+    </div>
+
+    <!-- Tablero de Juego -->
+    <div id="tabBoard" class="hidden" style="width: 100%; display: flex; flex-direction: column; align-items: center; flex: 1;">
+      <div id="boardGrid" class="board-grid"></div>
+
+      <div class="dice-panel">
+        <div id="turnStatus" style="font-weight: bold; color: #475569; font-size: 0.9rem;">Turno de Sofía</div>
+        <div class="dice-display" id="diceVisual">🎲</div>
+        <button class="btn-secondary" id="rollBtn" onclick="handleRoll()">¡Lanzar Dado!</button>
       </div>
     </div>
+
+    <!-- Pantalla de Progreso por Asignatura -->
+    <div id="tabSubjects" class="setup-card hidden">
+      <h3>📊 Tu Progreso Educativo</h3>
+      <p style="font-size: 0.9rem; color: #64748B;">Monitorea cómo avanzas en el programa escolar chileno de 3° Básico:</p>
+      <div id="subjectsList"></div>
+    </div>
+
+    <!-- Pantalla de Álbum de Logros -->
+    <div id="tabAlbum" class="setup-card hidden">
+      <h3>🏆 Álbum de Estampas de Chile</h3>
+      <p style="font-size: 0.9rem; color: #64748B;">¡Juega para coleccionar todas las estampas de fauna y flora!</p>
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 15px;">
+        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🌸 Copihue Chileno</div>
+        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🦌 Huemul del Sur</div>
+        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🐆 Puma Andino</div>
+        <div style="background: #F1F5F9; padding: 15px; border-radius: 12px; text-align: center;">🦅 Cóndor de los Andes</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Modal Emergente para Preguntas, Chistes y Adivinanzas -->
+  <div id="questionModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">MATERIA</span>
+      <h3 id="modalQuestion" style="color: #1E293B; margin: 15px 0;">¿Pregunta?</h3>
+
+      <div id="quizOptions" style="display: flex; flex-direction: column;"></div>
+
+      <button id="listenBtn" onclick="speakCurrentText()" style="margin-top: 10px; background: #64748B;">🔊 Escuchar</button>
+      <button id="hintBtn" onclick="showOwlHint()" style="margin-top: 8px; background: #F59E0B;">💡 Pedir una pista</button>
+
+      <!-- Guía Lechuza -->
+      <div id="owlGuideBox" class="owl-guide hidden">
+        <span>🦉</span>
+        <p id="owlMessage">¡Hola! Estoy aquí para ayudarte.</p>
+      </div>
+
+      <button id="closeModalBtn" onclick="closeModal()" class="hidden" style="margin-top: 15px; background: var(--success);">Continuar ➔</button>
+    </div>
+  </div>
+
+  <!-- Navegación Inferior -->
+  <div class="nav-bar">
+    <div class="nav-item active" onclick="switchTab('board')"><span>🗺️</span>Tablero</div>
+    <div class="nav-item" onclick="switchTab('subjects')"><span>📊</span>Asignaturas</div>
+    <div class="nav-item" onclick="switchTab('album')"><span>🌟</span>Álbum</div>
+    <div class="nav-item" onclick="switchTab('setup')"><span>⚙️</span>Ajustes</div>
   </div>
 
   <script>
-    // Banco de Preguntas Escolares
-    const questions = [
-      { cat: 'math', badge: 'badge-math', name: 'Matemáticas', q: '¿Cuánto es 7 x 4?', opts: ['21', '28', '32'], a: 1, hint: 'Cuenta de 7 en 7 cuatro veces: 7, 14, 21...' },
-      { cat: 'lang', badge: 'badge-lang', name: 'Lenguaje', q: '¿Cuál es el sinónimo de "Alegre"?', opts: ['Triste', 'Enojado', 'Contento'], a: 2, hint: 'Es una palabra que significa lo mismo que estar feliz.' },
-      { cat: 'sci', badge: 'badge-sci', name: 'Ciencias', q: '¿Cuál es la flor nacional de Chile?', opts: ['Rosa', 'Copihue', 'Girasol'], a: 1, hint: 'Es una campanita roja que crece en los bosques del sur.' },
-      { cat: 'eng', badge: 'badge-eng', name: 'Inglés', q: '¿Cómo se dice "Perro" en inglés?', opts: ['Cat', 'Dog', 'Rabbit'], a: 1, hint: 'Comienza con la letra D.' },
-      { cat: 'mus', badge: 'badge-mus', name: 'Música', q: '¿Qué instrumento se toca con baquetas o palitos?', opts: ['Batería', 'Guitarra', 'Flauta'], a: 0, hint: 'Es un instrumento de percusión con platillos y tambores.' },
-      { cat: 'math', badge: 'badge-math', name: 'Matemáticas', q: 'Si tienes 3 monedas de $100, ¿cuánto dinero tienes?', opts: ['$200', '$300', '$500'], a: 1, hint: 'Suma 100 + 100 + 100.' },
-      { cat: 'sci', badge: 'badge-sci', name: 'Ciencias', q: '¿Qué animal vive en el sur de Chile y sale en el escudo nacional?', opts: ['Puma', 'Huemul', 'Zorro'], a: 1, hint: 'Es un ciervo o venadito nativo muy hermoso.' },
-      { cat: 'lang', badge: 'badge-lang', name: 'Lenguaje', q: 'En la frase "El perro es rápido", ¿cuál es el adjetivo?', opts: ['El', 'Perro', 'Rápido'], a: 2, hint: 'El adjetivo nos dice CÓMO es el sustantivo.' }
+    // Banco Amplio de Preguntas por Asignatura (Chile - 3° Básico)
+    const questionBank = [
+      { cat: 'math', name: 'Matemáticas', icon: '🔢', q: '¿Cuánto es 8 x 5?', opts: ['35', '40', '45'], a: 1, hint: 'Cuenta de 5 en 5 ocho veces.' },
+      { cat: 'math', name: 'Matemáticas', icon: '🔢', q: 'Si tienes 4 monedas de $100, ¿cuánto dinero suma?', opts: ['$300', '$400', '$500'], a: 1, hint: 'Suma 100 cuatro veces.' },
+      { cat: 'lang', name: 'Lenguaje', icon: '📖', q: '¿Cuál es el antónimo de "Gigante"?', opts: ['Enorme', 'Pequeño', 'Alto'], a: 1, hint: 'Es lo contrario a algo muy grande.' },
+      { cat: 'lang', name: 'Lenguaje', icon: '📖', q: 'En la oración "El gato blanco salta", ¿cuál es el sustantivo?', opts: ['Gato', 'Blanco', 'Salta'], a: 0, hint: 'Es el animal de quien se habla.' },
+      { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Cuál es el árbol nativo chileno que vive miles de años en el sur?', opts: ['Pino', 'Alerce', 'Eucalipto'], a: 1, hint: 'Crece muy lento en los bosques fríos.' },
+      { cat: 'sci', name: 'Ciencias', icon: '🌿', q: '¿Qué necesitan las plantas para hacer la fotosíntesis?', opts: ['Sol y Agua', 'Jugo y Leche', 'Sombras'], a: 0, hint: 'Viene del cielo y de la tierra.' },
+      { cat: 'eng', name: 'Inglés', icon: '🇬🇧', q: '¿Cómo se dice "Red" en español?', opts: ['Verde', 'Rojo', 'Azul'], a: 1, hint: 'Es el color del copihue o de la manzana.' },
+      { cat: 'mus', name: 'Música', icon: '🎵', q: '¿Cuál de estos es un instrumento de viento?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas soplar aire para que suene.' }
     ];
 
-    // Banco de Chistes
-    const jokes = [
-      "¿Qué le dice un gato a otro gato en la calle? ... ¡Miau! Y el otro le responde: ... ¡No me digas, yo también soy gato!",
+    const jokeBank = [
+      "¿Qué le dice una iguana a su hermana gemela? ... ¡Somos iguanitas!",
       "¿Qué hace un perro con un taladro? ... ¡Ta-drando!",
-      "¿Qué le dice una manzana verde a una manzana roja? ... ¡Uy, qué roja te pusiste! Y la roja responde: ¡Es que me dio vergüenza!",
-      "¿Qué hace un pez en el agua? ... ¡Nada, absolutamente nada!",
-      "¿Por qué el libro de matemáticas estaba triste? ... ¡Porque tenía demasiados problemas!",
-      "¿Qué le dice un lápiz a un cuaderno? ... ¡Oye, siempre me estás siguiendo la línea!"
+      "¿Por qué el libro de matemáticas estaba triste? ... ¡Porque tenía demasiados problemas!"
     ];
 
-    // Banco de Adivinanzas
-    const riddles = [
-      { q: 'Tiene corteza pero no es árbol, tiene corazón pero no late, es dulce y roja... ¿Qué es?', opts: ['La Manzana', 'La Piedra', 'La Pelota'], a: 0, hint: 'Es una fruta muy saludable y crujiente.' },
-      { q: 'Si me tiran al suelo no me rompo, pero si me tiran al agua me deshago... ¿Qué soy?', opts: ['El Papel', 'El Cristal', 'La Madera'], a: 0, hint: 'Sirve para escribir y dibujar sobre él.' },
-      { q: 'Salgo por las mañanas y por la tarde me voy, doy luz y calorcito... ¿Quién soy?', opts: ['La Luna', 'El Sol', 'Un Farol'], a: 1, hint: 'Está al centro del sistema solar.' },
-      { q: 'Tengo mina pero no soy minero, escribo en tu cuaderno y me gasto entero... ¿Qué soy?', opts: ['El Lápiz', 'El Borrador', 'El Pincel'], a: 0, hint: 'Si se le rompe la punta usas un sacapuntas.' },
-      { q: 'Tengo hojas pero no soy árbol, tengo lomo pero no soy animal, te cuento mil historias... ¿Qué soy?', opts: ['El Libro', 'El Periódico', 'El Zapato'], a: 0, hint: 'Los encuentras en la biblioteca.' }
+    const riddleBank = [
+      { q: 'Tiene corteza pero no es árbol, tiene corazón pero no late... ¿Qué es?', opts: ['La Manzana', 'La Piedra', 'La Pelota'], a: 0, hint: 'Es una fruta roja y sabrosa.' },
+      { q: 'Salgo por las mañanas y doy luz y calor... ¿Quién soy?', opts: ['El Sol', 'La Luna', 'Un Farol'], a: 0, hint: 'Está en el centro del sistema solar.' }
     ];
 
-    let players = [];
-    let currentPlayerIndex = 0;
-    const totalCells = 15;
-    const jokeCells = [3, 9];
-    const riddleCells = [6, 12];
-    let currentText = "";
+    // Variables de Estado del Juego
+    let player = { name: "Sofía", pos: 0, stars: 0 };
+    let gameMode = "classic";
+    let difficulty = "easy";
+    let currentMazo = [];
+    let currentItem = null;
+    const totalCells = 12;
 
-    function startGame(numPlayers) {
-      document.getElementById('setupScreen').classList.add('hidden');
-      document.getElementById('gameScreen').classList.remove('hidden');
+    // Configuración de Casillas del Mapa
+    const cellsConfig = [
+      { type: 'start', label: 'Inicio', icon: '🏁' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'lang', label: 'Lenguaje', icon: '📖' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
+      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
+      { type: 'mus', label: 'Música', icon: '🎵' },
+      { type: 'math', label: 'Mates', icon: '🔢' },
+      { type: 'joke', label: 'Chiste', icon: '🤡' },
+      { type: 'sci', label: 'Ciencias', icon: '🌿' },
+      { type: 'goal', label: 'Meta', icon: '🏆' }
+    ];
 
-      players = [];
-      for (let i = 0; i < numPlayers; i++) {
-        players.push({ id: i + 1, name: `Jugador ${i + 1}`, pos: 0, stars: 0, color: i === 0 ? '#E74C3C' : '#3498DB' });
-      }
+    function startAdventure() {
+      player.name = document.getElementById('playerNameInput').value || 'Sofía';
+      gameMode = document.getElementById('gameModeSelect').value;
+      difficulty = document.getElementById('difficultySelect').value;
 
+      document.getElementById('turnStatus').innerText = `Turno de ${player.name}`;
+      
+      // Barajar mazo sin repetición
+      initMazo();
       buildBoard();
-      updateStatus();
+      switchTab('board');
+    }
+
+    function initMazo() {
+      currentMazo = [...questionBank].sort(() => Math.random() - 0.5);
     }
 
     function buildBoard() {
-      const boardEl = document.getElementById('board');
-      boardEl.innerHTML = '';
-      for (let i = 0; i < totalCells; i++) {
-        const cell = document.createElement('div');
-        const isJoke = jokeCells.includes(i);
-        const isRiddle = riddleCells.includes(i);
-        
-        cell.className = `cell ${i === 0 ? 'active' : ''} ${isJoke ? 'joke-cell' : ''} ${isRiddle ? 'riddle-cell' : ''}`;
-        cell.id = `cell-${i}`;
-        
-        let cellLabel = i === 0 ? 'Inicio' : i === totalCells - 1 ? '🏆 Meta' : i;
-        if (isJoke) cellLabel += ' 🤡';
-        if (isRiddle) cellLabel += ' 🧙‍♂️';
+      const grid = document.getElementById('boardGrid');
+      grid.innerHTML = '';
 
-        cell.innerHTML = `<span>${cellLabel}</span>`;
-        boardEl.appendChild(cell);
-      }
-      renderTokens();
-    }
+      cellsConfig.forEach((cell, idx) => {
+        const div = document.createElement('div');
+        let classes = 'cell';
+        if (idx === player.pos) classes += ' active-cell';
+        if (idx < player.pos) classes += ' passed-cell';
+        
+        div.className = classes;
+        div.innerHTML = `<span class="cell-icon">${cell.icon}</span><span>${cell.label}</span>`;
 
-    function renderTokens() {
-      document.querySelectorAll('.player-token').forEach(el => el.remove());
-      players.forEach(p => {
-        const cell = document.getElementById(`cell-${p.pos}`);
-        if (cell) {
-          const token = document.createElement('span');
-          token.className = 'player-token';
-          token.style.background = p.color;
-          token.style.left = `${(p.id * 12)}px`;
-          cell.appendChild(token);
+        if (idx === player.pos) {
+          const avatar = document.createElement('div');
+          avatar.className = 'player-avatar';
+          avatar.innerText = player.name.charAt(0);
+          div.appendChild(avatar);
         }
+
+        grid.appendChild(div);
       });
     }
 
-    function updateStatus() {
-      const p = players[currentPlayerIndex];
-      document.getElementById('turnInfo').innerText = `Turno: ${p.name}`;
-      document.getElementById('starsInfo').innerText = `🌟 ${p.stars}`;
-    }
-
-    function rollDice() {
-      document.getElementById('diceBtn').disabled = true;
-      const dice = Math.floor(Math.random() * 3) + 1;
-      let p = players[currentPlayerIndex];
-      p.pos = Math.min(p.pos + dice, totalCells - 1);
-      renderTokens();
+    function handleRoll() {
+      document.getElementById('rollBtn').disabled = true;
+      const diceValue = Math.floor(Math.random() * 3) + 1;
+      document.getElementById('diceVisual').innerText = ['🎲', '⚀', '⚁', '⚂'][diceValue];
 
       setTimeout(() => {
-        if (jokeCells.includes(p.pos)) {
-          showJokeCard();
-        } else if (riddleCells.includes(p.pos)) {
-          showRiddleCard();
-        } else {
-          showQuestion();
-        }
+        player.pos = Math.min(player.pos + diceValue, totalCells - 1);
+        buildBoard();
+
+        setTimeout(() => {
+          triggerCellEvent(cellsConfig[player.pos]);
+        }, 500);
       }, 600);
     }
 
-    function showJokeCard() {
-      const card = document.getElementById('questionCard');
-      const badge = document.getElementById('subjectBadge');
-      
-      badge.className = 'badge badge-joke';
-      badge.innerText = '🤡 Momento de Risa';
+    function triggerCellEvent(cell) {
+      const modal = document.getElementById('questionModal');
+      const tag = document.getElementById('subjectTag');
+      const qText = document.getElementById('modalQuestion');
+      const optsContainer = document.getElementById('quizOptions');
 
-      currentText = jokes[Math.floor(Math.random() * jokes.length)];
-      document.getElementById('questionText').innerText = currentText;
+      optsContainer.innerHTML = '';
+      document.getElementById('owlGuideBox').classList.add('hidden');
+      document.getElementById('closeModalBtn').classList.add('hidden');
 
-      document.getElementById('jokeSection').classList.remove('hidden');
-      document.getElementById('quizSection').classList.add('hidden');
+      if (cell.type === 'joke') {
+        tag.innerText = '🤡 Chiste';
+        tag.style.background = '#9B59B6';
+        currentItem = jokeBank[Math.floor(Math.random() * jokeBank.length)];
+        qText.innerText = currentItem;
+        
+        document.getElementById('hintBtn').classList.add('hidden');
+        document.getElementById('closeModalBtn').classList.remove('hidden');
+      } else if (cell.type === 'riddle') {
+        tag.innerText = '🧙‍♂️ Adivinanza';
+        tag.style.background = '#E67E22';
+        currentItem = riddleBank[Math.floor(Math.random() * riddleBank.length)];
+        setupQuizOptions(currentItem);
+      } else {
+        // Preguntas Normales (Sin Repetición)
+        if (currentMazo.length === 0) initMazo();
+        currentItem = currentMazo.pop();
+        
+        tag.innerText = currentItem.name;
+        tag.style.background = '#2B72C8';
+        setupQuizOptions(currentItem);
+      }
 
-      card.classList.remove('hidden');
+      modal.classList.remove('hidden');
     }
 
-    function showRiddleCard() {
-      const r = riddles[Math.floor(Math.random() * riddles.length)];
-      setupQuizCard('badge badge-riddle', '🧙‍♂️ Adivinanza Mágica', r);
-    }
-
-    function showQuestion() {
-      const q = questions[Math.floor(Math.random() * questions.length)];
-      setupQuizCard(`badge ${q.badge}`, q.name, q);
-    }
-
-    function setupQuizCard(badgeClass, badgeName, item) {
-      const card = document.getElementById('questionCard');
-      const badge = document.getElementById('subjectBadge');
-      
-      badge.className = badgeClass;
-      badge.innerText = badgeName;
-      currentText = item.q;
-      document.getElementById('questionText').innerText = item.q;
-      document.getElementById('hintText').innerText = item.hint;
-      document.getElementById('hintText').style.display = 'none';
-      document.getElementById('feedbackMsg').className = 'feedback hidden';
-
-      document.getElementById('jokeSection').classList.add('hidden');
-      document.getElementById('quizSection').classList.remove('hidden');
-
-      const optionsContainer = document.getElementById('optionsContainer');
-      optionsContainer.innerHTML = '';
+    function setupQuizOptions(item) {
+      document.getElementById('modalQuestion').innerText = item.q;
+      document.getElementById('hintBtn').classList.remove('hidden');
+      const optsContainer = document.getElementById('quizOptions');
 
       item.opts.forEach((opt, idx) => {
         const btn = document.createElement('button');
         btn.className = 'opt-btn';
         btn.innerText = opt;
         btn.onclick = () => checkAnswer(idx === item.a);
-        optionsContainer.appendChild(btn);
+        optsContainer.appendChild(btn);
       });
-
-      card.classList.remove('hidden');
     }
 
-    function speakText(text) {
+    function checkAnswer(isCorrect) {
+      const owlBox = document.getElementById('owlGuideBox');
+      const owlMsg = document.getElementById('owlMessage');
+      owlBox.classList.remove('hidden');
+
+      if (isCorrect) {
+        owlMsg.innerText = '¡Fantástico! Respuesta correcta. 🌟 +1 Estrella';
+        player.stars += 1;
+        document.getElementById('globalStars').innerText = `🌟 ${player.stars} Estrellas`;
+        
+        setTimeout(() => {
+          closeModal();
+        }, 1200);
+      } else {
+        owlMsg.innerText = '¡Casi lo logras! Revisa la pista o inténtalo nuevamente.🦉';
+      }
+    }
+
+    function showOwlHint() {
+      const owlBox = document.getElementById('owlGuideBox');
+      const owlMsg = document.getElementById('owlMessage');
+      owlBox.classList.remove('hidden');
+      owlMsg.innerText = currentItem.hint || '¡Piensa en lo que has estudiado en clases!';
+    }
+
+    function speakCurrentText() {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'es-MX';
+        const textToSpeak = typeof currentItem === 'string' ? currentItem : currentItem.q;
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+        utterance.lang = 'es-CL';
         utterance.rate = 0.9;
         window.speechSynthesis.speak(utterance);
       }
     }
 
-    function showHint() {
-      document.getElementById('hintText').style.display = 'block';
-    }
+    function closeModal() {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      document.getElementById('questionModal').classList.add('hidden');
+      document.getElementById('rollBtn').disabled = false;
 
-    function checkAnswer(isCorrect) {
-      const feedback = document.getElementById('feedbackMsg');
-      feedback.classList.remove('hidden');
-
-      if (isCorrect) {
-        feedback.className = 'feedback correct';
-        feedback.innerText = '¡Excelente trabajo! 🌟 +1 Estrella';
-        players[currentPlayerIndex].stars += 1;
-        
-        setTimeout(() => {
-          closeModal();
-        }, 1500);
-      } else {
-        feedback.className = 'feedback retry';
-        feedback.innerText = '¡Casi lo logras! Inténtalo otra vez o usa la pista 💡';
+      if (player.pos === totalCells - 1) {
+        alert('🎉 ¡Felicidades! Llegaste a la Meta del Mapa Mágico 🎉');
       }
     }
 
-    function closeModal() {
-      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-      document.getElementById('questionCard').classList.add('hidden');
-      document.getElementById('diceBtn').disabled = false;
-      nextTurn();
-    }
+    function switchTab(tabName) {
+      document.querySelectorAll('.setup-card, #tabBoard').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-    function nextTurn() {
-      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-      updateStatus();
+      if (tabName === 'board') {
+        document.getElementById('tabBoard').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[0].classList.add('active');
+      } else if (tabName === 'subjects') {
+        document.getElementById('tabSubjects').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[1].classList.add('active');
+      } else if (tabName === 'album') {
+        document.getElementById('tabAlbum').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[2].classList.add('active');
+      } else if (tabName === 'setup') {
+        document.getElementById('tabSetup').classList.remove('hidden');
+        document.querySelectorAll('.nav-item')[3].classList.add('active');
+      }
     }
   </script>
 </body>
