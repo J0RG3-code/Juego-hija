@@ -1,649 +1,629 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Cultura Kids - Contenedor Multijuegos</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
-    
-    :root {
-      --primary: #2B72C8;
-      --secondary: #FF9029;
-      --bg-color: #0f172a;
-      --card-bg: #ffffff;
-      --success: #10B981;
-      --accent: #8B5CF6;
-      --danger: #EF4444;
-    }
-
-    * { box-sizing: border-box; font-family: 'Nunito', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-    
-    body {
-      margin: 0; padding: 0;
-      background: var(--bg-color);
-      display: flex; flex-direction: column;
-      height: 100vh; overflow: hidden;
-      color: #0f172a;
-    }
-
-    /* Encabezado Fijo */
-    .header {
-      background: #ffffff;
-      padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 100;
-    }
-    .app-title { font-size: 1.1rem; font-weight: 900; color: #1e293b; display: flex; align-items: center; gap: 6px; cursor: pointer; }
-    .header-actions { display: flex; gap: 8px; align-items: center; }
-    .btn-header { background: #e2e8f0; color: #334155; border: none; padding: 6px 12px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
-    .stars-count { background: #fef3c7; color: #b45309; padding: 5px 12px; border-radius: 16px; font-weight: 900; font-size: 0.85rem; }
-
-    /* Área Principal */
-    .main-content { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; padding-bottom: 80px; }
-
-    /* Barra de Navegación Inferior Fija */
-    .nav-bar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #ffffff;
-      display: flex; justify-content: space-around; padding: 10px 0;
-      border-top: 1px solid #e2e8f0;
-      z-index: 100;
-      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-    }
-    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 0.75rem; color: #64748b; font-weight: 800; cursor: pointer; width: 33%; }
-    .nav-item.active { color: var(--primary); }
-    .nav-item span { font-size: 1.3rem; margin-bottom: 2px; }
-
-    /* Vistas aisladas */
-    .view-panel { width: 100%; max-width: 450px; display: flex; flex-direction: column; align-items: center; }
-    
-    .glass-card {
-      background: var(--card-bg);
-      width: 100%; border-radius: 24px; padding: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      margin-bottom: 15px;
-    }
-
-    .game-card {
-      background: white; border-radius: 20px; padding: 18px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15); margin-bottom: 12px;
-      width: 100%; cursor: pointer; display: flex; flex-direction: column; gap: 6px;
-    }
-    .game-card:active { transform: scale(0.98); }
-    .game-card-title { font-size: 1.15rem; font-weight: 900; color: #1e293b; }
-    .game-card-desc { font-size: 0.85rem; color: #475569; font-weight: 600; }
-
-    button { background: var(--primary); border: none; color: white; padding: 12px; border-radius: 14px; font-size: 0.95rem; font-weight: 800; width: 100%; cursor: pointer; }
-    button:active { transform: scale(0.98); }
-    .btn-secondary { background: var(--secondary); }
-    .btn-success { background: var(--success); }
-    .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
-
-    /* Tablero Temático Animado */
-    .board-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; width: 100%; margin-bottom: 12px; }
-    .cell {
-      aspect-ratio: 1; background: #f8fafc; border-radius: 16px; border: 2px solid #cbd5e1;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      position: relative; font-weight: 800; font-size: 0.75rem; text-align: center; color: #334155;
-      box-shadow: 0 3px 6px rgba(0,0,0,0.05);
-    }
-    .cell.active-cell { border-color: var(--secondary); background: #fff7ed; border-width: 3px; animation: pulse 1.5s infinite; }
-    .cell-icon { font-size: 1.2rem; margin-bottom: 2px; }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0.6); }
-      70% { box-shadow: 0 0 0 8px rgba(255, 144, 41, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(255, 144, 41, 0); }
-    }
-
-    /* Dado Animado Rebote */
-    .dice-box { font-size: 3rem; margin: 8px 0; transition: transform 0.1s; display: inline-block; }
-    .dice-rolling { animation: rollAndBounce 0.6s ease-in-out infinite alternate; }
-
-    @keyframes rollAndBounce {
-      0% { transform: translateY(0) rotate(0deg) scale(1); }
-      50% { transform: translateY(-18px) rotate(180deg) scale(1.15); }
-      100% { transform: translateY(0) rotate(360deg) scale(1); }
-    }
-
-    .tokens-container { display: flex; gap: 2px; position: absolute; bottom: 3px; justify-content: center; width: 100%; }
-    .player-avatar { width: 16px; height: 16px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.55rem; border: 1.5px solid white; font-weight: 900; }
-
-    /* Rompecabezas Gráfico */
-    .puzzle-category-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 10px 0; width: 100%; }
-    .puzzle-cat-btn { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 12px; text-align: center; font-weight: 800; color: #1e293b; cursor: pointer; }
-    .puzzle-cat-btn.selected { border-color: var(--primary); background: #eff6ff; }
-
-    .dino-select-list { display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; margin: 8px 0; width: 100%; }
-    .dino-item { background: #f1f5f9; padding: 8px 12px; border-radius: 10px; border: 1px solid #cbd5e1; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; }
-    .dino-item.selected { background: #dbeafe; border-color: #3b82f6; color: #1e40af; }
-
-    .puzzle-board {
-      width: 100%; max-width: 330px; aspect-ratio: 1;
-      background: #e2e8f0; border-radius: 16px; border: 3px dashed #94a3b8;
-      margin: 10px auto; display: grid; gap: 3px; position: relative; overflow: hidden; padding: 4px;
-    }
-    .puzzle-piece-slot {
-      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: #475569;
-    }
-
-    /* Búho Guía */
-    .owl-box { display: flex; align-items: center; gap: 8px; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: 12px; margin-top: 10px; text-align: left; }
-    .owl-box span { font-size: 1.8rem; }
-    .owl-box p { margin: 0; font-size: 0.85rem; font-weight: 700; color: #166534; }
-
-    /* Modal */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.75); display: flex; align-items: center; justify-content: center; padding: 16px; z-index: 200; }
-    .modal-card { background: white; width: 100%; max-width: 400px; border-radius: 24px; padding: 20px; text-align: center; }
-
-    .hidden { display: none !important; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#16213e">
+<title>Cultura Kids</title>
+<style>
+:root {
+  --night:#16213e; --purple:#6548d8; --pink:#ff6e9e;
+  --yellow:#ffd85a; --green:#37c99b; --white:#fff;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:system-ui,-apple-system,sans-serif;
+  background:linear-gradient(160deg,#16213e,#30215f 60%,#173b66);
+  color:white; min-height:100vh;
+}
+button,select { font:inherit; }
+button {
+  border:0; border-radius:16px; padding:12px 16px;
+  background:var(--yellow); color:#202342; font-weight:800;
+  cursor:pointer; touch-action:manipulation;
+}
+button:active { transform:scale(.97); }
+button.secondary { background:#ffffff1b;color:white;border:1px solid #ffffff40; }
+button.pink { background:var(--pink); }
+button.green { background:var(--green); }
+header { padding:18px 16px 8px;text-align:center; }
+.logo { font-size:clamp(30px,8vw,48px);font-weight:1000;letter-spacing:-2px; }
+.logo span { color:var(--yellow); }
+.subtitle { color:#d5d7f5;margin-top:2px; }
+main { width:min(900px,100%);margin:auto;padding:12px 14px 32px; }
+.panel {
+  background:#ffffff10;border:1px solid #ffffff22;border-radius:24px;
+  padding:18px;margin-bottom:14px;box-shadow:0 10px 28px #080c2430;
+}
+h2 { margin:0 0 12px;font-size:23px; }
+h3 { margin:0 0 8px; }
+p { line-height:1.45; }
+.menu-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
+.game-card {
+  min-height:135px;text-align:left;display:flex;flex-direction:column;
+  align-items:flex-start;justify-content:space-between;gap:12px;
+  background:#ffffff12;color:white;border:1px solid #ffffff24;
+}
+.game-card .emoji { font-size:37px; }
+.game-card small { color:#e2e3ff; }
+.row { display:flex;align-items:center;gap:8px;flex-wrap:wrap; }
+.row > * { max-width:100%; }
+.spread { display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap; }
+.hidden { display:none!important; }
+.muted { color:#d4d8f6;font-size:14px; }
+select { padding:10px;border-radius:12px;background:#fff;color:#202342;border:0; }
+#puzzleImage {
+  width:100%;aspect-ratio:1/1;max-height:330px;object-fit:contain;
+  background:#ffffff0b;border-radius:18px;
+}
+#puzzleBoard {
+  display:grid;gap:2px;width:100%;max-width:580px;margin:14px auto;
+  background:#fff;padding:3px;border-radius:8px;overflow:hidden;
+  touch-action:manipulation;
+}
+.tile {
+  padding:0;border:0;border-radius:0;aspect-ratio:1/1;
+  min-width:0;min-height:0;background-repeat:no-repeat;
+  outline:1px solid #ffffff70;position:relative;
+}
+.tile.selected { outline:4px solid var(--yellow);z-index:2; }
+.tile.correct { outline-color:#36e4a8; }
+.tile .number {
+  position:absolute;left:2px;top:2px;font-size:10px;
+  color:white;text-shadow:0 1px 3px #000;background:#0008;
+  border-radius:4px;padding:1px 3px;
+}
+#wordLetters { display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin:20px 0; }
+.letter { min-width:39px;padding:12px 8px;font-size:20px;background:#fff;color:#242044; }
+#answer { min-height:50px;border:2px dashed #ffffff65;border-radius:14px;padding:8px;display:flex;flex-wrap:wrap;gap:6px;justify-content:center; }
+#boardTrack { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px; }
+.space { aspect-ratio:1/1;border-radius:12px;background:#ffffff17;border:1px solid #ffffff30;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3px;font-size:12px;position:relative; }
+.space .n { font-size:10px;color:#d5d8f7; }
+.playerDot { font-size:20px; }
+#players { display:flex;gap:7px;flex-wrap:wrap;margin:12px 0; }
+.playerTag { background:#ffffff18;padding:7px 10px;border-radius:10px;font-size:13px; }
+#feedback { min-height:28px;font-weight:750;text-align:center;margin:12px 0; }
+footer { text-align:center;color:#b9bee8;font-size:12px;padding:14px; }
+@media(min-width:600px) {
+  .menu-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+  #boardTrack { grid-template-columns:repeat(8,minmax(0,1fr)); }
+  #puzzleImage { max-height:420px; }
+}
+</style>
 </head>
 <body>
+<header>
+  <div class="logo">🌟 Cultura <span>Kids</span></div>
+  <div class="subtitle">¡Aprende, juega y descubre el mundo!</div>
+</header>
 
-  <!-- Audios Reales -->
-  <audio id="audioJumanji" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a7b1d3.mp3?filename=jungle-drums-108226.mp3"></audio>
-  <audio id="audioShark" src="https://cdn.pixabay.com/download/audio/2022/01/18/audio_d0a13f69d2.mp3?filename=suspense-cinematic-115383.mp3"></audio>
-  <audio id="audioJurassic" src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=adventure-orchestral-112282.mp3"></audio>
-
-  <!-- Encabezado Fijo -->
-  <div class="header">
-    <div class="app-title" onclick="showView('hub')">🎮 Cultura Kids</div>
-    <div class="header-actions">
-      <button class="btn-header" onclick="showView('hub')">🏠 Menú</button>
-      <div class="stars-count" id="globalStars">🌟 0</div>
+<main>
+  <section id="home" class="panel">
+    <div class="spread">
+      <div>
+        <h2>¡Hola, explorador! 🦉</h2>
+        <div class="muted">Tus estrellas te acompañan en cada aventura.</div>
+      </div>
+      <div style="font-size:30px">⭐ <b id="stars">0</b></div>
     </div>
-  </div>
-
-  <!-- Contenido Principal -->
-  <div class="main-content">
-
-    <!-- 1. MENÚ PRINCIPAL (HUB) -->
-    <div id="viewHub" class="view-panel">
-      <div style="text-align: center; color: white; margin-bottom: 12px;">
-        <h2 style="margin: 0; font-size: 1.4rem;">¡Elige tu Aventura! 🥁🚀</h2>
-        <p style="margin: 4px 0 0 0; font-size: 0.85rem; opacity: 0.9;">Toca un juego para comenzar</p>
-      </div>
-
-      <div class="game-card" onclick="showView('setup')">
-        <div class="game-card-title">🗺️ La Aventura del Mapa Mágico</div>
-        <div class="game-card-desc">Lanza el dado con animación, avanza por el mapa y responde preguntas escolares de 1° a 5° básico.</div>
-      </div>
-
-      <div class="game-card" onclick="showView('puzzleSelect')">
-        <div class="game-card-title">🧩 El Rincón del Rompecabezas</div>
-        <div class="game-card-desc">Arma rompecabezas de 48 a 500 piezas de dinosaurios, marinos, el universo y profesiones.</div>
-      </div>
-
-      <div class="game-card" onclick="alert('🔤 Próximamente: El Desafío de Palabras')">
-        <div class="game-card-title">🔤 El Desafío de Palabras</div>
-        <div class="game-card-desc">Descubre y arma palabras secretas con imágenes y pistas divertidas.</div>
-      </div>
+    <div class="menu-grid" style="margin-top:16px">
+      <button class="game-card" onclick="openGame('puzzle')">
+        <span class="emoji">🧩</span><b>Rompecabezas</b><small>¡Reconstruye las imágenes!</small>
+      </button>
+      <button class="game-card" onclick="openGame('words')">
+        <span class="emoji">🔤</span><b>Palabras locas</b><small>Ordena las letras.</small>
+      </button>
+      <button class="game-card" onclick="openGame('board')">
+        <span class="emoji">🎲</span><b>Tablero familiar</b><small>Preguntas y desafíos.</small>
+      </button>
+      <button class="game-card" onclick="banana()">
+        <span class="emoji">🍌</span><b>¡Modo banana!</b><small>Una sorpresa sonora.</small>
+      </button>
     </div>
-
-    <!-- 2. CONFIGURACIÓN DEL MAPA -->
-    <div id="viewSetup" class="view-panel hidden">
-      <div class="glass-card">
-        <button class="btn-outline" onclick="showView('hub')" style="margin-bottom:12px;">🏠 Menú Principal</button>
-        <h2 style="text-align: center; margin-top: 0;">🗺️ Configurar Mapa Mágico</h2>
-        
-        <div style="margin-bottom: 12px;">
-          <label><b>Integrantes de la Familia:</b></label>
-          <div id="playersListContainer" style="display:flex; flex-direction:column; gap:6px; margin:8px 0;"></div>
-          <div style="display: flex; gap: 6px;">
-            <input type="text" id="newPlayerName" placeholder="Nombre..." style="flex:1; padding:10px; border-radius:10px; border:1px solid #cbd5e1;">
-            <button onclick="addPlayer()" class="btn-success" style="width:auto; padding:10px 14px;">+ Agregar</button>
-          </div>
-        </div>
-
-        <div style="margin-bottom: 15px;">
-          <label><b>Nivel de Escolaridad:</b></label>
-          <select id="difficultySelect" style="width:100%; padding:10px; border-radius:10px; border:1px solid #cbd5e1; font-weight:700;">
-            <option value="1">🟢 Nivel 1 (1° y 2° Básico)</option>
-            <option value="2" selected>🟡 Nivel 2 (3° y 4° Básico)</option>
-            <option value="3">🔴 Nivel 3 (5° Básico / Desafío)</option>
-          </select>
-        </div>
-
-        <button onclick="startAdventure()">¡Comenzar Mapa Mágico! 🚀</button>
-      </div>
+    <div class="row" style="margin-top:15px">
+      <button class="secondary" onclick="drums()">🥁 Tambores de aventura</button>
+      <button class="secondary" onclick="roar()">🦖 Rugido</button>
+      <button class="secondary" onclick="say('¡Hola, exploradores! Hoy vamos a aprender jugando. ¡Que comience la aventura!')">🗣️ Escuchar saludo</button>
+      <button class="secondary" id="soundToggle" onclick="toggleSound()">🔊 Sonido activado</button>
     </div>
+    <p class="muted">Consejo: para escuchar sonidos en iPhone, sube el volumen y toca un botón.</p>
+  </section>
 
-    <!-- 3. TABLERO DE JUEGO (MAPA MÁGICO) -->
-    <div id="viewBoard" class="view-panel hidden">
-      <div style="width: 100%; display:flex; justify-content:space-between; margin-bottom:8px;">
-        <button class="btn-outline" onclick="showView('setup')" style="width:auto; padding:6px 12px; font-size:0.8rem; background:white;">⬅️ Configurar</button>
-        <button class="btn-outline" onclick="showView('hub')" style="width:auto; padding:6px 12px; font-size:0.8rem; background:white;">🏠 Menú Principal</button>
-      </div>
-
-      <div id="boardGrid" class="board-grid"></div>
-
-      <div class="glass-card" style="text-align: center; margin-top: auto;">
-        <div id="turnStatus" style="font-weight: 900; color: #334155;">Turno de Leonor</div>
-        <div class="dice-box" id="diceVisual">🎲</div>
-        <button class="btn-secondary" id="rollBtn" onclick="handleRoll()">¡Lanzar Dado!</button>
-      </div>
+  <section id="puzzle" class="panel hidden">
+    <div class="spread">
+      <h2>🧩 Rompecabezas</h2>
+      <button class="secondary" onclick="goHome()">🏠 Menú</button>
     </div>
-
-    <!-- 4. SELECCIÓN DE ROMPECABEZAS -->
-    <div id="viewPuzzleSelect" class="view-panel hidden">
-      <div class="glass-card">
-        <button class="btn-outline" onclick="showView('hub')" style="margin-bottom:12px;">🏠 Menú Principal</button>
-        <h2 style="text-align: center; margin-top:0;">🧩 Elige tu Rompecabezas</h2>
-        
-        <label><b>1. Selecciona la Categoría:</b></label>
-        <div class="puzzle-category-grid">
-          <div class="puzzle-cat-btn selected" onclick="selectPuzzleCat('dino', this)">REX Dinosaurios</div>
-          <div class="puzzle-cat-btn" onclick="selectPuzzleCat('sea', this)">🦈 Marinos y Tiburón</div>
-          <div class="puzzle-cat-btn" onclick="selectPuzzleCat('space', this)">🌌 El Universo</div>
-          <div class="puzzle-cat-btn" onclick="selectPuzzleCat('jobs', this)">👨‍🚒 Profesiones</div>
-        </div>
-
-        <div id="dinoSelectorBox">
-          <label><b>2. Selecciona tu Dinosaurio Favorito:</b></label>
-          <div id="dinoList" class="dino-select-list"></div>
-        </div>
-
-        <label style="margin-top:10px; display:block;"><b>3. Cantidad de Piezas (5 Niveles):</b></label>
-        <select id="puzzleLevelSelect" style="width:100%; padding:10px; border-radius:10px; border:1px solid #cbd5e1; font-weight:700; margin: 6px 0 15px 0;">
-          <option value="48">🟢 Nivel 1: 48 Piezas (Fácil)</option>
-          <option value="96">🟡 Nivel 2: 96 Piezas (Medio)</option>
-          <option value="150">🟠 Nivel 3: 150 Piezas (Avanzado)</option>
-          <option value="300">🔴 Nivel 4: 300 Piezas (Desafío)</option>
-          <option value="500">🟣 Nivel 5: 500 Piezas (Maestro)</option>
-        </select>
-
-        <button class="btn-success" onclick="startPuzzle()">¡Iniciar Rompecabezas! 🧩</button>
-      </div>
+    <p class="muted">Toca una pieza y luego otra para intercambiarlas. ¡Completa la imagen!</p>
+    <div class="row">
+      <label for="theme">Aventura:</label>
+      <select id="theme" onchange="newPuzzle()">
+        <option value="dino">🦖 Mundo dinosaurio</option>
+        <option value="ocean">🐬 Océano</option>
+        <option value="space">🚀 Universo</option>
+        <option value="jobs">👩‍🚒 Profesiones</option>
+      </select>
+      <label for="level">Dificultad:</label>
+      <select id="level" onchange="newPuzzle()">
+        <option value="12">12 piezas</option>
+        <option value="24">24 piezas</option>
+        <option value="48">48 piezas</option>
+        <option value="96">96 piezas</option>
+        <option value="200">200 piezas</option>
+        <option value="300">300 piezas</option>
+        <option value="500">500 piezas</option>
+      </select>
     </div>
-
-    <!-- 5. JUEGO DE ROMPECABEZAS ACTIVO -->
-    <div id="viewPuzzleActive" class="view-panel hidden">
-      <div class="glass-card" style="text-align: center;">
-        <div style="display:flex; gap:6px; margin-bottom:10px;">
-          <button class="btn-outline" onclick="showView('puzzleSelect')">⬅️ Volver</button>
-          <button class="btn-outline" onclick="showView('hub')">🏠 Menú</button>
-        </div>
-
-        <h3 id="puzzleTitle">🦖 Tiranosaurio Rex</h3>
-        <p id="puzzleDinoInfo" style="font-size:0.85rem; color:#475569; font-weight:700;">¡Escucha con voz de Minion y arma las piezas!</p>
-        
-        <div style="display:flex; gap:6px; margin-bottom:8px;">
-          <button onclick="speakMinionVoice()" style="background:#64748b; flex:1;">🍌 Voz Minion</button>
-          <button onclick="playThemeMusic()" style="background:#8b5cf6; flex:1;">🎵 Música Real</button>
-        </div>
-        
-        <div id="puzzleBoardArea" class="puzzle-board"></div>
-
-        <button class="btn-success" onclick="completePuzzle()" style="margin-top:10px;">✔ Encajar Pieza / Completar</button>
-      </div>
+    <div id="puzzleBoard" aria-label="Tablero de rompecabezas"></div>
+    <div id="puzzleStatus" class="muted" style="text-align:center"></div>
+    <div id="feedback" aria-live="polite"></div>
+    <div class="row" style="justify-content:center">
+      <button onclick="newPuzzle()">🔀 Mezclar de nuevo</button>
+      <button class="secondary" onclick="showPuzzleImage()">👀 Ver imagen</button>
     </div>
-
-  </div>
-
-  <!-- Modal de Preguntas con Búho Guía -->
-  <div id="questionModal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <span id="subjectTag" style="background: var(--primary); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 900;">MATERIA</span>
-      <h3 id="modalQuestion" style="color: #1e293b; margin: 12px 0; font-size: 0.95rem;">¿Pregunta?</h3>
-      
-      <div id="quizOptions" style="display: flex; flex-direction: column; gap: 6px;"></div>
-
-      <button onclick="speakMinionVoice(currentQuestionText)" style="margin-top: 8px; background: #64748b; font-size: 0.85rem;">🍌 Escuchar Pregunta Minion</button>
-      <button onclick="showOwlHint()" style="margin-top: 6px; background: #f59e0b; font-size: 0.85rem;">💡 Pedir Pista al Búho Sabio</button>
-
-      <!-- Guía del Búho -->
-      <div id="owlGuideBox" class="owl-box hidden">
-        <span>🦉</span>
-        <p id="owlMessage">¡Hola! Te ayudaré con una pista.</p>
-      </div>
-
-      <button id="closeModalBtn" onclick="closeModal()" class="hidden btn-success" style="margin-top: 10px;">Continuar ➔</button>
+    <div id="imagePreview" class="hidden" style="text-align:center;margin-top:12px">
+      <img id="puzzleImage" alt="Imagen de referencia del rompecabezas">
     </div>
-  </div>
+  </section>
 
-  <!-- Navegación Inferior Fija -->
-  <div class="nav-bar">
-    <div class="nav-item active" onclick="showView('hub')"><span>🏠</span>Inicio</div>
-    <div class="nav-item" onclick="showView('setup')"><span>🗺️</span>Mapa</div>
-    <div class="nav-item" onclick="showView('puzzleSelect')"><span>🧩</span>Puzzles</div>
-  </div>
+  <section id="words" class="panel hidden">
+    <div class="spread">
+      <h2>🔤 Palabras locas</h2>
+      <button class="secondary" onclick="goHome()">🏠 Menú</button>
+    </div>
+    <div id="wordHint" style="font-size:20px;text-align:center;margin:20px 0"></div>
+    <div id="answer"></div>
+    <div id="wordLetters"></div>
+    <div id="wordFeedback" aria-live="polite" style="text-align:center;min-height:28px"></div>
+    <div class="row" style="justify-content:center">
+      <button onclick="checkWord()">¡Comprobar!</button>
+      <button class="secondary" onclick="undoLetter()">↩️ Deshacer</button>
+      <button class="secondary" onclick="newWord()">Otra palabra</button>
+    </div>
+  </section>
 
-  <script>
-    // NAVEGACIÓN ÚNICA
-    function showView(viewId) {
-      stopAllMusic();
-      document.querySelectorAll('.view-panel').forEach(panel => panel.classList.add('hidden'));
-      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+  <section id="board" class="panel hidden">
+    <div class="spread">
+      <h2>🎲 Tablero familiar</h2>
+      <button class="secondary" onclick="goHome()">🏠 Menú</button>
+    </div>
+    <p class="muted">Jueguen de 1 a 5 personas. Cada turno, lanza el dado y responde la pregunta.</p>
+    <div class="row">
+      <label for="playerCount">Jugadores:</label>
+      <select id="playerCount" onchange="setupBoard()">
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+      </select>
+      <button onclick="rollDice()">🎲 Lanzar dado (1–3)</button>
+      <button class="secondary" onclick="setupBoard()">Reiniciar partida</button>
+    </div>
+    <div id="players"></div>
+    <div id="boardTrack"></div>
+    <div id="questionBox" class="panel hidden" style="margin-top:14px">
+      <div id="category" class="muted"></div>
+      <h3 id="question"></h3>
+      <div id="answers" class="row"></div>
+      <div id="boardFeedback" aria-live="polite"></div>
+      <button id="nextTurn" class="hidden" onclick="nextPlayer()">Siguiente turno ➜</button>
+    </div>
+  </section>
+</main>
+<footer>Cultura Kids · Hecho para aprender jugando 💜</footer>
 
-      if (viewId === 'hub') {
-        document.getElementById('viewHub').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[0].classList.add('active');
-        playMusic('audioJumanji');
-      } else if (viewId === 'setup') {
-        document.getElementById('viewSetup').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[1].classList.add('active');
-      } else if (viewId === 'board') {
-        document.getElementById('viewBoard').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[1].classList.add('active');
-      } else if (viewId === 'puzzleSelect') {
-        renderDinoList();
-        document.getElementById('viewPuzzleSelect').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[2].classList.add('active');
-      } else if (viewId === 'puzzleActive') {
-        document.getElementById('viewPuzzleActive').classList.remove('hidden');
-        document.querySelectorAll('.nav-item')[2].classList.add('active');
-      }
+<script>
+"use strict";
+
+/* ---------- ESTRELLAS Y PREFERENCIAS ---------- */
+let starCount = Number(localStorage.getItem("ckStars") || 0);
+let soundOn = localStorage.getItem("ckSound") !== "off";
+let audioCtx = null;
+function updateStars() {
+  document.getElementById("stars").textContent = starCount;
+  localStorage.setItem("ckStars", String(starCount));
+}
+function earnStars(n=1) {
+  starCount += n; updateStars();
+}
+function toggleSound() {
+  soundOn = !soundOn;
+  localStorage.setItem("ckSound", soundOn ? "on" : "off");
+  document.getElementById("soundToggle").textContent =
+    soundOn ? "🔊 Sonido activado" : "🔇 Sonido desactivado";
+}
+function audio() {
+  if (!soundOn) return null;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return null;
+    if (!audioCtx) audioCtx = new AC();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+    return audioCtx;
+  } catch(e) { return null; }
+}
+function tone(freq, duration, type="sine", volume=.12, delay=0, endFreq=null) {
+  const c = audio(); if (!c) return;
+  const start = c.currentTime + delay;
+  const osc = c.createOscillator(), gain = c.createGain();
+  osc.type = type;
+  osc.frequency.setValueAtTime(Math.max(30,freq),start);
+  if (endFreq) osc.frequency.exponentialRampToValueAtTime(Math.max(30,endFreq),start+duration);
+  gain.gain.setValueAtTime(.0001,start);
+  gain.gain.exponentialRampToValueAtTime(volume,start+.012);
+  gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+  osc.connect(gain); gain.connect(c.destination);
+  osc.start(start); osc.stop(start+duration+.03);
+}
+function noise(duration=.2, volume=.1, filterFreq=500, delay=0) {
+  const c=audio(); if(!c) return;
+  const len=Math.max(1,Math.floor(c.sampleRate*duration));
+  const buffer=c.createBuffer(1,len,c.sampleRate), data=buffer.getChannelData(0);
+  for(let i=0;i<len;i++) data[i]=(Math.random()*2-1)*(1-i/len);
+  const src=c.createBufferSource(), filter=c.createBiquadFilter(), gain=c.createGain();
+  src.buffer=buffer; filter.type="lowpass"; filter.frequency.value=filterFreq;
+  const start=c.currentTime+delay;
+  gain.gain.setValueAtTime(volume,start);
+  gain.gain.exponentialRampToValueAtTime(.0001,start+duration);
+  src.connect(filter);filter.connect(gain);gain.connect(c.destination);
+  src.start(start);src.stop(start+duration);
+}
+function drums() {
+  if(!soundOn) return;
+  // Golpes graves y crecientes, creados en tiempo real.
+  [0,.48,.96,1.44,1.68,1.92].forEach((d,i)=>{
+    tone(90-i*5,.34,"sine",.34,d,42);
+    noise(.22,.16,170,d);
+  });
+  setTimeout(()=>tone(520,.28,"triangle",.1,0,820),2100);
+}
+function roar() {
+  if(!soundOn) return;
+  // Efecto original sintetizado: rugido grave con ruido filtrado.
+  tone(95,1.15,"sawtooth",.22,0,38);
+  tone(62,1.3,"triangle",.24,.1,32);
+  noise(1.05,.2,360,.05);
+  noise(.7,.11,900,.35);
+}
+function correctSound() {
+  tone(523,.14,"sine",.12,0); tone(659,.14,"sine",.12,.12);
+  tone(784,.24,"sine",.13,.24);
+}
+function wrongSound() {
+  tone(220,.24,"triangle",.13,0,150);
+}
+function banana() {
+  if(soundOn) {
+    tone(540,.12,"square",.06,0);
+    tone(690,.12,"square",.06,.14);
+    tone(830,.24,"triangle",.08,.28);
+  }
+  say("¡Banaaaana! ¡Eres una estrella de la aventura!");
+}
+function say(text) {
+  if(!soundOn || !("speechSynthesis" in window)) return;
+  try {
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang="es-CL"; u.rate=.92; u.pitch=1.15;
+    speechSynthesis.speak(u);
+  } catch(e) {}
+}
+
+/* ---------- NAVEGACIÓN ---------- */
+const sections=["home","puzzle","words","board"];
+function openGame(id) {
+  sections.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!==id));
+  if(id==="puzzle") newPuzzle();
+  if(id==="words") newWord();
+  if(id==="board") setupBoard();
+}
+function goHome() {
+  sections.forEach(s=>document.getElementById(s).classList.toggle("hidden",s!=="home"));
+}
+
+/* ---------- ILUSTRACIONES SVG ORIGINALES ---------- */
+function scene(theme) {
+  const sky = {
+    dino:["#4ad5b3","#176a67"], ocean:["#51d7f1","#07518e"],
+    space:["#28306c","#090e2d"], jobs:["#ffd49a","#f478a8"]
+  }[theme];
+  let s=`<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900">
+  <defs>
+    <linearGradient id="bg" x2="0" y2="1"><stop stop-color="${sky[0]}"/><stop offset="1" stop-color="${sky[1]}"/></linearGradient>
+    <linearGradient id="hill" x2="0" y2="1"><stop stop-color="#72df92"/><stop offset="1" stop-color="#18805e"/></linearGradient>
+    <radialGradient id="sun"><stop stop-color="#fff9b5"/><stop offset="1" stop-color="#ffc64b"/></radialGradient>
+  </defs><rect width="900" height="900" fill="url(#bg)"/>`;
+  if(theme==="dino") {
+    s+=`<circle cx="710" cy="150" r="65" fill="url(#sun)"/>
+    <path d="M0 550 Q180 380 360 560 T900 480 V900 H0Z" fill="#26966d"/>
+    <path d="M0 690 Q220 520 430 700 T900 610 V900 H0Z" fill="url(#hill)"/>
+    <g fill="#155f4c"><path d="M70 520 L100 210 L130 520Z"/><path d="M40 330 Q100 180 160 330 Q100 290 40 330Z"/><path d="M710 510 L750 160 L790 510Z"/><path d="M680 300 Q750 130 820 300 Q750 260 680 300Z"/></g>
+    <g transform="translate(160 260)">
+      <path d="M140 310 Q30 300 20 205 Q-30 180 -60 210 Q0 120 85 180 Q140 120 230 175 L280 230 L340 245 L345 290 L275 290 Q220 380 140 310Z" fill="#45bb65" stroke="#155f4c" stroke-width="10"/>
+      <path d="M120 310 L105 400 L145 400 L175 325 M220 310 L220 400 L260 400 L265 285" fill="#249650" stroke="#155f4c" stroke-width="10"/>
+      <path d="M175 180 L190 120 L220 165 L250 115 L265 180" fill="#ffbd52" stroke="#155f4c" stroke-width="8"/>
+      <circle cx="255" cy="215" r="15" fill="white"/><circle cx="260" cy="215" r="7" fill="#202a48"/>
+      <path d="M300 265 L340 273 L302 284" fill="#ffad48" stroke="#155f4c" stroke-width="7"/>
+      <path d="M110 250 Q170 300 210 255" fill="none" stroke="#155f4c" stroke-width="8"/>
+    </g>
+    <g fill="#f6e8a4"><circle cx="90" cy="710" r="9"/><circle cx="790" cy="710" r="12"/><circle cx="620" cy="780" r="8"/></g>
+    <text x="450" y="100" font-size="48" font-weight="bold" text-anchor="middle" fill="white">¡MUNDO JURÁSICO!</text>`;
+  } else if(theme==="ocean") {
+    s+=`<circle cx="150" cy="130" r="60" fill="#ffec8a"/>
+    <path d="M0 270 Q90 220 180 270 T360 270 T540 270 T720 270 T900 270 V900 H0Z" fill="#0b70b5"/>
+    <path d="M0 450 Q100 400 200 450 T400 450 T600 450 T800 450 T1000 450" fill="none" stroke="#83e8ef" stroke-width="15"/>
+    <path d="M0 640 Q100 600 200 640 T400 640 T600 640 T800 640 T1000 640" fill="none" stroke="#83e8ef" stroke-width="12"/>
+    <g transform="translate(190 320)"><ellipse cx="250" cy="210" rx="210" ry="125" fill="#ff9e54" stroke="#a9494a" stroke-width="10"/>
+    <path d="M70 210 L-30 120 L-20 290Z" fill="#ffbd64" stroke="#a9494a" stroke-width="9"/>
+    <path d="M260 120 L330 45 L355 145" fill="#ffd16b" stroke="#a9494a" stroke-width="8"/>
+    <circle cx="360" cy="180" r="28" fill="white"/><circle cx="369" cy="180" r="13" fill="#202a48"/>
+    <path d="M380 245 Q420 270 445 238" fill="none" stroke="#a9494a" stroke-width="8"/>
+    <path d="M180 280 Q240 340 290 270" fill="#ffcf72" stroke="#a9494a" stroke-width="8"/></g>
+    <g fill="#ffdd76"><circle cx="90" cy="400" r="12"/><circle cx="770" cy="370" r="9"/><circle cx="700" cy="550" r="14"/><circle cx="130" cy="570" r="8"/></g>
+    <g fill="#ff9d6b"><path d="M690 740 Q650 680 690 630 Q740 680 690 740Z"/><path d="M730 740 Q690 680 730 630 Q780 680 730 740Z"/></g>
+    <text x="450" y="100" font-size="48" font-weight="bold" text-anchor="middle" fill="white">¡AVENTURA MARINA!</text>`;
+  } else if(theme==="space") {
+    s+=`<circle cx="690" cy="180" r="90" fill="#f3c6ff"/><circle cx="660" cy="150" r="25" fill="#d4a4ee"/><circle cx="720" cy="210" r="18" fill="#d4a4ee"/>
+    <g fill="#fff"><circle cx="100" cy="140" r="7"/><circle cx="250" cy="250" r="5"/><circle cx="420" cy="130" r="7"/><circle cx="790" cy="370" r="6"/><circle cx="130" cy="480" r="6"/><circle cx="600" cy="420" r="5"/><circle cx="350" cy="580" r="7"/></g>
+    <g transform="translate(160 250) rotate(-18 260 250)">
+    <path d="M250 60 Q390 190 250 470 Q110 190 250 60Z" fill="#f2f5ff" stroke="#6774bd" stroke-width="10"/>
+    <path d="M250 70 L250 465 Q165 290 250 70Z" fill="#ff7c8d"/>
+    <circle cx="250" cy="235" r="65" fill="#69d9ed" stroke="#6774bd" stroke-width="12"/>
+    <circle cx="230" cy="215" r="18" fill="#dffbff"/>
+    <path d="M170 355 L75 435 L185 425Z" fill="#ffc857" stroke="#6774bd" stroke-width="8"/>
+    <path d="M330 355 L425 435 L315 425Z" fill="#ffc857" stroke="#6774bd" stroke-width="8"/>
+    <path d="M225 465 L250 540 L275 465Z" fill="#ff8b54"/></g>
+    <ellipse cx="420" cy="700" rx="260" ry="60" fill="#6e75cc" opacity=".6"/>
+    <text x="450" y="100" font-size="48" font-weight="bold" text-anchor="middle" fill="white">¡EXPLORA EL UNIVERSO!</text>`;
+  } else {
+    s+=`<circle cx="730" cy="140" r="65" fill="url(#sun)"/>
+    <path d="M0 700 Q200 560 400 700 T900 650 V900 H0Z" fill="#7bd5a1"/>
+    <rect x="70" y="450" width="760" height="280" rx="25" fill="#fff4e4" stroke="#bf6e8e" stroke-width="12"/>
+    <rect x="100" y="480" width="320" height="180" rx="15" fill="#87dcf0"/>
+    <path d="M100 590 L200 520 L280 590 L350 535 L420 590 V660 H100Z" fill="#fff"/>
+    <g transform="translate(500 300)">
+    <circle cx="100" cy="90" r="72" fill="#b97a53" stroke="#7a4a44" stroke-width="9"/>
+    <path d="M40 80 Q100 20 160 80" fill="none" stroke="#7a4a44" stroke-width="12"/>
+    <circle cx="75" cy="90" r="8" fill="#222b45"/><circle cx="125" cy="90" r="8" fill="#222b45"/>
+    <path d="M75 125 Q100 145 130 125" fill="none" stroke="#7a4a44" stroke-width="7"/>
+    <path d="M20 190 Q100 150 180 190 L210 420 L-10 420Z" fill="#ff6e9e" stroke="#b74d7b" stroke-width="10"/>
+    <path d="M30 220 L-40 310 M170 220 L240 310" stroke="#b97a53" stroke-width="28" stroke-linecap="round"/>
+    <path d="M45 420 L35 500 M125 420 L145 500" stroke="#35466c" stroke-width="30" stroke-linecap="round"/></g>
+    <text x="450" y="100" font-size="48" font-weight="bold" text-anchor="middle" fill="#4c315e">¡TODOS PODEMOS AYUDAR!</text>`;
+  }
+  s+="</svg>";
+  return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(s);
+}
+
+/* ---------- ROMPECABEZAS DE IMAGEN RECORTADA ---------- */
+let puzzle={order:[],cols:4,rows:3,selected:-1,solved:false,src:"",count:12};
+function dimensions(n) {
+  // Mantiene una cuadrícula práctica, aproximada al número solicitado.
+  let best=[1,n], score=Infinity;
+  for(let r=1;r<=Math.sqrt(n);r++) {
+    if(n%r===0) {
+      const c=n/r, diff=Math.abs(c/r-1);
+      if(diff<score){score=diff;best=[r,c];}
     }
-
-    function stopAllMusic() {
-      ['audioJumanji', 'audioShark', 'audioJurassic'].forEach(id => {
-        const audio = document.getElementById(id);
-        if (audio) { audio.pause(); audio.currentTime = 0; }
-      });
+  }
+  if(n===12)return [3,4];
+  if(n===24)return [4,6];
+  if(n===48)return [6,8];
+  if(n===96)return [8,12];
+  if(n===200)return [10,20];
+  if(n===300)return [15,20];
+  if(n===500)return [20,25];
+  return best;
+}
+function shuffle(arr) {
+  for(let i=arr.length-1;i>0;i--) {
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+function newPuzzle() {
+  const theme=document.getElementById("theme").value;
+  const count=Number(document.getElementById("level").value);
+  const [rows,cols]=dimensions(count);
+  puzzle={order:shuffle(Array.from({length:rows*cols},(_,i)=>i)),
+    cols,rows,selected:-1,solved:false,src:scene(theme),count:rows*cols};
+  document.getElementById("imagePreview").classList.add("hidden");
+  document.getElementById("puzzleImage").src=puzzle.src;
+  document.getElementById("feedback").textContent="";
+  renderPuzzle();
+}
+function renderPuzzle() {
+  const board=document.getElementById("puzzleBoard");
+  board.innerHTML="";
+  board.style.gridTemplateColumns=`repeat(${puzzle.cols}, minmax(0,1fr))`;
+  // Las piezas son recortes de una misma ilustración SVG.
+  puzzle.order.forEach((originalIndex,slot)=>{
+    const btn=document.createElement("button");
+    btn.className="tile";
+    if(originalIndex===slot)btn.classList.add("correct");
+    if(puzzle.selected===slot)btn.classList.add("selected");
+    const x=originalIndex%puzzle.cols, y=Math.floor(originalIndex/puzzle.cols);
+    btn.style.backgroundImage=`url("${puzzle.src}")`;
+    btn.style.backgroundSize=`${puzzle.cols*100}% ${puzzle.rows*100}%`;
+    btn.style.backgroundPosition=`${puzzle.cols===1?0:x/(puzzle.cols-1)*100}% ${puzzle.rows===1?0:y/(puzzle.rows-1)*100}%`;
+    btn.setAttribute("aria-label",`Pieza ${slot+1}`);
+    // Reducimos los adornos en tableros grandes para facilitar la interacción.
+    if(puzzle.count<=48) {
+      const number=document.createElement("span");
+      number.className="number";number.textContent=slot+1;btn.appendChild(number);
     }
+    btn.onclick=()=>selectPiece(slot);
+    board.appendChild(btn);
+  });
+  document.getElementById("puzzleStatus").textContent=
+    `${puzzle.count} piezas · ${puzzle.order.filter((v,i)=>v===i).length} en su lugar`;
+}
+function selectPiece(slot) {
+  if(puzzle.solved)return;
+  if(puzzle.selected===-1) {
+    puzzle.selected=slot;renderPuzzle();return;
+  }
+  if(puzzle.selected===slot) {
+    puzzle.selected=-1;renderPuzzle();return;
+  }
+  [puzzle.order[puzzle.selected],puzzle.order[slot]]=
+    [puzzle.order[slot],puzzle.order[puzzle.selected]];
+  puzzle.selected=-1;
+  const solved=puzzle.order.every((v,i)=>v===i);
+  if(solved) {
+    puzzle.solved=true;earnStars(3);correctSound();
+    document.getElementById("feedback").textContent="🎉 ¡Lo lograste! ¡Tres estrellas para ti!";
+    say("¡Fantástico! ¡Reconstruiste toda la imagen!");
+  } else {
+    tone(340,.06,"sine",.04);
+  }
+  renderPuzzle();
+}
+function showPuzzleImage() {
+  document.getElementById("imagePreview").classList.toggle("hidden");
+}
 
-    function playMusic(id) {
-      stopAllMusic();
-      const audio = document.getElementById(id);
-      if (audio) { audio.play().catch(e => console.log("Esperando clic de usuario")); }
-    }
+/* ---------- PALABRAS LOCAS ---------- */
+const wordBank=[
+  {word:"DINOSAURIO",hint:"🦖 Gigante prehistórico"},
+  {word:"PLANETA",hint:"🪐 Mundo que gira alrededor de una estrella"},
+  {word:"AMISTAD",hint:"🤝 Lo que compartimos con buenos amigos"},
+  {word:"BALLENA",hint:"🐋 Animal enorme del océano"},
+  {word:"BIBLIOTECA",hint:"📚 Lugar lleno de libros"},
+  {word:"CHOCOLATE",hint:"🍫 Dulce delicioso"},
+  {word:"ESTRELLA",hint:"⭐ Brilla en el cielo"},
+  {word:"BICICLETA",hint:"🚲 Tiene ruedas y pedales"},
+  {word:"BOSQUE",hint:"🌳 Lugar con muchos árboles"},
+  {word:"BANANA",hint:"🍌 ¡La fruta amarilla favorita de los bromistas!"}
+];
+let currentWord=null, chosen=[], remaining=[];
+function newWord() {
+  currentWord=wordBank[Math.floor(Math.random()*wordBank.length)];
+  chosen=[];remaining=shuffle([...currentWord.word]);
+  document.getElementById("wordHint").textContent=currentWord.hint;
+  document.getElementById("wordFeedback").textContent="";
+  renderWord();
+}
+function renderWord() {
+  const answer=document.getElementById("answer"), letters=document.getElementById("wordLetters");
+  answer.innerHTML="";letters.innerHTML="";
+  chosen.forEach((l,i)=>{
+    const b=document.createElement("button");b.className="letter";
+    b.textContent=l;b.onclick=()=>{remaining.push(chosen.splice(i,1)[0]);renderWord();};
+    answer.appendChild(b);
+  });
+  remaining.forEach((l,i)=>{
+    const b=document.createElement("button");b.className="letter";
+    b.textContent=l;b.onclick=()=>{chosen.push(remaining.splice(i,1)[0]);renderWord();};
+    letters.appendChild(b);
+  });
+}
+function undoLetter() {
+  if(chosen.length)remaining.push(chosen.pop());
+  renderWord();
+}
+function checkWord() {
+  const fb=document.getElementById("wordFeedback");
+  if(chosen.join("")===currentWord.word) {
+    fb.textContent="🎉 ¡Correcto! ¡Eres genial!";
+    earnStars(1);correctSound();
+    if(currentWord.word==="BANANA")banana();
+    else say("¡Muy bien! Has descubierto la palabra.");
+  } else {
+    fb.textContent="🤔 ¡Casi! Prueba otro orden.";
+    wrongSound();
+  }
+}
 
-    // VOZ TIPO MINION COMICA
-    function speakMinionVoice(textToSpeak) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const baseText = textToSpeak || (currentItemData ? `${currentItemData.name}. ${currentItemData.info}` : '¡Banana! ¡Bello!');
-        const minionText = `¡Bello! Banana... ${baseText}`;
-        const utterance = new SpeechSynthesisUtterance(minionText);
-        utterance.lang = 'es-CL';
-        utterance.pitch = 1.9;
-        utterance.rate = 1.25;
-        window.speechSynthesis.speak(utterance);
-      }
-    }
-
-    // ESTADO GENERAL
-    let globalStars = 0;
-    let players = [{ id: 1, name: "Leonor", pos: 0, color: '#E74C3C' }, { id: 2, name: "Papá", pos: 0, color: '#3498DB' }];
-    let currentPlayerIndex = 0;
-    let currentPuzzleCat = 'dino';
-    let selectedDinoIndex = 0;
-    let currentPuzzlePieces = 48;
-    let currentItemData = null;
-    let currentQuestionItem = null;
-    let currentQuestionText = "";
-    let usedQuestionIds = [];
-    const totalCells = 32;
-
-    // CONFIGURACIÓN DE CASILLAS CON ICONOS TEMÁTICOS
-    const cellsConfig = [
-      { type: 'start', label: 'Inicio', icon: '🏁' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'cultura', label: 'Cultura', icon: '🗿' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'cultura', label: 'Cultura', icon: '🗿' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'math', label: 'Mates', icon: '🔢' },
-      { type: 'cultura', label: 'Cultura', icon: '🗿' },
-      { type: 'lang', label: 'Lenguaje', icon: '📖' },
-      { type: 'sci', label: 'Ciencias', icon: '🌿' },
-      { type: 'eng', label: 'Inglés', icon: '🇬🇧' },
-      { type: 'riddle', label: 'Adivinanza', icon: '🧙‍♂️' },
-      { type: 'mus', label: 'Música', icon: '🎵' },
-      { type: 'joke', label: 'Chiste', icon: '🤡' },
-      { type: 'goal', label: 'Meta', icon: '🏆' }
-    ];
-
-    const dinosData = [
-      { name: 'Tiranosaurio Rex', icon: '🦖', info: '¡El rey carnívoro! Tenía dientes de 30 centímetros.' },
-      { name: 'Brachiosaurio', icon: '🦕', info: '¡Un gigante de cuello largo que comía de los árboles altos!' },
-      { name: 'Velociraptor', icon: '🌾', info: '¡Súper rápido y cazaba en manadas!' },
-      { name: 'Triceratops', icon: '🛡️', info: '¡Tenía tres cuernos para defenderse!' }
-    ];
-
-    // BANCO AMPLIO DE PREGUNTAS
-    const masterQuestionBank = [
-      { id: 1, cat: 'math', name: 'Matemáticas', q: '¿Cuánto es 5 + 3?', opts: ['7', '8', '9'], a: 1, hint: 'Comienza en el 5 y suma 3.' },
-      { id: 2, cat: 'math', name: 'Matemáticas', q: 'Si tienes 2 monedas de $100, ¿cuánto es?', opts: ['$100', '$200', '$300'], a: 1, hint: 'Suma 100 + 100.' },
-      { id: 3, cat: 'lang', name: 'Lenguaje', q: '¿Cuál es el antónimo de "Luz"?', opts: ['Sol', 'Sombra', 'Brillo'], a: 1, hint: 'Empieza con la letra S.' },
-      { id: 4, cat: 'lang', name: 'Lenguaje', q: 'En la oración "El gato salta", ¿cuál es el verbo?', opts: ['Gato', 'Salta', 'El'], a: 1, hint: 'Es la acción de saltar.' },
-      { id: 5, cat: 'sci', name: 'Ciencias', q: '¿Qué gas respiran los seres humanos?', opts: ['Oxígeno', 'Agua', 'Humo'], a: 0, hint: 'Empieza con la letra O.' },
-      { id: 6, cat: 'eng', name: 'Inglés', q: '¿Cómo se dice "Rojo" en inglés?', opts: ['Blue', 'Red', 'Yellow'], a: 1, hint: 'Empieza con R.' },
-      { id: 7, cat: 'mus', name: 'Música', q: '¿Qué instrumento se toca soplando?', opts: ['Flauta', 'Tambor', 'Guitarra'], a: 0, hint: 'Necesitas aire para hacerla sonar.' }
-    ];
-
-    function renderPlayersList() {
-      const container = document.getElementById('playersListContainer');
-      container.innerHTML = '';
-      players.forEach((p, idx) => {
-        const row = document.createElement('div');
-        row.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px; border-radius:10px;";
-        row.innerHTML = `<b>${p.name}</b> ${players.length > 1 ? `<button onclick="removePlayer(${idx})" style="width:auto; padding:4px 8px; background:#fee2e2; color:#dc2626;">X</button>` : ''}`;
-        container.appendChild(row);
-      });
-    }
-
-    function addPlayer() {
-      const input = document.getElementById('newPlayerName');
-      if (input.value.trim()) {
-        players.push({ id: players.length + 1, name: input.value.trim(), pos: 0, color: '#3498DB' });
-        input.value = '';
-        renderPlayersList();
-      }
-    }
-
-    function removePlayer(idx) {
-      if (players.length > 1) {
-        players.splice(idx, 1);
-        renderPlayersList();
-      }
-    }
-
-    function startAdventure() {
-      usedQuestionIds = [];
-      showView('board');
-      buildBoard();
-      updateTurnStatus();
-    }
-
-    function buildBoard() {
-      const grid = document.getElementById('boardGrid');
-      grid.innerHTML = '';
-      cellsConfig.forEach((cell, idx) => {
-        const div = document.createElement('div');
-        div.className = `cell ${players[currentPlayerIndex].pos === idx ? 'active-cell' : ''}`;
-        div.innerHTML = `<span class="cell-icon">${cell.icon}</span><span>${cell.label}</span>`;
-        
-        const playersHere = players.filter(p => p.pos === idx);
-        if (playersHere.length > 0) {
-          const tContainer = document.createElement('div');
-          tContainer.className = 'tokens-container';
-          playersHere.forEach(p => {
-            const av = document.createElement('div');
-            av.className = 'player-avatar';
-            av.style.background = p.color;
-            av.innerText = p.name.charAt(0);
-            tContainer.appendChild(av);
-          });
-          div.appendChild(tContainer);
-        }
-        grid.appendChild(div);
-      });
-    }
-
-    function updateTurnStatus() {
-      document.getElementById('turnStatus').innerText = `Turno de ${players[currentPlayerIndex].name}`;
-    }
-
-    function handleRoll() {
-      const diceBtn = document.getElementById('rollBtn');
-      const diceEl = document.getElementById('diceVisual');
-      diceBtn.disabled = true;
-      
-      // Animación de rebote del dado
-      diceEl.classList.add('dice-rolling');
-
-      setTimeout(() => {
-        diceEl.classList.remove('dice-rolling');
-        const diceValue = Math.floor(Math.random() * 3) + 1;
-        diceEl.innerText = ['🎲', '⚀', '⚁', '⚂'][diceValue];
-
-        let p = players[currentPlayerIndex];
-        p.pos = Math.min(p.pos + diceValue, totalCells - 1);
-        buildBoard();
-
-        if (p.pos === totalCells - 1) {
-          alert(`🎉 ¡${p.name} llegó a la Meta y gana el juego! 🎉`);
-          showView('hub');
-        } else {
-          setTimeout(() => triggerCellEvent(cellsConfig[p.pos]), 400);
-        }
-        diceBtn.disabled = false;
-      }, 700);
-    }
-
-    function triggerCellEvent(cell) {
-      const modal = document.getElementById('questionModal');
-      document.getElementById('owlGuideBox').classList.add('hidden');
-
-      // Filtrar preguntas sin repetir
-      let available = masterQuestionBank.filter(q => !usedQuestionIds.includes(q.id));
-      if (available.length === 0) available = masterQuestionBank;
-
-      currentQuestionItem = available[Math.floor(Math.random() * available.length)];
-      usedQuestionIds.push(currentQuestionItem.id);
-      currentQuestionText = currentQuestionItem.q;
-
-      document.getElementById('subjectTag').innerText = currentQuestionItem.name;
-      document.getElementById('modalQuestion').innerText = currentQuestionItem.q;
-      
-      const opts = document.getElementById('quizOptions');
-      opts.innerHTML = '';
-
-      currentQuestionItem.opts.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.innerText = opt;
-        btn.onclick = () => {
-          if (idx === currentQuestionItem.a) {
-            globalStars += 1;
-            document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
-            closeModal();
-          } else {
-            alert('¡Casi! Inténtalo otra vez o pide pista al Búho 🦉');
-          }
-        };
-        opts.appendChild(btn);
-      });
-
-      modal.classList.remove('hidden');
-    }
-
-    function showOwlHint() {
-      const owlBox = document.getElementById('owlGuideBox');
-      const owlMsg = document.getElementById('owlMessage');
-      owlBox.classList.remove('hidden');
-      owlMsg.innerText = currentQuestionItem.hint || '¡Revisa bien las opciones!';
-    }
-
-    function closeModal() {
-      document.getElementById('questionModal').classList.add('hidden');
-      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-      updateTurnStatus();
-      buildBoard();
-    }
-
-    function selectPuzzleCat(cat, btn) {
-      currentPuzzleCat = cat;
-      document.querySelectorAll('.puzzle-cat-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-
-      const dinoBox = document.getElementById('dinoSelectorBox');
-      if (cat === 'dino') dinoBox.classList.remove('hidden');
-      else dinoBox.classList.add('hidden');
-    }
-
-    function renderDinoList() {
-      const list = document.getElementById('dinoList');
-      list.innerHTML = '';
-      dinosData.forEach((d, idx) => {
-        const item = document.createElement('div');
-        item.className = `dino-item ${idx === selectedDinoIndex ? 'selected' : ''}`;
-        item.innerHTML = `<span>${d.icon} ${d.name}</span> <span>➔</span>`;
-        item.onclick = () => { selectedDinoIndex = idx; renderDinoList(); };
-        list.appendChild(item);
-      });
-    }
-
-    function startPuzzle() {
-      currentPuzzlePieces = parseInt(document.getElementById('puzzleLevelSelect').value) || 48;
-
-      if (currentPuzzleCat === 'dino') {
-        currentItemData = dinosData[selectedDinoIndex];
-        playMusic('audioJurassic');
-      } else if (currentPuzzleCat === 'sea') {
-        currentItemData = { name: 'Gran Tiburón Blanco 🦈', icon: '🦈', info: '¡El superpredador del océano con olfato desarrollado!' };
-        playMusic('audioShark');
+/* ---------- TABLERO DE PREGUNTAS ---------- */
+const questions=[
+ {c:"Matemáticas",q:"¿Cuánto es 7 + 5?",a:["10","12","13"],ok:1},
+ {c:"Matemáticas",q:"¿Cuál número es mayor?",a:["18","8","11"],ok:0},
+ {c:"Lenguaje",q:"¿Cuál palabra es un animal?",a:["Mesa","Tigre","Lápiz"],ok:1},
+ {c:"Lenguaje",q:"¿Qué usamos para leer?",a:["Un libro","Un zapato","Una cuchara"],ok:0},
+ {c:"Ciencias",q:"¿Qué necesitan las plantas para crecer?",a:["Luz y agua","Televisión","Juguetes"],ok:0},
+ {c:"Ciencias",q:"¿En qué planeta vivimos?",a:["Marte","Tierra","Júpiter"],ok:1},
+ {c:"Historia y cultura",q:"¿Cuál es la capital de Chile?",a:["Osorno","Santiago","Valdivia"],ok:1},
+ {c:"Historia y cultura",q:"¿Qué animal aparece en el escudo de Chile junto al cóndor?",a:["Huemul","Zorro","Pingüino"],ok:0},
+ {c:"English",q:"¿Qué significa 'cat'?",a:["Perro","Gato","Pez"],ok:1},
+ {c:"English",q:"¿Cómo se dice azul en inglés?",a:["Blue","Green","Red"],ok:0},
+ {c:"Música",q:"¿Qué instrumento tiene teclas blancas y negras?",a:["Piano","Tambor","Flauta"],ok:0},
+ {c:"Adivinanza",q:"Tengo agujas y no sé coser. ¿Qué soy?",a:["Un reloj","Un árbol","Un gato"],ok:0},
+ {c:"Naturaleza",q:"¿Qué animal tiene ocho brazos?",a:["Pulpo","Delfín","Tortuga"],ok:0},
+ {c:"Desafío divertido",q:"¡Haz tu mejor rugido de dinosaurio!",a:["¡ROAAAR!","Miau","Pío pío"],ok:0},
+ {c:"Cuidado del planeta",q:"¿Dónde ponemos una botella para reciclarla?",a:["En cualquier calle","En el contenedor adecuado","En el río"],ok:1}
+];
+let players=[],currentPlayer=0,positions=[],usedQuestions=[],awaiting=false;
+function setupBoard() {
+  const n=Number(document.getElementById("playerCount").value);
+  players=Array.from({length:n},(_,i)=>({name:["Jugador 1","Jugador 2","Jugador 3","Jugador 4","Jugador 5"][i],stars:0}));
+  positions=players.map(()=>0);currentPlayer=0;usedQuestions=[];awaiting=false;
+  document.getElementById("questionBox").classList.add("hidden");
+  renderBoard();
+}
+function renderBoard() {
+  const p=document.getElementById("players");p.innerHTML="";
+  players.forEach((pl,i)=>{
+    const tag=document.createElement("div");tag.className="playerTag";
+    tag.textContent=(i===currentPlayer?"👉 ":"")+pl.name+" · ⭐ "+pl.stars;
+    p.appendChild(tag);
+  });
+  const track=document.getElementById("boardTrack");track.innerHTML="";
+  for(let i=0;i<32;i++) {
+    const cell=document.createElement("div");cell.className="space";
+    const emojis=["🎲","🧠","🌟","🦖","📚","🎵","🔬","🍌"];
+    cell.innerHTML=`<span class="n">${i+1}</span><span style="font-size:20px">${emojis[i%emojis.length]}</span>`;
+    const here=players.map((pl,j)=>positions[j]===i?["🦊","🐼","🐸","🐯","🐙"][j]:"").filter(Boolean).join("");
+    if(here)cell.insertAdjacentHTML("beforeend",`<span class="playerDot">${here}</span>`);
+    track.appendChild(cell);
+  }
+}
+function rollDice() {
+  if(awaiting)return;
+  const die=1+Math.floor(Math.random()*3);
+  positions[currentPlayer]=Math.min(31,positions[currentPlayer]+die);
+  drums();renderBoard();
+  let available=questions.map((q,i)=>i).filter(i=>!usedQuestions.includes(i));
+  if(!available.length){usedQuestions=[];available=questions.map((q,i)=>i);}
+  const index=available[Math.floor(Math.random()*available.length)];
+  usedQuestions.push(index);
+  const q=questions[index];awaiting=true;
+  document.getElementById("questionBox").classList.remove("hidden");
+  document.getElementById("category").textContent=`🎲 Sacaste ${die} · ${q.c}`;
+  document.getElementById("question").textContent=q.q;
+  document.getElementById("boardFeedback").textContent="";
+  document.getElementById("nextTurn").classList.add("hidden");
+  const answers=document.getElementById("answers");answers.innerHTML="";
+  q.a.forEach((answer,i)=>{
+    const b=document.createElement("button");b.className="secondary";
+    b.textContent=answer;
+    b.onclick=()=>{
+      if(!awaiting)return;awaiting=false;
+      if(i===q.ok) {
+        players[currentPlayer].stars++;earnStars(1);
+        document.getElementById("boardFeedback").textContent="🎉 ¡Respuesta correcta! Ganaste una estrella.";
+        correctSound();
+        if(q.c==="Desafío divertido")roar();
       } else {
-        currentItemData = { name: 'El Sistema Solar 🌌', icon: '🌌', info: 'El Sol y los 8 planetas del espacio.' };
+        document.getElementById("boardFeedback").textContent="💪 ¡Buen intento! La respuesta correcta era: "+q.a[q.ok];
+        wrongSound();
       }
-      
-      document.getElementById('puzzleTitle').innerText = `${currentItemData.icon} ${currentItemData.name} (${currentPuzzlePieces} piezas)`;
-      document.getElementById('puzzleDinoInfo').innerText = currentItemData.info;
-
-      const boardArea = document.getElementById('puzzleBoardArea');
-      boardArea.innerHTML = '';
-      
-      // Construir cuadrícula según el número de piezas seleccionado
-      const cols = currentPuzzlePieces >= 150 ? 5 : 4;
-      boardArea.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-
-      for (let i = 1; i <= Math.min(currentPuzzlePieces, 20); i++) {
-        const slot = document.createElement('div');
-        slot.className = 'puzzle-piece-slot';
-        slot.innerText = `🧩 #${i}`;
-        boardArea.appendChild(slot);
-      }
-
-      showView('puzzleActive');
-      speakMinionVoice();
-    }
-
-    function playThemeMusic() {
-      if (currentPuzzleCat === 'sea') playMusic('audioShark');
-      else playMusic('audioJurassic');
-    }
-
-    function completePuzzle() {
-      globalStars += 3;
-      document.getElementById('globalStars').innerText = `🌟 ${globalStars}`;
-      alert(`🎉 ¡Excelente trabajo! Armaste el rompecabezas de ${currentPuzzlePieces} piezas. Ganaste +3 Estrellas 🌟`);
-    }
-
-    // INICIAR EN EL HUB CON MÚSICA
-    renderPlayersList();
-    showView('hub');
-  </script>
+      [...answers.children].forEach(el=>el.disabled=true);
+      document.getElementById("nextTurn").classList.remove("hidden");
+      renderBoard();
+    };
+    answers.appendChild(b);
+  });
+}
+function nextPlayer() {
+  currentPlayer=(currentPlayer+1)%players.length;
+  awaiting=false;
+  document.getElementById("questionBox").classList.add("hidden");
+  renderBoard();
+}
+updateStars();
+document.getElementById("soundToggle").textContent=
+  soundOn?"🔊 Sonido activado":"🔇 Sonido desactivado";
+</script>
 </body>
 </html>
