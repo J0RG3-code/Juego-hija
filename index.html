@@ -3,595 +3,546 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aventura del Saber</title>
+    <title>Cultura Kids - Diseño UI</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap');
 
         :root {
-            --bg-color: #e0f2fe;
-            --primary: #3b82f6;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --hint: #f59e0b;
+            --bg-app: #1c1c1e; /* Fondo oscuro exterior */
+            --bg-screen: #f5f7fa; /* Fondo interior de la app */
+            --primary-blue: #437bf3;
+            --primary-blue-shadow: #2a54b8;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            --border-radius-lg: 24px;
+            --border-radius-md: 16px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; touch-action: manipulation; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: var(--bg-color);
-            color: #1e293b;
+            background-color: var(--bg-app);
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             height: 100vh;
             overflow: hidden;
-            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
         }
+
+        /* Contenedor principal simulando un teléfono */
+        .phone-mockup {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            max-height: 850px;
+            background-color: var(--bg-screen);
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVEGACIÓN DE PRUEBA (Para ver los diseños) --- */
+        .demo-nav {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            padding: 5px;
+            border-radius: 20px;
+            display: flex;
+            gap: 5px;
+            z-index: 9999;
+        }
+        .demo-nav button {
+            background: transparent;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            cursor: pointer;
+        }
+        .demo-nav button.active { background: var(--primary-blue); }
 
         /* --- PANTALLAS --- */
-        .screen { display: none; height: 100%; width: 100%; flex-direction: column; padding: 15px; }
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; background: var(--bg-screen); }
         .screen.active { display: flex; }
 
-        /* --- MENÚ PRINCIPAL --- */
-        #setup-screen { justify-content: center; align-items: center; text-align: center; }
-        h1 { font-size: 2.5rem; color: var(--primary); margin-bottom: 10px; text-shadow: 2px 2px 0px #fff; }
-        .player-setup { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; width: 100%; max-width: 300px; }
-        .player-input { display: flex; align-items: center; gap: 10px; }
-        .player-input input { flex: 1; padding: 10px; border: 2px solid #cbd5e1; border-radius: 10px; font-size: 1rem; outline: none; }
-        .player-input input:focus { border-color: var(--primary); }
-        
-        .btn {
-            background-color: var(--primary); color: white; border: none; padding: 15px 20px;
-            border-radius: 15px; font-size: 1.2rem; font-weight: 900; cursor: pointer;
-            box-shadow: 0 4px 0 #1e3a8a; transition: transform 0.1s; width: 100%;
+        /* =========================================
+           PANTALLA 1: TABLERO (Board)
+           ========================================= */
+        .board-header {
+            padding: 40px 15px 15px 15px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            background: linear-gradient(to bottom, #e2e8f0, transparent);
         }
-        .btn:active { transform: translateY(4px); box-shadow: none; }
-        .btn-hint { background-color: var(--hint); box-shadow: 0 4px 0 #b45309; font-size: 1rem; padding: 10px; }
+        .player-badge {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 4px 10px 4px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .player-badge.active { border: 2px solid var(--primary-blue); }
+        .player-avatar {
+            width: 30px; height: 30px; border-radius: 50%; background: #ddd;
+            display: flex; justify-content: center; align-items: center; font-size: 1.2rem;
+        }
+        .player-info { display: flex; flex-direction: column; }
+        .player-name { font-size: 0.7rem; font-weight: 800; color: var(--text-dark); }
+        .player-stars { font-size: 0.65rem; color: var(--text-light); display: flex; align-items: center; gap: 2px; }
 
-        /* --- TABLERO CON GRID CSS (CORREGIDO) --- */
-        #board-screen { padding: 10px; justify-content: space-between; }
-        .header { display: flex; justify-content: space-between; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 15px; font-weight: bold; font-size: 0.9rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .map-area {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1546182990-dffeafbe841d?q=80&w=800&auto=format&fit=crop') center/cover;
+            position: relative;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            margin: 0 10px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+        }
         
-        .map-container { 
-            flex: 1; 
-            position: relative; 
-            background: url('https://images.unsplash.com/photo-1506744626753-143d4e0ce508?q=80&w=1000&auto=format&fit=crop') center/cover; 
-            border-radius: 20px; 
-            margin: 10px 0; 
-            border: 4px solid #fff; 
-            overflow: hidden; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+        .turn-indicator {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: var(--primary-blue);
+            margin: 15px 0 5px 0;
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .bottom-controls {
+            background: var(--bg-screen);
+            padding: 0 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Dado CSS */
+        .dice-graphic {
+            width: 60px; height: 60px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1), inset 0 -4px 0 #e2e8f0;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px;
+            font-size: 2rem; color: var(--primary-blue);
+            position: relative;
+        }
+        .dice-graphic::after { /* Puntitos del dado */
+            content: '...'; position: absolute; top: 50%; transform: translateY(-50%); letter-spacing: 2px; color: var(--primary-blue); font-size: 1.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-blue);
+            color: var(--white);
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.2rem;
+            font-weight: 800;
+            box-shadow: 0 4px 0 var(--primary-blue-shadow);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .btn-primary:active { transform: translateY(4px); box-shadow: none; }
+
+        /* Barra de Navegación Inferior */
+        .bottom-nav {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 25px 0;
+            background: var(--white);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            font-size: 0.7rem; font-weight: 700; color: var(--text-light);
+            cursor: pointer;
+        }
+        .nav-item.active { color: var(--primary-blue); }
+        .nav-icon { font-size: 1.3rem; }
+
+
+        /* =========================================
+           PANTALLA 2: NUEVA PARTIDA (Setup)
+           ========================================= */
+        .setup-screen { padding: 40px 20px 20px 20px; overflow-y: auto; background: var(--white); }
+        .header-title { font-size: 1.5rem; font-weight: 900; color: var(--text-dark); margin-bottom: 5px; }
+        .header-subtitle { font-size: 0.85rem; color: var(--text-light); margin-bottom: 20px; }
+        
+        .section-label { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); margin: 20px 0 10px 0; display: flex; justify-content: space-between; }
+        
+        .setup-card { background: var(--white); border: 2px solid #edf2f7; border-radius: var(--border-radius-md); padding: 10px; }
+        
+        .player-row { display: flex; align-items: center; justify-content: space-between; padding: 10px; border-bottom: 1px solid #edf2f7; }
+        .player-row:last-child { border-bottom: none; }
+        .player-row-left { display: flex; align-items: center; gap: 10px; }
+        .player-row-info { display: flex; flex-direction: column; }
+        .player-row-name { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); }
+        .player-row-age { font-size: 0.75rem; color: var(--text-light); }
+        .btn-add-player { color: var(--primary-blue); font-size: 0.9rem; font-weight: 800; background: none; border: none; padding: 10px; width: 100%; text-align: left; cursor: pointer; }
+
+        .difficulty-selector { display: flex; gap: 10px; }
+        .difficulty-btn {
+            flex: 1; padding: 10px; border-radius: 12px; border: 2px solid #edf2f7;
+            background: var(--white); color: var(--text-light); font-weight: 700; font-size: 0.8rem; text-align: center;
+        }
+        .difficulty-btn.active { background: #ebf8ff; border-color: var(--primary-blue); color: var(--primary-blue); }
+
+        .subject-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 10px; border-bottom: 1px solid #edf2f7; }
+        .subject-row:last-child { border-bottom: none; }
+        .subject-left { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 0.9rem; color: var(--text-dark); }
+        .subject-icon { width: 30px; height: 30px; border-radius: 8px; display: flex; justify-content: center; align-items: center; font-size: 1rem; }
+        
+        /* Toggle Switch CSS */
+        .toggle { position: relative; width: 44px; height: 24px; }
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #cbd5e0; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #48bb78; }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+
+        /* =========================================
+           PANTALLA 3: PREGUNTA (Question)
+           ========================================= */
+        .question-screen { background: #f0f4f8; display: flex; flex-direction: column; }
+        
+        .q-top-bar { padding: 40px 20px 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .q-tag { background: #e2e8f0; color: var(--text-dark); padding: 5px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; display: flex; align-items: center; gap: 5px; }
+        .q-turn { font-size: 0.8rem; font-weight: 800; color: var(--text-dark); display: flex; align-items: center; gap: 5px; }
+
+        .q-visual {
+            flex: 1;
+            background: url('https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=600&auto=format&fit=crop') center/cover;
+            margin: 0 20px;
+            border-radius: var(--border-radius-lg);
+            position: relative;
             display: flex;
             justify-content: center;
             align-items: center;
         }
+        /* Simulando las canastas de manzanas de tu captura */
+        .basket-container { display: flex; gap: 20px; align-items: center; }
+        .basket { background: rgba(255,255,255,0.8); border: 4px solid #8b5a2b; border-radius: 50% 50% 10px 10px; width: 80px; height: 60px; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: 900; color: #8b5a2b; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+        .plus-sign { font-size: 2rem; font-weight: 900; color: #2d3748; }
 
-        /* El grid que contiene las casillas */
-        .board-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            width: 90%;
-            height: 90%;
-            padding: 10px;
-        }
-
-        .tile { 
-            background: #fff; 
-            border-radius: 12px; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            font-size: 1.2rem; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3); 
-            position: relative;
-            transition: all 0.3s;
-        }
-        .tile.math { background: #bfdbfe; } .tile.lang { background: #fecaca; } 
-        .tile.eng { background: #e9d5ff; } .tile.sci { background: #bbf7d0; }
-        .tile.goal { background: #fef08a; font-size: 2rem; }
-
-        /* Fichas de jugadores */
-        .token { 
-            position: absolute; width: 30px; height: 30px; border-radius: 50%; border: 3px solid #fff; 
-            display: flex; justify-content: center; align-items: center; font-size: 0.8rem; font-weight: bold; 
-            color: white; box-shadow: 0 3px 6px rgba(0,0,0,0.4); transition: all 0.4s ease-in-out; z-index: 20;
-            bottom: 5px; right: 5px;
-        }
-
-        /* Controles inferiores */
-        .controls { display: flex; gap: 10px; align-items: center; justify-content: center; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 -4px 10px rgba(0,0,0,0.1); }
+        .q-content { background: var(--white); border-radius: 30px 30px 0 0; padding: 25px 20px; margin-top: -20px; z-index: 10; box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
+        .q-text { text-align: center; font-size: 1.3rem; font-weight: 900; color: #2b6cb0; margin-bottom: 20px; }
         
-        /* Dado 3D CSS */
-        .dice-container { perspective: 1000px; width: 60px; height: 60px; }
-        .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s ease-out; }
-        .face { position: absolute; width: 60px; height: 60px; background: white; border: 2px solid #ccc; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 2rem; font-weight: bold; }
-        .front  { transform: translateZ(30px); } .back   { transform: rotateY(180deg) translateZ(30px); }
-        .right  { transform: rotateY(90deg) translateZ(30px); } .left   { transform: rotateY(-90deg) translateZ(30px); }
-        .top    { transform: rotateX(90deg) translateZ(30px); } .bottom { transform: rotateX(-90deg) translateZ(30px); }
+        .q-options { display: flex; justify-content: center; gap: 15px; margin-bottom: 25px; }
+        .q-option-btn {
+            width: 70px; height: 70px; border-radius: 16px; background: var(--white);
+            border: 2px solid #e2e8f0; box-shadow: 0 4px 0 #e2e8f0;
+            font-size: 1.5rem; font-weight: 900; color: #2d3748; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .q-option-btn.selected { border-color: #63b3ed; background: #ebf8ff; color: #2b6cb0; box-shadow: 0 4px 0 #90cdf4; }
 
-        /* --- MODALES (Preguntas y Rompecabezas) --- */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; padding: 15px; }
-        .modal.active { display: flex; }
-        .modal-content { background: white; border-radius: 20px; padding: 20px; width: 100%; max-width: 500px; text-align: center; max-height: 90vh; overflow-y: auto; }
+        .owl-container { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .owl-avatar { font-size: 2.5rem; }
+        .owl-bubble { background: #fefcbf; border-radius: 16px; padding: 12px; font-size: 0.85rem; font-weight: 700; color: #744210; position: relative; flex: 1; }
         
-        .subject-tag { background: #e2e8f0; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; display: inline-block; margin-bottom: 15px; }
-        .question-text { font-size: 1.3rem; font-weight: bold; margin-bottom: 20px; }
-        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-        .option-btn { background: #f1f5f9; border: 2px solid #cbd5e1; padding: 15px; border-radius: 15px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: all 0.2s; }
-        .option-btn:active { transform: scale(0.98); }
+        .btn-hint { background: #ebf8ff; color: #2b6cb0; border: none; padding: 12px; border-radius: 16px; font-weight: 800; font-size: 0.9rem; display: flex; justify-content: center; align-items: center; gap: 5px; cursor: pointer; }
+
+
+        /* =========================================
+           PANTALLA 4: ASIGNATURAS (Progress)
+           ========================================= */
+        .progress-screen { padding: 40px 20px 20px 20px; background: var(--bg-screen); }
         
-        .hint-box { display: none; background: #fef3c7; border: 2px dashed var(--hint); padding: 15px; border-radius: 15px; margin-top: 15px; font-size: 1rem; }
-        .feedback { font-size: 1.2rem; font-weight: bold; margin-top: 15px; display: none; }
+        .progress-card { background: var(--white); border-radius: var(--border-radius-lg); padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--card-shadow); }
+        .progress-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .progress-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; }
+        .progress-info { display: flex; flex-direction: column; flex: 1; }
+        .progress-title { font-size: 0.9rem; font-weight: 800; color: var(--text-dark); margin-bottom: 5px; }
+        
+        .progress-bar-bg { width: 100%; height: 8px; background: #edf2f7; border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; border-radius: 4px; }
+        
+        .progress-level { font-size: 0.75rem; font-weight: 800; padding: 4px 8px; border-radius: 10px; background: #edf2f7; color: var(--text-light); }
 
-        /* Rompecabezas */
-        #puzzle-container { display: flex; flex-direction: column; height: 100%; }
-        #puzzle-workspace { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; background: #334155; border-radius: 10px; overflow: hidden; }
-        #puzzle-board { position: relative; background: #e2e8f0; border: 2px solid #334155; display: grid; }
-        .puzzle-piece { position: absolute; background-size: cover; border: 1px solid rgba(0,0,0,0.1); cursor: grab; transition: box-shadow 0.2s; }
-        .puzzle-piece.placed { border: none; pointer-events: none; z-index: 1; }
-        #puzzle-tray { position: absolute; bottom: 0; left: 0; width: 100%; height: 100px; background: rgba(0,0,0,0.6); display: flex; overflow-x: auto; padding: 10px; gap: 5px; }
+        .owl-tip-card { background: #e6fffa; border-radius: var(--border-radius-lg); padding: 15px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .owl-tip-text { font-size: 0.8rem; font-weight: 700; color: #234e52; line-height: 1.3; }
 
-        /* Animaciones */
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-        .shake { animation: shake 0.3s; }
     </style>
 </head>
 <body>
 
-    <!-- 1. PANTALLA DE CONFIGURACIÓN -->
-    <div id="setup-screen" class="screen active">
-        <h1>Aventura del Saber</h1>
-        <p>Arma tu equipo familiar</p>
-        <div class="player-setup">
-            <div class="player-input"><input type="text" id="p1" placeholder="Jugador 1 (Ej: Sofía)" maxlength="10"></div>
-            <div class="player-input"><input type="text" id="p2" placeholder="Jugador 2 (Ej: Papá)" maxlength="10"></div>
-            <div class="player-input"><input type="text" id="p3" placeholder="Jugador 3 (Opcional)" maxlength="10"></div>
-        </div>
-        <button class="btn" onclick="startGame()">¡Comenzar Aventura!</button>
-    </div>
-
-    <!-- 2. PANTALLA DEL TABLERO -->
-    <div id="board-screen" class="screen">
-        <div class="header">
-            <span id="turn-display">Turno de: ...</span>
-            <span id="stars-display">⭐ 0</span>
-        </div>
+    <div class="phone-mockup">
         
-        <div class="map-container" id="map-container">
-            <div class="board-grid" id="board-grid"></div>
+        <!-- NAVEGACIÓN DE PRUEBA (No forma parte del juego final) -->
+        <div class="demo-nav">
+            <button onclick="switchScreen('screen-board', this)" class="active">Tablero</button>
+            <button onclick="switchScreen('screen-setup', this)">Partida</button>
+            <button onclick="switchScreen('screen-question', this)">Pregunta</button>
+            <button onclick="switchScreen('screen-progress', this)">Materias</button>
         </div>
 
-        <div class="controls" id="controls">
-            <div class="dice-container">
-                <div class="dice" id="dice">
-                    <div class="face front">1</div><div class="face back">6</div>
-                    <div class="face right">3</div><div class="face left">4</div>
-                    <div class="face top">5</div><div class="face bottom">2</div>
+        <!-- ==========================================
+             PANTALLA 1: TABLERO
+             ========================================== -->
+        <div id="screen-board" class="screen active">
+            <!-- Header con avatares -->
+            <div class="board-header">
+                <div class="player-badge active">
+                    <div class="player-avatar" style="background:#fbb6ce;">👧</div>
+                    <div class="player-info"><span class="player-name">Sofía</span><span class="player-stars">⭐ 12</span></div>
+                </div>
+                <div class="player-badge">
+                    <div class="player-avatar" style="background:#90cdf4;">👨</div>
+                    <div class="player-info"><span class="player-name">Papá</span><span class="player-stars">⭐ 9</span></div>
+                </div>
+                <div class="player-badge">
+                    <div class="player-avatar" style="background:#fbd38d;">👩</div>
+                    <div class="player-info"><span class="player-name">Mamá</span><span class="player-stars">⭐ 10</span></div>
+                </div>
+                <div class="player-badge">
+                    <div class="player-avatar" style="background:#c6f6d5;">👵</div>
+                    <div class="player-info"><span class="player-name">Abuela</span><span class="player-stars">⭐ 7</span></div>
                 </div>
             </div>
-            <button class="btn" id="roll-btn" onclick="rollDice()" style="flex: 1;">¡Lanzar Dado!</button>
-        </div>
-    </div>
 
-    <!-- 3. MODAL DE PREGUNTAS -->
-    <div class="modal" id="question-modal">
-        <div class="modal-content">
-            <div class="subject-tag" id="q-subject">Matemáticas</div>
-            <div class="question-text" id="q-text">Pregunta...</div>
-            <div class="options-grid" id="q-options"></div>
-            <div class="hint-box" id="q-hint"></div>
-            <div class="feedback" id="q-feedback"></div>
-            <button class="btn btn-hint" id="hint-btn" onclick="showHint()" style="margin-top: 15px;">💡 Pedir Pista</button>
-            <button class="btn" id="continue-btn" onclick="closeQuestion()" style="display: none; margin-top: 15px; background-color: var(--success); box-shadow: 0 4px 0 #166534;">Continuar</button>
-        </div>
-    </div>
+            <!-- Mapa -->
+            <div class="map-area">
+                <!-- Aquí iría el mapa SVG o Canvas real. Por ahora es una imagen de fondo. -->
+            </div>
 
-    <!-- 4. MODAL DE ROMPECABEZAS -->
-    <div class="modal" id="puzzle-modal">
-        <div class="modal-content" id="puzzle-container" style="padding: 0; background: #1e293b;">
-            <div style="display: flex; justify-content: space-between; width: 100%; padding: 15px; color: white; background: #0f172a; border-radius: 20px 20px 0 0;">
-                <span style="font-weight: bold; font-size: 1.2rem;">🧩 Rompecabezas</span>
-                <span id="puzzle-progress">0%</span>
+            <div class="bottom-controls">
+                <div class="turn-indicator">Turno de Sofía</div>
+                <div class="dice-graphic"></div>
+                <button class="btn-primary">¡Lanzar dado!</button>
             </div>
-            <div id="puzzle-workspace">
-                <div id="puzzle-board"></div>
-                <div id="puzzle-tray"></div>
+
+            <!-- Navegación inferior -->
+            <div class="bottom-nav">
+                <div class="nav-item active"><span class="nav-icon">🗺️</span>Tablero</div>
+                <div class="nav-item"><span class="nav-icon">👨‍👩‍👧‍👦</span>Familia</div>
+                <div class="nav-item"><span class="nav-icon">📊</span>Asignaturas</div>
+                <div class="nav-item"><span class="nav-icon">⭐</span>Álbum</div>
             </div>
-            <button class="btn" onclick="skipPuzzle()" style="margin: 15px; width: calc(100% - 30px); background: #64748b; box-shadow: 0 4px 0 #334155;">Rendirse (Saltar)</button>
         </div>
+
+        <!-- ==========================================
+             PANTALLA 2: NUEVA PARTIDA
+             ========================================== -->
+        <div id="screen-setup" class="screen setup-screen">
+            <div class="header-title">Nueva partida</div>
+            <div class="header-subtitle">Arma tu equipo y elige cómo jugar</div>
+
+            <div class="section-label">Jugadores <span style="color:#a0aec0;">3 de 4</span></div>
+            <div class="setup-card">
+                <div class="player-row">
+                    <div class="player-row-left">
+                        <div class="player-avatar" style="background:#fbb6ce;">👧</div>
+                        <div class="player-row-info"><span class="player-row-name">Sofía, 8 años</span></div>
+                    </div>
+                    <span style="color:#cbd5e0;">›</span>
+                </div>
+                <div class="player-row">
+                    <div class="player-row-left">
+                        <div class="player-avatar" style="background:#90cdf4;">👨</div>
+                        <div class="player-row-info"><span class="player-row-name">Papá</span></div>
+                    </div>
+                    <span style="color:#cbd5e0;">›</span>
+                </div>
+                <div class="player-row">
+                    <div class="player-row-left">
+                        <div class="player-avatar" style="background:#fbd38d;">👩</div>
+                        <div class="player-row-info"><span class="player-row-name">Mamá</span></div>
+                    </div>
+                    <span style="color:#cbd5e0;">›</span>
+                </div>
+                <button class="btn-add-player">+ Agregar jugador</button>
+            </div>
+
+            <div class="section-label">Nivel de dificultad</div>
+            <div class="difficulty-selector">
+                <div class="difficulty-btn active">⭐ Explorador</div>
+                <div class="difficulty-btn">🏔️ Aventurero</div>
+                <div class="difficulty-btn">🏆 Maestro</div>
+            </div>
+
+            <div class="section-label">Asignaturas en la partida</div>
+            <div class="setup-card">
+                <div class="subject-row">
+                    <div class="subject-left"><div class="subject-icon" style="background:#ebf8ff; color:#3182ce;">🔢</div> Matemáticas</div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="subject-row">
+                    <div class="subject-left"><div class="subject-icon" style="background:#fff5f5; color:#e53e3e;">📖</div> Lenguaje</div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="subject-row">
+                    <div class="subject-left"><div class="subject-icon" style="background:#faf5ff; color:#805ad5;">🇬🇧</div> Inglés</div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="subject-row">
+                    <div class="subject-left"><div class="subject-icon" style="background:#fffff0; color:#d69e2e;">🎵</div> Música</div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="subject-row">
+                    <div class="subject-left"><div class="subject-icon" style="background:#f0fff4; color:#38a169;">🌿</div> Ciencias naturales</div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+                <div class="subject-row" style="background:#f7fafc; border-radius:12px; margin-top:10px;">
+                    <div class="subject-left"><div class="subject-icon">🦉</div> Pistas amigables activadas</div>
+                    <label class="toggle"><input type="checkbox" checked><span class="slider"></span></label>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; padding-bottom: 20px;">
+                <button class="btn-primary">¡Comenzar aventura! →</button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PANTALLA 3: PREGUNTA
+             ========================================== -->
+        <div id="screen-question" class="screen question-screen">
+            <div class="q-top-bar">
+                <div class="q-tag">🔢 Matemáticas</div>
+                <div class="q-turn"><div class="player-avatar" style="width:20px; height:20px; font-size:0.8rem; background:#fbb6ce;">👧</div> Turno de Sofía</div>
+            </div>
+
+            <!-- Visual de las manzanas -->
+            <div class="q-visual">
+                <div class="basket-container">
+                    <div class="basket">7</div>
+                    <div class="plus-sign">+</div>
+                    <div class="basket">5</div>
+                </div>
+            </div>
+
+            <div class="q-content">
+                <div class="q-text">¿Cuántas manzanas hay<br>en total?</div>
+                
+                <div class="q-options">
+                    <div class="q-option-btn">10</div>
+                    <div class="q-option-btn selected">12</div>
+                    <div class="q-option-btn">11</div>
+                </div>
+
+                <div class="owl-container">
+                    <div class="owl-avatar">🦉</div>
+                    <div class="owl-bubble">¡Casi! Intenta contar de 5 en 5. Tú puedes.</div>
+                </div>
+
+                <button class="btn-hint">💡 Pedir pista (quedan 2)</button>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PANTALLA 4: ASIGNATURAS
+             ========================================== -->
+        <div id="screen-progress" class="screen progress-screen">
+            <div class="header-title">Mis asignaturas</div>
+            <div class="header-subtitle">Tu progreso en cada materia</div>
+
+            <div class="owl-tip-card">
+                <div style="font-size:2rem;">🦉</div>
+                <div class="owl-tip-text">¡Insististe 3 veces y lo lograste! <br> Aquí tienes tu medalla 🥇</div>
+            </div>
+
+            <!-- Matemáticas -->
+            <div class="progress-card">
+                <div class="progress-left">
+                    <div class="progress-icon" style="background:#ebf8ff; color:#3182ce;">🔢</div>
+                    <div class="progress-info">
+                        <span class="progress-title">Matemáticas</span>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:75%; background:#4299e1;"></div></div>
+                    </div>
+                </div>
+                <div class="progress-level" style="color:#2b6cb0; background:#ebf8ff;">Nivel 3</div>
+            </div>
+
+            <!-- Lenguaje -->
+            <div class="progress-card">
+                <div class="progress-left">
+                    <div class="progress-icon" style="background:#fff5f5; color:#e53e3e;">📖</div>
+                    <div class="progress-info">
+                        <span class="progress-title">Lenguaje</span>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:60%; background:#f56565;"></div></div>
+                    </div>
+                </div>
+                <div class="progress-level" style="color:#c53030; background:#fff5f5;">Nivel 2</div>
+            </div>
+
+            <!-- Inglés -->
+            <div class="progress-card">
+                <div class="progress-left">
+                    <div class="progress-icon" style="background:#faf5ff; color:#805ad5;">🇬🇧</div>
+                    <div class="progress-info">
+                        <span class="progress-title">Inglés</span>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:45%; background:#9f7aea;"></div></div>
+                    </div>
+                </div>
+                <div class="progress-level" style="color:#6b46c1; background:#faf5ff;">Nivel 2</div>
+            </div>
+
+            <!-- Música -->
+            <div class="progress-card">
+                <div class="progress-left">
+                    <div class="progress-icon" style="background:#fffff0; color:#d69e2e;">🎵</div>
+                    <div class="progress-info">
+                        <span class="progress-title">Música</span>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:30%; background:#ecc94b;"></div></div>
+                    </div>
+                </div>
+                <div class="progress-level" style="color:#b7791f; background:#fffff0;">Nivel 1</div>
+            </div>
+
+            <!-- Ciencias -->
+            <div class="progress-card">
+                <div class="progress-left">
+                    <div class="progress-icon" style="background:#f0fff4; color:#38a169;">🌿</div>
+                    <div class="progress-info">
+                        <span class="progress-title">Ciencias</span>
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:70%; background:#48bb78;"></div></div>
+                    </div>
+                </div>
+                <div class="progress-level" style="color:#2f855a; background:#f0fff4;">Nivel 3</div>
+            </div>
+
+            <!-- Navegación inferior -->
+            <div class="bottom-nav" style="margin-top: auto;">
+                <div class="nav-item"><span class="nav-icon">🗺️</span>Tablero</div>
+                <div class="nav-item"><span class="nav-icon">👨‍👩‍👧‍👦</span>Familia</div>
+                <div class="nav-item active"><span class="nav-icon">📊</span>Asignaturas</div>
+                <div class="nav-item"><span class="nav-icon">⭐</span>Álbum</div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- 1. BASE DE DATOS DE PREGUNTAS ---
-        const allQuestions = [
-            { id: 1, subject: 'Matemáticas', text: '¿Cuánto es 7 + 5?', options: ['10', '12', '11'], answer: 1, hint: 'Intenta contar desde el 7 hacia adelante: 8, 9, 10...' },
-            { id: 2, subject: 'Matemáticas', text: 'Si tienes 15 manzanas y te comes 3, ¿cuántas quedan?', options: ['12', '13', '11'], answer: 0, hint: 'Resta: 15 - 3.' },
-            { id: 3, subject: 'Lenguaje', text: '¿Cuál es el antónimo de "Feliz"?', options: ['Alegre', 'Triste', 'Contento'], answer: 1, hint: 'El antónimo es lo contrario.' },
-            { id: 4, subject: 'Lenguaje', text: '¿Qué palabra está escrita correctamente?', options: ['Huevo', 'Guevo', 'Uevo'], answer: 0, hint: 'Las palabras con "hue" llevan H.' },
-            { id: 5, subject: 'Inglés', text: '¿Cómo se dice "Perro" en inglés?', options: ['Cat', 'Dog', 'Bird'], answer: 1, hint: 'Suena como "Dog".' },
-            { id: 6, subject: 'Ciencias', text: '¿Qué animal es el Pudú?', options: ['Un ave', 'Un ciervo', 'Un pez'], answer: 1, hint: 'Es un mamífero pequeño con cuernos, típico de Chile.' },
-            { id: 7, subject: 'Matemáticas', text: '¿Cuántos lados tiene un triángulo?', options: ['4', '3', '5'], answer: 1, hint: 'El prefijo "tri" significa tres.' },
-            { id: 8, subject: 'Música', text: '¿Qué instrumento tiene teclas blancas y negras?', options: ['Guitarra', 'Piano', 'Flauta'], answer: 1, hint: 'Es un instrumento grande que se toca con las dos manos.' }
-        ];
-
-        let availableQuestions = [...allQuestions];
-
-        // --- 2. ESTADO DEL JUEGO ---
-        let players = [];
-        let currentPlayerIndex = 0;
-        const BOARD_TILES = 15; // 4x4 grid approx
-        let currentDiceValue = 0;
-        let isMoving = false;
-        let currentQuestionData = null;
-
-        // --- 3. INICIALIZACIÓN ---
-        function startGame() {
-            const p1 = document.getElementById('p1').value || 'Jugador 1';
-            const p2 = document.getElementById('p2').value || 'Jugador 2';
-            const p3 = document.getElementById('p3').value;
-
-            const colors = ['#ef4444', '#3b82f6', '#22c55e'];
+        // Solo para probar el diseño, permite cambiar entre pantallas.
+        function switchScreen(screenId, btn) {
+            // Ocultar todas
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            // Mostrar la seleccionada
+            document.getElementById(screenId).classList.add('active');
             
-            players = [
-                { name: p1, pos: 0, color: colors[0], stars: 0 },
-                { name: p2, pos: 0, color: colors[1], stars: 0 }
-            ];
-            if (p3) players.push({ name: p3, pos: 0, color: colors[2], stars: 0 });
-
-            document.getElementById('setup-screen').classList.remove('active');
-            document.getElementById('board-screen').classList.add('active');
-            
-            drawBoard();
-            updateTurnUI();
+            // Actualizar botones del menú
+            document.querySelectorAll('.demo-nav button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
         }
-
-        // --- 4. LÓGICA DEL TABLERO (CORREGIDA CON GRID) ---
-        function drawBoard() {
-            const grid = document.getElementById('board-grid');
-            grid.innerHTML = '';
-            
-            // Crear las 16 casillas (4x4)
-            for (let i = 0; i < 16; i++) {
-                const tile = document.createElement('div');
-                tile.className = 'tile';
-                tile.id = `tile-${i}`;
-                
-                // Asignar asignaturas y meta
-                const subjects = ['math', 'lang', 'sci', 'eng'];
-                if (i === 15) {
-                    tile.classList.add('goal');
-                    tile.innerHTML = '🏆';
-                } else {
-                    tile.classList.add(subjects[i % 4]);
-                    tile.innerHTML = '❓';
-                }
-                
-                // Añadir fichas de jugadores si están en esta casilla
-                players.forEach((p, index) => {
-                    if (p.pos === i) {
-                        const token = document.createElement('div');
-                        token.className = 'token';
-                        token.id = `token-${index}`;
-                        token.style.backgroundColor = p.color;
-                        token.innerText = p.name.charAt(0).toUpperCase();
-                        tile.appendChild(token);
-                    }
-                });
-
-                grid.appendChild(tile);
-            }
-        }
-
-        function updateTurnUI() {
-            const p = players[currentPlayerIndex];
-            document.getElementById('turn-display').innerText = `Turno de: ${p.name}`;
-            document.getElementById('turn-display').style.color = p.color;
-            document.getElementById('stars-display').innerText = `⭐ ${p.stars}`;
-            document.getElementById('roll-btn').disabled = false;
-            isMoving = false;
-        }
-
-        // --- 5. LÓGICA DEL DADO 3D ---
-        function rollDice() {
-            if (isMoving) return;
-            isMoving = true;
-            document.getElementById('roll-btn').disabled = true;
-
-            currentDiceValue = Math.floor(Math.random() * 6) + 1;
-            
-            const dice = document.getElementById('dice');
-            const rotations = {
-                1: 'rotateX(0deg) rotateY(0deg)',
-                2: 'rotateX(-90deg) rotateY(0deg)',
-                3: 'rotateX(0deg) rotateY(-90deg)',
-                4: 'rotateX(0deg) rotateY(90deg)',
-                5: 'rotateX(90deg) rotateY(0deg)',
-                6: 'rotateX(0deg) rotateY(180deg)'
-            };
-            
-            const spinX = (Math.floor(Math.random() * 4) + 4) * 360;
-            const spinY = (Math.floor(Math.random() * 4) + 4) * 360;
-
-            dice.style.transform = `rotateX(${spinX}deg) rotateY(${spinY}deg)`;
-
-            setTimeout(() => {
-                dice.style.transform = rotations[currentDiceValue];
-                setTimeout(() => { movePlayer(currentDiceValue); }, 1000);
-            }, 500);
-        }
-
-        // --- 6. MOVIMIENTO Y CASILLAS ---
-        function movePlayer(steps) {
-            const p = players[currentPlayerIndex];
-            let targetPos = p.pos + steps;
-            if (targetPos >= BOARD_TILES) targetPos = BOARD_TILES - 1; // 15 es la meta
-
-            let currentStep = p.pos;
-            const moveInterval = setInterval(() => {
-                if (currentStep < targetPos) {
-                    currentStep++;
-                    p.pos = currentStep;
-                    drawBoard(); // Redibujar el tablero para actualizar posiciones
-                } else {
-                    clearInterval(moveInterval);
-                    checkTileAction();
-                }
-            }, 300);
-        }
-
-        function checkTileAction() {
-            const p = players[currentPlayerIndex];
-            
-            if (p.pos === BOARD_TILES - 1) {
-                setTimeout(() => {
-                    alert(`¡${p.name} ha llegado a la meta! 🏆\nTotal de estrellas: ${p.stars}`);
-                    location.reload();
-                }, 500);
-                return;
-            }
-
-            const action = Math.random();
-            if (action < 0.7) {
-                openQuestion();
-            } else {
-                openPuzzle();
-            }
-        }
-
-        // --- 7. SISTEMA DE PREGUNTAS ---
-        function getRandomQuestion() {
-            if (availableQuestions.length === 0) availableQuestions = [...allQuestions];
-            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-            return availableQuestions.splice(randomIndex, 1)[0];
-        }
-
-        function openQuestion() {
-            currentQuestionData = getRandomQuestion();
-            const modal = document.getElementById('question-modal');
-            
-            document.getElementById('q-subject').innerText = currentQuestionData.subject;
-            document.getElementById('q-text').innerText = currentQuestionData.text;
-            
-            const optionsContainer = document.getElementById('q-options');
-            optionsContainer.innerHTML = '';
-            
-            currentQuestionData.options.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.innerText = opt;
-                btn.onclick = () => checkAnswer(index, btn);
-                optionsContainer.appendChild(btn);
-            });
-
-            document.getElementById('q-hint').style.display = 'none';
-            document.getElementById('q-hint').innerText = currentQuestionData.hint;
-            document.getElementById('hint-btn').style.display = 'block';
-            document.getElementById('q-feedback').style.display = 'none';
-            document.getElementById('continue-btn').style.display = 'none';
-            
-            modal.classList.add('active');
-        }
-
-        function checkAnswer(selectedIndex, btnElement) {
-            const feedback = document.getElementById('q-feedback');
-            const hintBtn = document.getElementById('hint-btn');
-            
-            document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
-
-            if (selectedIndex === currentQuestionData.answer) {
-                btnElement.style.backgroundColor = 'var(--success)';
-                btnElement.style.color = 'white';
-                feedback.innerText = '¡Excelente! 🎉';
-                feedback.style.color = 'var(--success)';
-                feedback.style.display = 'block';
-                players[currentPlayerIndex].stars += 1;
-            } else {
-                btnElement.style.backgroundColor = 'var(--danger)';
-                btnElement.style.color = 'white';
-                document.querySelectorAll('.option-btn')[currentQuestionData.answer].style.backgroundColor = 'var(--success)';
-                document.querySelectorAll('.option-btn')[currentQuestionData.answer].style.color = 'white';
-                
-                feedback.innerText = '¡Casi! Sigue intentando.';
-                feedback.style.color = 'var(--danger)';
-                feedback.style.display = 'block';
-                
-                document.querySelector('.modal-content').classList.add('shake');
-                setTimeout(() => document.querySelector('.modal-content').classList.remove('shake'), 300);
-            }
-
-            hintBtn.style.display = 'none';
-            document.getElementById('continue-btn').style.display = 'block';
-        }
-
-        function showHint() {
-            document.getElementById('q-hint').style.display = 'block';
-            document.getElementById('hint-btn').style.display = 'none';
-        }
-
-        function closeQuestion() {
-            document.getElementById('question-modal').classList.remove('active');
-            nextTurn();
-        }
-
-        // --- 8. MINIJUEGO: ROMPECABEZAS (CORREGIDO) ---
-        let puzzlePiecesPlaced = 0;
-        let totalPuzzlePieces = 0;
-
-        function openPuzzle() {
-            const modal = document.getElementById('puzzle-modal');
-            const workspace = document.getElementById('puzzle-workspace');
-            const board = document.getElementById('puzzle-board');
-            const tray = document.getElementById('puzzle-tray');
-            
-            workspace.innerHTML = '';
-            workspace.appendChild(board);
-            workspace.appendChild(tray);
-            board.innerHTML = '';
-            tray.innerHTML = '';
-            modal.classList.add('active');
-
-            const screenWidth = window.innerWidth;
-            const screenHeight = window.innerHeight;
-            
-            let cols, rows;
-            if (screenWidth < 400) { cols = 6; rows = 8; } // 48 piezas (Móvil)
-            else if (screenWidth < 800) { cols = 8; rows = 10; } // 80 piezas
-            else { cols = 10; rows = 15; } // 150 piezas
-
-            totalPuzzlePieces = cols * rows;
-            puzzlePiecesPlaced = 0;
-            document.getElementById('puzzle-progress').innerText = '0%';
-
-            // Tamaño del tablero basado en el espacio disponible
-            const boardSize = Math.min(screenWidth - 60, screenHeight - 250);
-            const pieceW = boardSize / cols;
-            const pieceH = boardSize / rows;
-
-            board.style.width = `${boardSize}px`;
-            board.style.height = `${boardSize}px`;
-            board.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-            board.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-
-            // Imagen de respaldo (funciona offline o si falla la externa)
-            const imgUrl = 'https://images.unsplash.com/photo-1564349683136-772a6956e902?q=80&w=600&auto=format&fit=crop';
-
-            for (let r = 0; r < rows; r++) {
-                for (let c = 0; c < cols; c++) {
-                    const piece = document.createElement('div');
-                    piece.className = 'puzzle-piece';
-                    piece.style.width = `${pieceW}px`;
-                    piece.style.height = `${pieceH}px`;
-                    
-                    piece.style.backgroundImage = `url(${imgUrl})`;
-                    piece.style.backgroundSize = `${boardSize}px ${boardSize}px`;
-                    piece.style.backgroundPosition = `-${c * pieceW}px -${r * pieceH}px`;
-                    
-                    piece.dataset.targetX = c * pieceW;
-                    piece.dataset.targetY = r * pieceH;
-                    
-                    piece.style.position = 'relative';
-                    piece.style.margin = '2px';
-                    piece.style.flexShrink = 0;
-
-                    setupDragAndDrop(piece, board, tray, pieceW, pieceH);
-                    tray.appendChild(piece);
-                }
-            }
-        }
-
-        function setupDragAndDrop(el, board, tray, w, h) {
-            let isDragging = false;
-            let startX, startY;
-            let initialX, initialY;
-
-            el.addEventListener('pointerdown', (e) => {
-                if (el.classList.contains('placed')) return;
-                isDragging = true;
-                el.setPointerCapture(e.pointerId);
-                
-                const rect = el.getBoundingClientRect();
-                startX = e.clientX;
-                startY = e.clientY;
-                initialX = rect.left;
-                initialY = rect.top;
-
-                el.style.zIndex = 1000;
-                el.style.position = 'absolute';
-                document.body.appendChild(el);
-                el.style.left = `${initialX}px`;
-                el.style.top = `${initialY}px`;
-                el.style.margin = '0';
-            });
-
-            el.addEventListener('pointermove', (e) => {
-                if (!isDragging) return;
-                const dx = e.clientX - startX;
-                const dy = e.clientY - startY;
-                el.style.transform = `translate(${dx}px, ${dy}px)`;
-            });
-
-            el.addEventListener('pointerup', (e) => {
-                if (!isDragging) return;
-                isDragging = false;
-                el.style.transform = '';
-                el.style.zIndex = '';
-
-                const boardRect = board.getBoundingClientRect();
-                const elRect = el.getBoundingClientRect();
-
-                const relativeX = elRect.left - boardRect.left;
-                const relativeY = elRect.top - boardRect.top;
-
-                const targetX = parseFloat(el.dataset.targetX);
-                const targetY = parseFloat(el.dataset.targetY);
-
-                const tolerance = 30;
-
-                if (Math.abs(relativeX - targetX) < tolerance && Math.abs(relativeY - targetY) < tolerance) {
-                    el.classList.add('placed');
-                    board.appendChild(el);
-                    el.style.left = `${targetX}px`;
-                    el.style.top = `${targetY}px`;
-                    el.style.position = 'absolute'; // Asegurar posición absoluta dentro del tablero
-                    el.style.margin = '0';
-                    puzzlePiecesPlaced++;
-                    updatePuzzleProgress();
-                } else {
-                    tray.appendChild(el);
-                    el.style.position = 'relative';
-                    el.style.left = '';
-                    el.style.top = '';
-                    el.style.margin = '2px';
-                }
-            });
-        }
-
-        function updatePuzzleProgress() {
-            const percent = Math.round((puzzlePiecesPlaced / totalPuzzlePieces) * 100);
-            document.getElementById('puzzle-progress').innerText = `${percent}%`;
-
-            if (puzzlePiecesPlaced === totalPuzzlePieces) {
-                setTimeout(() => {
-                    alert("¡Rompecabezas Completado! Ganaste 3 Estrellas ⭐⭐⭐");
-                    players[currentPlayerIndex].stars += 3;
-                    document.getElementById('puzzle-modal').classList.remove('active');
-                    nextTurn();
-                }, 300);
-            }
-        }
-
-        function skipPuzzle() {
-            document.getElementById('puzzle-modal').classList.remove('active');
-            nextTurn();
-        }
-
-        // --- 9. CICLO DE TURNOS ---
-        function nextTurn() {
-            currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-            updateTurnUI();
-            drawBoard();
-        }
-
     </script>
 </body>
 </html>
