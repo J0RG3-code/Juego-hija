@@ -1,542 +1,340 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>La Aventura de Aprender - Juego Familiar</title>
-    <!-- Tailwind CSS para diseño responsivo móvil -->
-    <script src="https://jsdelivr.net"></script>
-    <!-- Confeti para cuando gane y se motive -->
-    <script src="https://jsdelivr.net"></script>
-    <style>
-        body { user-select: none; -webkit-tap-highlight-color: transparent; font-family: 'Arial', sans-serif; overflow-x: hidden; }
-        /* Efecto de vidrio quebrado */
-        .glass-crack {
-            background-image: url('https://ibb.co');
-            background-size: cover;
-            background-position: center;
-            pointer-events: none;
-        }
-        /* Animación suave para el avance del avatar */
-        .avatar-node { transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="description" content="La Aventura de Aprender: juego educativo familiar que funciona sin conexión.">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>La Aventura de Aprender</title>
+<style>
+:root{--teal:#0f766e;--teal2:#14b8a6;--ink:#173b3b;--muted:#607575;--paper:#fff;--line:#d9e8e5;--amber:#fbbf24;--orange:#f97316;--green:#16a34a;--red:#dc2626;--shadow:0 10px 28px #0f766e14}
+*{box-sizing:border-box}html{min-height:100%;background:#e8faf4}body{margin:0;font-family:ui-rounded,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:linear-gradient(180deg,#f0fdfa 0%,#d1fae5 100%);min-height:100dvh;-webkit-tap-highlight-color:transparent}button,input,select{font:inherit}button{cursor:pointer;touch-action:manipulation}button:disabled{opacity:.55;cursor:not-allowed}.app{max-width:720px;margin:auto;min-height:100dvh;padding: max(14px,env(safe-area-inset-top)) 14px max(18px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px}.brand{display:flex;align-items:center;gap:10px}.logo{width:46px;height:46px;border-radius:15px;background:#ccfbf1;display:grid;place-items:center;font-size:26px}.eyebrow{font-size:.72rem;font-weight:900;letter-spacing:.08em;color:#0f766e;text-transform:uppercase}.brand h1{font-size:1.15rem;line-height:1.1;margin:2px 0}.pill{border-radius:999px;background:#fff;padding:8px 11px;font-size:.85rem;font-weight:900;box-shadow:var(--shadow);white-space:nowrap}.panel{background:#ffffffed;border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:var(--shadow)}h2{font-size:1.12rem;margin:0 0 10px}h3{font-size:.98rem;margin:0 0 8px}.muted{color:var(--muted);font-size:.9rem}.row{display:flex;gap:9px;align-items:center}.between{justify-content:space-between}.grow{flex:1;min-width:0}.btn{border:0;border-radius:15px;padding:12px 15px;font-weight:900;background:#e2e8f0;color:#334155}.btn.primary{background:var(--orange);color:white;box-shadow:0 4px 0 #c2410c}.btn.teal{background:var(--teal);color:white}.btn.gold{background:var(--amber);color:#713f12;box-shadow:0 4px 0 #d97706}.btn.light{background:#f0fdfa;color:#115e59;border:1px solid #b7e4dc}.btn.small{padding:8px 10px;font-size:.82rem;border-radius:11px}.btn.full{width:100%;font-size:1.1rem;padding:16px}.btn:active{transform:translateY(1px)}.hidden{display:none!important}.modebar{display:grid;grid-template-columns:1fr 1fr;gap:8px}.modebar .active{background:var(--teal);color:white}.subjects{display:grid;gap:8px;max-height:33vh;overflow:auto;padding-right:2px}.subject{border:1px solid var(--line);border-radius:14px;padding:10px;background:#f8fffd}.subject-head{display:flex;gap:9px;align-items:center;font-weight:900}.subject input{accent-color:var(--teal);width:18px;height:18px}.subtopics{display:grid;grid-template-columns:1fr;gap:5px;margin:8px 0 0 27px}.subtopic{display:flex;gap:8px;align-items:flex-start;font-size:.85rem;color:#526a69}.players{display:grid;gap:8px}.player-config{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;align-items:center}.field{width:100%;min-width:0;border:1px solid #cbdedb;background:#fff;border-radius:11px;padding:10px;color:var(--ink)}.navactions{display:grid;grid-template-columns:auto 1fr;gap:9px}.notice{background:#ecfdf5;border:1px solid #a7f3d0;color:#065f46;padding:10px;border-radius:12px;font-size:.85rem}.board-head{display:grid;grid-template-columns:auto 1fr auto;gap:7px;align-items:center}.level{text-align:center}.level strong{display:block;color:var(--teal);font-size:1.12rem}.board{height:min(56vh,490px);min-height:320px;position:relative;overflow:hidden;border-radius:25px;border:4px solid #ffffffb8;background:radial-gradient(ellipse at 20% 20%,#bbf7d0 0 14%,transparent 15%),radial-gradient(ellipse at 85% 78%,#a7f3d0 0 17%,transparent 18%),linear-gradient(135deg,#d9f99d,#a7f3d0 52%,#bbf7d0);box-shadow:inset 0 2px 18px #065f4620}.board:before{content:"";position:absolute;inset:0;background:radial-gradient(#ffffff7d 1px,transparent 1.5px);background-size:19px 19px;opacity:.5}.landmark{position:absolute;font-size:clamp(24px,6vw,40px);z-index:1}.landmark.start{left:3%;bottom:3%}.landmark.goal{right:3%;top:2%}.track{position:absolute;inset:0;z-index:2}.tile{position:absolute;width:clamp(35px,9vw,49px);height:clamp(35px,9vw,49px);border-radius:14px;border:0;border-bottom:4px solid #94a3b8;background:#e2e8f0;color:#475569;font-weight:1000;display:grid;place-items:center;transform:translate(-50%,-50%);box-shadow:0 3px 7px #064e3b20;font-size:1rem}.tile.chest{background:#fde68a;border-color:#d97706;color:#92400e}.tile.revealed{border:2px solid #fff;box-shadow:0 0 0 2px #ffffff88,0 3px 7px #064e3b20}.tile .avatars{position:absolute;bottom:-10px;right:-8px;display:flex;gap:0;font-size:18px;filter:drop-shadow(0 2px 1px #fff)}.board-bottom{display:grid;gap:10px}.turncard{display:flex;align-items:center;gap:10px}.avatar-big{font-size:34px;width:46px;height:46px;border-radius:15px;background:#f0fdfa;display:grid;place-items:center}.die{font-size:40px;display:inline-grid;place-items:center;width:60px;height:60px;border-radius:17px;background:white;box-shadow:0 5px 0 #cbd5e1}.dice-overlay{position:fixed;inset:0;z-index:20;background:#062e2bd9;display:grid;place-items:center;overflow:hidden;padding:20px}.flying-die{position:absolute;font-size:60px;filter:drop-shadow(0 10px 4px #0004);transition:left .12s linear,top .12s linear;z-index:1}.crack-card{position:relative;z-index:2;width:min(90vw,380px);height:320px;display:grid;place-items:center;color:white}.crack-card svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 5px #fff)}.dice-number{font-size:100px;font-weight:1000;text-shadow:0 5px 0 #0f766e,0 0 20px #fff;z-index:3;animation:pop .35s ease-out}.crack-label{position:absolute;bottom:15px;font-weight:900;letter-spacing:.12em}.modal-wrap{position:fixed;inset:0;z-index:30;background:#0f2927a8;display:flex;align-items:flex-end;justify-content:center;padding:12px}.modal{background:#fff;border-radius:25px 25px 18px 18px;width:min(100%,560px);max-height:88dvh;overflow:auto;padding:20px;box-shadow:0 20px 70px #0003;animation:slideup .22s ease-out}.modal h2{font-size:1.25rem}.question-text{font-size:1.08rem;line-height:1.45;font-weight:850;white-space:pre-line;margin:12px 0}.options{display:grid;gap:8px;margin:12px 0}.option{width:100%;text-align:left;border:2px solid #dbe7e5;border-radius:14px;background:#f8fffd;padding:12px;font-weight:800;color:var(--ink)}.option.selected{border-color:var(--teal);background:#ccfbf1}.feedback{padding:13px;border-radius:15px;margin:12px 0;font-weight:800;line-height:1.4}.feedback.good{background:#dcfce7;color:#166534}.feedback.try{background:#fff7ed;color:#9a3412}.shop-list{display:grid;gap:8px}.skin{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:15px;padding:10px}.skin-icon{font-size:30px;background:#f0fdfa;border-radius:12px;padding:5px}.skin-name{font-weight:900;font-size:.9rem}.skin-cost{font-size:.8rem;color:var(--muted)}.stars{color:#a16207;font-weight:1000}.progress{height:8px;background:#dbeafe;border-radius:999px;overflow:hidden}.progress span{height:100%;display:block;background:var(--teal);transition:width .3s}.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#134e4a;color:white;padding:12px 16px;border-radius:14px;z-index:60;box-shadow:var(--shadow);max-width:90vw;text-align:center;font-weight:800}.confetti{position:fixed;z-index:50;top:-20px;width:9px;height:15px;animation:fall 1.6s linear forwards;pointer-events:none}.footer{text-align:center;color:#5f7976;font-size:.75rem;padding:0 10px}@keyframes slideup{from{transform:translateY(25px);opacity:.5}to{transform:translateY(0);opacity:1}}@keyframes pop{0%{transform:scale(.4) rotate(-20deg)}75%{transform:scale(1.15) rotate(5deg)}100%{transform:scale(1)}}@keyframes fall{to{transform:translateY(110vh) rotate(650deg);opacity:.8}}@keyframes shake{0%,100%{transform:translate(0)}25%{transform:translate(-7px,4px)}50%{transform:translate(6px,-3px)}75%{transform:translate(-3px,-5px)}}.shake{animation:shake .3s ease-in-out}@media(min-width:600px){.app{padding-top:24px}.subjects{max-height:none}.subtopics{grid-template-columns:1fr 1fr}.board{height:480px}.modal-wrap{align-items:center}.modal{border-radius:25px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
-<body class="bg-gradient-to-b from-teal-50 to-emerald-100 min-h-screen text-slate-800">
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand"><div class="logo">🧭</div><div><div class="eyebrow">Juego familiar offline</div><h1>La Aventura de Aprender</h1></div></div>
+  <div class="pill">⭐ <span id="header-stars">0</span></div>
+</header>
 
-    <div id="app" class="max-w-md mx-auto min-h-screen flex flex-col justify-between relative p-4">
-        
-        <!-- ================= PANTALLA 1: MENÚ PRINCIPAL ================= -->
-        <div id="screen-menu" class="flex-1 flex flex-col justify-between py-6">
-            <div class="text-center space-y-2">
-                <span class="bg-amber-100 text-amber-800 font-bold text-xs px-3 py-1 rounded-full tracking-wide">AVENTURA OFFLINE</span>
-                <h1 class="text-3xl font-extrabold text-teal-900 tracking-tight">La aventura de aprender</h1>
-                <p class="text-slate-600 text-sm">Un juego familiar que funciona sin internet</p>
-            </div>
+<section id="screen-menu" class="panel">
+  <h2>¡Prepárense para la aventura!</h2>
+  <p class="muted">Aprende, gana estrellas y personaliza tu avatar. Tus avances se guardan en este dispositivo.</p>
+  <div class="modebar" role="group" aria-label="Modo de juego">
+    <button id="mode-ind" class="btn active" type="button">👤 Individual</button>
+    <button id="mode-fam" class="btn" type="button">👨‍👩‍👧‍👦 Familiar</button>
+  </div>
+  <div style="height:14px"></div>
+  <div class="row between"><h3>¿Qué quieres estudiar?</h3><span class="muted">Elige subtemas</span></div>
+  <div id="subjects" class="subjects"></div>
+  <div style="height:14px"></div>
+  <div class="row between"><h3>Jugadores (1 a 4)</h3><button id="add-player" class="btn light small" type="button">＋ Añadir</button></div>
+  <div id="players" class="players"></div>
+  <div style="height:14px"></div>
+  <div class="notice">🔒 El juego usa recursos locales. No necesita cuentas, anuncios ni conexión para jugar una vez guardado en tu dispositivo.</div>
+  <div style="height:14px"></div>
+  <div class="navactions"><button id="open-shop" class="btn gold" type="button">👑 Armario</button><button id="start-game" class="btn primary" type="button">¡A explorar! ➔</button></div>
+</section>
 
-            <!-- Selector de Modo -->
-            <div class="bg-white/80 backdrop-blur rounded-2xl p-2 shadow-sm flex border border-teal-100 my-4">
-                <button id="btn-mode-ind" onclick="setModo('individual')" class="flex-1 py-3 font-bold rounded-xl transition bg-teal-600 text-white shadow-sm flex justify-center items-center gap-2">
-                    👤 Individual
-                </button>
-                <button id="btn-mode-fam" onclick="setModo('familiar')" class="flex-1 py-3 font-bold rounded-xl transition text-slate-600 flex justify-center items-center gap-2">
-                    👨‍👩‍👧‍👦 Familiar
-                </button>
-            </div>
+<section id="screen-board" class="hidden">
+  <div class="panel board-head">
+    <button id="back-menu" class="btn small" type="button">🏠 Menú</button>
+    <div class="level"><span class="eyebrow">Nivel</span><strong id="level-label">1 / 10</strong><div class="progress"><span id="level-progress" style="width:10%"></span></div></div>
+    <button id="reset-game" class="btn small" type="button">↻ Reiniciar</button>
+  </div>
+  <div class="board" id="board">
+    <div class="landmark start">🚩</div><div class="landmark goal">🏰</div>
+    <div class="track" id="track"></div>
+  </div>
+  <div class="panel board-bottom">
+    <div class="row between">
+      <div class="turncard"><div class="avatar-big" id="turn-avatar">👧</div><div><div class="eyebrow">Turno actual</div><strong id="turn-name">Leonor</strong><div class="muted" id="turn-course">2° Básico</div></div></div>
+      <div class="pill">⭐ <span id="board-stars">0</span></div>
+    </div>
+    <div class="row between"><span class="muted" id="position-label">Casilla 1 de 20</span><span class="muted" id="subject-count">Temas activos: 1</span></div>
+    <button id="btn-roll" class="btn primary full" type="button">🎲 ¡Lanzar dado! ➔</button>
+  </div>
+</section>
+<div class="footer">La aventura se guarda en este dispositivo. Para instalarla offline, conserva también los archivos locales de la app.</div>
+</div>
 
-            <!-- Panel Temas a Estudiar -->
-            <div class="bg-white rounded-2xl p-4 shadow-md border border-slate-100 space-y-3 flex-1 overflow-y-auto max-h-[35vh]">
-                <h2 class="font-bold text-teal-900 text-md flex justify-between items-center">
-                    <span>¿Qué quieres estudiar?</span>
-                    <span class="text-xs text-amber-600 font-normal">Activa una o más</span>
-                </h2>
-                
-                <div class="space-y-2">
-                    <!-- Matemáticas -->
-                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="chk-mat" checked class="w-5 h-5 accent-teal-600">
-                            <span class="font-semibold text-slate-700">🧮 Matemáticas (2° Básico)</span>
-                        </div>
-                        <div class="ml-8 mt-1 flex items-center gap-2 text-sm text-slate-500">
-                            <input type="checkbox" id="chk-mat-tablas" checked class="accent-teal-600">
-                            <span>Tablas de Multiplicar (2, 5 y 10)</span>
-                        </div>
-                    </label>
+<div id="dice-overlay" class="dice-overlay hidden" aria-live="assertive">
+  <div id="flying-die" class="flying-die">🎲</div>
+  <div id="crack-card" class="crack-card hidden">
+    <svg viewBox="0 0 360 320" aria-hidden="true"><path d="M180 160 L150 110 L112 91 L125 55 L87 25 M150 110 L163 76 L151 39 M180 160 L220 123 L252 118 L271 77 L320 54 M220 123 L231 84 L213 54 M180 160 L228 181 L263 168 L300 196 L343 184 M228 181 L244 222 L275 250 M180 160 L160 206 L127 226 L119 270 L79 299 M160 206 L175 246 L158 285 M180 160 L131 163 L98 145 L65 162 L25 147 M131 163 L107 190 L74 196" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M180 160 L188 135 L205 126 M180 160 L195 184 L185 207" fill="none" stroke="#a7f3d0" stroke-width="1.5"/></svg>
+    <div id="dice-number" class="dice-number">6</div><div class="crack-label">¡DADO LANZADO!</div>
+  </div>
+</div>
 
-                    <!-- Lenguaje -->
-                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="chk-len" checked class="w-5 h-5 accent-teal-600">
-                            <span class="font-semibold text-slate-700">📕 Lenguaje (Leo Primero)</span>
-                        </div>
-                        <div class="ml-8 mt-1 flex items-center gap-2 text-sm text-slate-500">
-                            <input type="checkbox" id="chk-len-nvmb" checked class="accent-teal-600">
-                            <span>Palabras con NV y MB</span>
-                        </div>
-                    </label>
+<div id="modal-wrap" class="modal-wrap hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="row between"><span id="modal-kicker" class="eyebrow">¡Tu desafío!</span><button id="modal-close" class="btn small" type="button" aria-label="Cerrar">✕</button></div>
+    <h2 id="modal-title">Pregunta</h2>
+    <div id="modal-question" class="question-text"></div>
+    <div id="modal-options" class="options"></div>
+    <input id="modal-input" class="field hidden" type="text" placeholder="Escribe tu respuesta aquí..." autocomplete="off">
+    <div id="modal-hint" class="notice hidden" style="margin-top:10px"></div>
+    <div id="modal-feedback" class="feedback hidden" role="status"></div>
+    <div id="modal-extra" class="muted"></div>
+    <div class="row" style="margin-top:14px"><button id="hint-btn" class="btn light grow" type="button">💡 Pedir pista</button><button id="validate-btn" class="btn primary grow" type="button">Enviar respuesta</button></div>
+    <button id="continue-btn" class="btn teal full hidden" style="margin-top:10px" type="button">Continuar ➔</button>
+  </div>
+</div>
 
-                    <!-- Ciencias -->
-                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="chk-cie" checked class="w-5 h-5 accent-teal-600">
-                            <span class="font-semibold text-slate-700">🧬 Ciencias Naturales</span>
-                        </div>
-                    </label>
+<div id="shop-wrap" class="modal-wrap hidden" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="row between"><div><div class="eyebrow">Personaliza tu aventura</div><h2>👑 Armario de trajes</h2></div><button id="shop-close" class="btn small" type="button">✕</button></div>
+    <p class="muted">Tus estrellas: <strong class="stars">⭐ <span id="shop-stars">0</span></strong>. Compra y equipa un traje para el jugador seleccionado.</p>
+    <label for="shop-player" class="muted">Jugador</label><select id="shop-player" class="field" style="margin:6px 0 12px"></select>
+    <div id="shop-items" class="shop-list"></div>
+  </div>
+</div>
+<div id="toast" class="toast hidden" role="status"></div>
 
-                    <!-- Inglés -->
-                    <label class="block p-3 bg-slate-50 rounded-xl border border-slate-200 cursor-pointer">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="chk-ing" checked class="w-5 h-5 accent-teal-600">
-                            <span class="font-semibold text-slate-700">🇬🇧 Inglés Inicial</span>
-                        </div>
-                    </label>
-                </div>
-            </div>
-
-            <!-- Gestión de Jugadores -->
-            <div class="bg-white rounded-2xl p-4 shadow-md border border-slate-100 mt-4 space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="font-bold text-slate-700 text-sm">Personas que jugarán (1 a 4)</h3>
-                    <button id="btn-add-player" onclick="agregarJugador()" class="text-xs bg-teal-50 text-teal-700 font-bold px-3 py-1 rounded-lg border border-teal-200">+ Añadir</button>
-                </div>
-                <div id="container-players" class="space-y-2 max-h-[15vh] overflow-y-auto">
-                    <!-- Dinámico -->
-                </div>
-            </div>
-
-            <!-- Botones de Acción de Menú -->
-            <div class="flex gap-2 mt-4">
-                <button onclick="abrirTienda()" class="bg-amber-400 hover:bg-amber-500 text-amber-950 font-bold py-4 px-4 rounded-2xl shadow-md border-b-4 border-amber-600 transition flex items-center justify-center text-xl">
-                    👑 Armario
-                </button>
-                <button onclick="iniciarJuego()" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-black py-4 px-6 rounded-2xl text-xl shadow-lg border-b-4 border-orange-700 tracking-wide transition transform active:scale-95">
-                    ¡A explorar! ➔
-                </button>
-            </div>
-        </div>
-
-        <!-- ================= PANTALLA 2: EL TABLERO DE JUEGO ================= -->
-        <div id="screen-board" class="hidden flex-1 flex flex-col justify-between relative">
-            <!-- Barra Superior de Partida -->
-            <div class="bg-white/90 backdrop-blur rounded-2xl p-3 shadow-md border border-slate-100 flex justify-between items-center z-10">
-                <div class="flex items-center gap-2">
-                    <button onclick="confirmarSalida()" class="bg-slate-100 text-slate-600 p-2 rounded-xl text-xs font-bold">🏠 Menú</button>
-                    <button onclick="confirmarReiniciar()" class="bg-slate-100 text-slate-600 p-2 rounded-xl text-xs font-bold">🔄 Reiniciar</button>
-                </div>
-                <div class="text-center">
-                    <span class="text-xs font-bold text-slate-400 block uppercase tracking-wider">Nivel Activo</span>
-                    <span id="board-lvl" class="text-lg font-black text-teal-700">Nivel 1/10</span>
-                </div>
-                <div class="bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200 flex items-center gap-1">
-                    <span class="text-lg">⭐</span>
-                    <span id="board-stars" class="font-black text-amber-700 text-md">0</span>
-                </div>
-            </div>
-
-            <!-- TABLERO ESTILO MAPA ILUSTRADO CON RÍO Y CAMINO S -->
-            <div class="w-full h-[52vh] my-2 bg-emerald-200 rounded-3xl relative shadow-inner overflow-hidden border-4 border-white/60">
-                <!-- Dibujo del Río de Fondo -->
-                <div class="absolute w-24 h-full bg-cyan-300 opacity-60 left-1/3 blur-sm transform -rotate-12"></div>
-                <div class="absolute w-full h-12 bg-cyan-300 opacity-60 top-1/2 blur-sm transform rotate-6"></div>
-                
-                <!-- Ilustración del Castillo al Final -->
-                <div class="absolute top-2 right-4 text-4xl opacity-80 z-0 animate-bounce">🏰</div>
-                <div class="absolute bottom-4 left-4 text-3xl opacity-40 z-0">🌲</div>
-                <div class="absolute top-20 left-6 text-3xl opacity-40 z-0">🌲</div>
-
-                <!-- Contenedor de Casillas -->
-                <div id="board-track" class="w-full h-full p-4 relative">
-                    <!-- Las casillas se dibujarán en un camino en S usando posiciones absolutas por ID -->
-                </div>
-            </div>
-
-            <!-- Panel de Turno y Lanzamiento Inferior -->
-            <div class="bg-white rounded-2xl p-4 shadow-lg border border-slate-100 text-center space-y-3 z-10">
-                <div class="flex justify-between items-center px-2">
-                    <div class="flex items-center gap-2">
-                        <span id="player-turn-avatar" class="text-2xl animate-pulse">👧</span>
-                        <div class="text-left">
-                            <span class="text-xs text-slate-400 block font-bold">TURNO ACTUAL</span>
-Usa el código con precaución.
-Leonor
-
-
-2° Básico
-🎲 ¡Lanzar dado! ➔
-
-
-1
-
-5
-
-💡
-Asignatura
-
-2° Básico
-¿Texto de la pregunta escolar o adivinanza?
-💡 Pedir pista inteligente
-✓ Validar Respuesta
-
-
-
-👑 Armario de Trajes
-
-⭐
-0
-
-Volver
-
-// --- BASE DE DATOS LOCAL OFFLINE (CURRICULUM CHILE + PREFERENCIAS DE SU HIJA) ---
-const JOKES_POOL = ["¿Qué hace una abeja en el gimnasio? ¡Zumba! 🐝"];
-const RIDDLES_POOL = [
-{ q: "Tengo agujas pero no sé coser, tengo números pero no sé leer.", h: "Lo miras en la muñeca o en la pared para saber la hora de almuerzo.", a: "reloj" },
-{ q: "Oro parece, plata no es. El que no lo adivine, bien tonto es.", h: "Es una fruta amarilla que se pela y a los minions les encanta.", a: "platano" },
-{ q: "Vuelo por la noche, duermo por el día y nunca verás plumas en el ala mía.", h: "Se parece a los vampiros de Hotel Transylvania cuando vuelan.", a: "murcielago" },
-{ q: "Hablo y no tengo boca, escucho y no tengo oído, soy chiquito y ruidoso.", h: "Es el aparato que usa tu papá para llamarte o jugar aquí.", a: "celular" },
-{ q: "Tengo patas pero no puedo caminar, guardo la comida pero no la puedo probar.", h: "Está en la cocina, es helado por dentro y guarda los postres.", a: "refrigerador" },
-{ q: "Canto en la orilla, vivo en el agua, no soy pescado ni soy cigarra.", h: "Es verde, salta alto en los lagos y dice cruac, cruac.", a: "rana" },
-{ q: "Dos campanas paradas que caminan al revés, si les pones zapatos no se le ven los pies.", h: "Los usas dentro de tus zapatillas para mantener tus pies calentitos.", a: "calcetines" },
-{ q: "Te acompaña a todos lados bajo el sol, si te mueves ella se mueve, pero en la oscuridad se va.", h: "Es de color negro y se dibuja en el suelo imitando tus pasos.", a: "sombra" },
-{ q: "Alta como un pino, verde como un prado, habla como un humano pero es un animal alado.", h: "Es un ave de colores que repite todo lo que dices.", a: "loro" },
-{ q: "Doce hermanos muy unidos, unos traen calor y otros frío y viento traerán.", h: "Tienen nombres como Enero, Febrero... al pasar los doce cumples un año más.", a: "meses" }
+<script>
+'use strict';
+const SAVE_KEY='aventura_aprender_v1';
+const COURSE_LIST=['1° Básico','2° Básico','3° Básico','4° Básico','5° Básico','6° Básico','7° Básico','8° Básico'];
+const SUBJECTS=[
+ {id:'Matemáticas',icon:'🧮',color:'#60a5fa',topics:[{id:'tablas',name:'Tablas de multiplicar (2, 5 y 10)'},{id:'calculo',name:'Adición y sustracción hasta 100'}]},
+ {id:'Lenguaje',icon:'📚',color:'#f472b6',topics:[{id:'nvmb',name:'Ortografía: NV y MB'},{id:'comprension',name:'Comprensión lectora'},{id:'gramatica',name:'Sustantivos y artículos'}]},
+ {id:'Ciencias Naturales',icon:'🧬',color:'#4ade80',topics:[{id:'cuerpo',name:'Cuerpo humano'},{id:'animales',name:'Animales y ciclos de vida'}]},
+ {id:'Inglés',icon:'🇬🇧',color:'#a78bfa',topics:[{id:'vocabulario',name:'Vocabulario inicial'}]},
+ {id:'Música',icon:'🎵',color:'#fb923c',topics:[{id:'sonidos',name:'Cualidades del sonido e instrumentos'}]}
 ];
-const ACADEMIC_QUESTIONS = {
-"Matemáticas": [
-{ text: "¿Cuánto es 2 veces 5? (O sea, 2 x 5)", opts: ["7", "10", "12"], right: "10", hint: "Suma 5 + 5 en tus manos.", lvl: 2 },
-{ text: "¿Cuánto es 5 x 5?", opts: ["20", "25", "30"], right: "25", hint: "Cuenta de 5 en 5 cinco veces.", lvl: 2 },
-{ text: "Si tienes 10 y le sumas 15, ¿cuánto tienes?", opts: ["25", "20", "35"], right: "25", hint: "Suma las decenas primero.", lvl: 2 }
-],
-"Lenguaje": [
-{ text: "¿Cuál palabra está correctamente escrita?", opts: ["Inbitar", "Invitar", "Imvitar"], right: "Invitar", hint: "Recuerda que antes de la corta (V) siempre va la letra N.", lvl: 2 },
-{ text: "Completa la palabra: Ta___or", opts: ["mb", "nv", "nb"], right: "mb", hint: "Antes de la letra B siempre se escribe la M de mamá.", lvl: 2 },
-{ text: "En la frase 'El perro corre', ¿cuál es el artículo?", opts: ["perro", "corre", "El"], right: "El", hint: "Los artículos acompañan al sustantivo al inicio.", lvl: 2 }
-],
-"Ciencias": [
-{ text: "¿Qué órgano bombea la sangre a todo nuestro cuerpo?", opts: ["El estómago", "El corazón", "Los pulmones"], right: "El corazón", hint: "Ponte la mano en el pecho al lado izquierdo y siente sus latidos.", lvl: 2 },
-{ text: "¿Para qué nos sirven los pulmones?", opts: ["Para digerir comida", "Para respirar aire", "Para correr"], right: "Para respirar aire", hint: "Se inflan de aire cada vez que respiras hondo.", lvl: 2 }
-],
-"Inglés": [
-{ text: "¿Cómo se dice el color Azul en Inglés?", opts: ["Red", "Green", "Blue"], right: "Blue", hint: "Suena parecido a 'Blu'.", lvl: 2 },
-{ text: "¿Qué animal de la granja es una 'Cow'?", opts: ["Una vaca", "Un perro", "Un gato"], right: "Una vaca", hint: "Es el animal que da leche y dice muuu.", lvl: 2 }
-]
-};
-const SKINS_DATA = [
-{ name: "Gorra de Travesura (Kuromi)", cost: 5, icon: "😈" },
-{ name: "Polerón del Experimento (Stitch)", cost: 10, icon: "💙" },
-{ name: "Corona de Flores (Moana)", cost: 15, icon: "🌺" },
-{ name: "Overol Amarillo (Minions)", cost: 20, icon: "💛" },
-{ name: "Traje de Guerrera (K-Pop)", cost: 25, icon: "🎤" },
-{ name: "Capa Vampiro (Hotel Transylvania)", cost: 30, icon: "🦇" },
-{ name: "Diadema Mágica (Little Pony)", cost: 35, icon: "🦄" },
-{ name: "Banda Dragón (Kung Fu Panda)", cost: 40, icon: "🐼" },
-{ name: "Vaquero del Espacio (Toy Story)", cost: 45, icon: "🤠" }
+const QUESTIONS=[
+['Matemáticas','tablas',2,'¿Cuánto es 2 × 5?',['7','10','12'],'10','Suma 5 + 5.'],
+['Matemáticas','tablas',2,'¿Cuánto es 5 × 5?',['20','25','30'],'25','Cuenta de cinco en cinco, cinco veces.'],
+['Matemáticas','tablas',2,'¿Cuánto es 10 × 3?',['13','30','300'],'30','Tres grupos de diez.'],
+['Matemáticas','tablas',2,'Hay 2 platos con 5 frutillas en cada uno. ¿Cuántas frutillas hay?',['7','10','12'],'10','Puedes sumar 5 + 5.'],
+['Matemáticas','tablas',2,'¿Qué suma representa 5 × 2?',['5 + 2','5 + 5','2 + 2 + 2'],'5 + 5','Multiplicar puede ser sumar grupos iguales.'],
+['Matemáticas','tablas',2,'¿Cuánto es 2 × 8?',['10','16','18'],'16','Duplica el número 8.'],
+['Matemáticas','calculo',2,'¿Cuánto es 28 + 7?',['25','35','36'],'35','Suma 2 a 28 para llegar a 30 y luego suma lo que falta.'],
+['Matemáticas','calculo',2,'¿Cuánto es 43 − 8?',['35','37','45'],'35','Resta 3 para llegar a 40 y después resta 5 más.'],
+['Matemáticas','calculo',2,'¿Cuánto es 36 + 27?',['53','63','73'],'63','Suma las unidades y luego las decenas.'],
+['Matemáticas','calculo',2,'¿Cuánto es 52 − 19?',['33','37','41'],'33','Resta 20 y devuelve 1.'],
+['Lenguaje','nvmb',2,'¿Cuál palabra está correctamente escrita?',['Inbitar','Invitar','Imvitar'],'Invitar','Antes de V se escribe N en esta palabra.'],
+['Lenguaje','nvmb',2,'Completa la palabra: ta__or.',['nv','mb','nb'],'mb','Antes de B se escribe M.'],
+['Lenguaje','nvmb',2,'¿Qué palabra contiene MB?',['tambor','invierno','envase'],'tambor','Piensa en un instrumento que se golpea para hacer música.'],
+['Lenguaje','nvmb',2,'¿Cuál palabra está bien escrita?',['enbudo','embudo','envudo'],'embudo','Antes de B se escribe M.'],
+['Lenguaje','nvmb',2,'¿Cuál palabra contiene NV?',['bomba','invierno','también'],'invierno','Es la estación más fría del año.'],
+['Lenguaje','comprension',2,'Lee: “La hormiga guardó comida para el invierno. La cigarra, que había cantado todo el verano, no tenía qué comer”. ¿Quién guardó comida?',['La hormiga','La cigarra','Las dos'],'La hormiga','Busca quién realizó la acción de guardar.'],
+['Lenguaje','comprension',2,'En un cuento, ¿qué parte presenta a los personajes y el lugar?',['Inicio','Desenlace','Moraleja'],'Inicio','Es la primera parte de la historia.'],
+['Lenguaje','comprension',2,'¿Qué nos enseña la moraleja de una fábula?',['Una lección','Una receta','Una lista de compras'],'Una lección','Nos ayuda a pensar cómo actuar.'],
+['Lenguaje','gramatica',2,'En “La niña lee”, ¿cuál es el artículo?',['niña','lee','La'],'La','Acompaña al sustantivo.'],
+['Lenguaje','gramatica',2,'¿Cuál es un sustantivo propio?',['ciudad','Osorno','perro'],'Osorno','Nombra un lugar específico y empieza con mayúscula.'],
+['Lenguaje','gramatica',2,'¿Cuál es un sustantivo común?',['Leonor','Chile','perro'],'perro','Nombra a cualquier animal de esa clase.'],
+['Ciencias Naturales','cuerpo',2,'¿Qué órgano bombea la sangre?',['El corazón','El estómago','Los pulmones'],'El corazón','Late dentro del pecho.'],
+['Ciencias Naturales','cuerpo',2,'¿Qué órganos nos ayudan a respirar?',['Los pulmones','Los huesos','El estómago'],'Los pulmones','Se llenan de aire cuando inhalamos.'],
+['Ciencias Naturales','cuerpo',2,'¿Qué parte del cuerpo ayuda a digerir los alimentos?',['El estómago','El corazón','La rodilla'],'El estómago','Está en el abdomen y trabaja después de comer.'],
+['Ciencias Naturales','cuerpo',2,'¿Para qué sirve el esqueleto?',['Sostiene y protege el cuerpo','Hace que la comida sepa dulce','Permite escuchar colores'],'Sostiene y protege el cuerpo','Los huesos dan forma al cuerpo y protegen órganos.'],
+['Ciencias Naturales','cuerpo',2,'¿Qué trabajan junto con los huesos para permitir el movimiento?',['Los músculos','Los dientes','El pelo'],'Los músculos','Se contraen y relajan para movernos.'],
+['Ciencias Naturales','animales',2,'¿Cuál de estos animales es vertebrado?',['Mariposa','Perro','Lombriz'],'Perro','Tiene columna vertebral.'],
+['Ciencias Naturales','animales',2,'¿Cuál es un invertebrado?',['Gato','Rana','Mariposa'],'Mariposa','No tiene columna vertebral.'],
+['Ciencias Naturales','animales',2,'¿Qué aparece primero en el ciclo de vida de una rana?',['Huevo','Rana adulta','Mariposa'],'Huevo','La rana nace de huevos que se desarrollan en el agua.'],
+['Ciencias Naturales','animales',2,'¿En qué se transforma una oruga?',['Mariposa','Rana','Pez'],'Mariposa','Antes de ser adulta, pasa por una etapa de crisálida.'],
+['Inglés','vocabulario',2,'¿Cómo se dice “azul” en inglés?',['Red','Blue','Green'],'Blue','Suena parecido a “blu”.'],
+['Inglés','vocabulario',2,'What animal is a “cow”?',['Vaca','Caballo','Pato'],'Vaca','Es un animal de granja que da leche.'],
+['Inglés','vocabulario',2,'¿Cómo se dice “mano” en inglés?',['Head','Hand','Foot'],'Hand','Empieza con H y la usamos para tomar objetos.'],
+['Inglés','vocabulario',2,'What number is “twelve”?',['10','12','20'],'12','Es el número que viene después de eleven.'],
+['Inglés','vocabulario',2,'¿Qué color es “yellow”?',['Amarillo','Negro','Verde'],'Amarillo','Es el color del sol en muchos dibujos.'],
+['Inglés','vocabulario',2,'¿Cómo se dice “perro” en inglés?',['Cat','Dog','Cow'],'Dog','Empieza con D.'],
+['Inglés','vocabulario',2,'What number is “eight”?',['6','8','18'],'8','Está entre seven y nine.'],
+['Música','sonidos',2,'¿Qué palabra describe un sonido de gran intensidad?',['Fuerte','Agudo','Lento'],'Fuerte','Es lo contrario de suave.'],
+['Música','sonidos',2,'El canto de un pajarito suele sonar…',['Grave','Agudo','Silencioso'],'Agudo','Es un sonido alto, no necesariamente fuerte.'],
+['Música','sonidos',2,'¿Cuál de estos instrumentos tiene teclas?',['Piano','Tambor','Maracas'],'Piano','Se toca con los dedos sobre teclas blancas y negras.'],
+['Música','sonidos',2,'¿Qué instrumento se golpea para marcar el ritmo?',['Tambor','Flauta','Guitarra'],'Tambor','Suena al golpear su membrana.'],
+['Música','sonidos',2,'Un susurro normalmente es un sonido…',['Suave','Fuerte','Agudo siempre'],'Suave','Tiene poca intensidad.'],
+['Música','sonidos',2,'¿Cuál instrumento se toca soplando?',['Flauta','Tambor','Triángulo'],'Flauta','El aire hace vibrar el sonido.']
+].map((q,i)=>({id:'q'+(i+1),subject:q[0],topic:q[1],course:q[2],text:q[3],opts:q[4],right:q[5],hint:q[6]}));
+const RIDDLES=[
+{q:'Tengo agujas pero no sé coser, tengo números pero no sé leer.',h:'Lo miras en la muñeca o en la pared para saber qué hora es.',a:['reloj']},
+{q:'Oro parece, plata no es. El que no lo adivine, bien tonto es.',h:'Es una fruta amarilla que se pela y a los minions les encanta.',a:['platano','banana']},
+{q:'Vuelo por la noche, duermo por el día y nunca verás plumas en el ala mía.',h:'Se parece a los vampiros al volar.',a:['murcielago']},
+{q:'Hablo y no tengo boca, escucho y no tengo oído, soy chiquito y ruidoso.',h:'Tu familia lo usa para llamarte o jugar este juego.',a:['celular','telefono','movil','teléfono']},
+{q:'Tengo patas pero no puedo caminar, guardo la comida pero no la puedo probar.',h:'Está en la cocina, es frío por dentro y guarda los helados.',a:['refrigerador','nevera','refrigeradora']},
+{q:'Canto en la orilla, vivo en el agua, no soy pescado ni soy cigarra.',h:'Es verde, salta alto en las lagunas y dice “croac, croac”.',a:['rana']},
+{q:'Dos campanas paradas que caminan al revés, si les pones zapatos no se le ven los pies.',h:'Los usas dentro de tus zapatillas.',a:['calcetines','medias','calcetin']},
+{q:'Te acompaña a todos lados bajo el sol, si te mueves ella se mueve, pero en la oscuridad se va.',h:'Se dibuja en el suelo y copia tus pasos.',a:['sombra']},
+{q:'Alta como un pino, verde como un prado, habla como un humano pero es un animal alado.',h:'Es un ave de colores que puede repetir lo que dices.',a:['loro']},
+{q:'Doce hermanos muy unidos, unos traen calor y otros frío y viento traerán.',h:'Tienen nombres como enero y febrero; al pasar los doce cumples un año más.',a:['meses','meses del año','los meses']}
 ];
-// --- ESTADO INTERNO DEL JUEGO ---
-let config = { modo: 'individual', asignaturas: [], subtemas: { tablas: true, nvmb: true } };
-let jugadores = [];
-let indexTurno = 0;
-let estrellasGlobales = parseInt(localStorage.getItem('stars_geo')) || 0;
-let nivelGlobal = parseInt(localStorage.getItem('lvl_geo')) || 1;
-let trajesComprados = JSON.parse(localStorage.getItem('skins_geo')) || ["Básico 👕"];
-let trajeEquipado = localStorage.getItem('equipped_geo') || "👧";
-let preguntaActual = null;
-let seleccionAlternativa = null;
-// --- INICIALIZADORES ---
-function init() {
-// Cargar datos por defecto de jugadores
-jugadores = [{ id: 1, name: "Leonor", course: "2° Básico", pos: 0, avatar: trajeEquipado }];
-renderListaJugadoresMenu();
-setModo('individual');
-}
-function setModo(m) {
-config.modo = m;
-document.getElementById('btn-mode-ind').className = m === 'individual' ? 'flex-1 py-3 font-bold rounded-xl transition bg-teal-600 text-white shadow-sm flex justify-center items-center gap-2' : 'flex-1 py-3 font-bold rounded-xl transition text-slate-600 flex justify-center items-center gap-2';
-document.getElementById('btn-mode-fam').className = m === 'familiar' ? 'flex-1 py-3 font-bold rounded-xl transition bg-teal-600 text-white shadow-sm flex justify-center items-center gap-2' : 'flex-1 py-3 font-bold rounded-xl transition text-slate-600 flex justify-center items-center gap-2';
-if(m === 'individual' && jugadores.length > 1) {
-jugadores = [jugadores[0]];
-renderListaJugadoresMenu();
-}
-}
-function renderListaJugadoresMenu() {
-const container = document.getElementById('container-players');
-container.innerHTML = "";
-jugadores.forEach((p, idx) => {
-container.innerHTML += <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200"> <span class="w-6 h-6 rounded-full bg-orange-500 text-white text-xs font-bold flex items-center justify-center">${idx+1}</span> <input type="text" value="${p.name}" onchange="actualizarNombreJugador(${p.id}, this.value)" class="flex-1 font-bold text-slate-700 bg-transparent outline-none border-b border-transparent focus:border-slate-300 px-1 text-sm"> <select onchange="actualizarCursoJugador(${p.id}, this.value)" class="text-xs bg-white border rounded p-1 font-bold text-slate-600"> <option value="2° Básico" ${p.course === '2° Básico'?'selected':''}>2° Básico</option> <option value="1° Básico" ${p.course === '1° Básico'?'selected':''}>1° Básico</option> <option value="3° Básico" ${p.course === '3° Básico'?'selected':''}>3° Básico</option> </select> ${idx > 0 ?✕: ''} </div>;
-});
-}
-function agregarJugador() {
-if(config.modo === 'individual') {
-alert("En modo Individual solo juega 1 persona. ¡Cambia a modo Familiar para agregar más integrantes!");
-return;
-}
-if(jugadores.length >= 4) return;
-const nombres = ["Papá", "Mamá", "Abuela", "Hermano"];
-jugadores.push({ id: Date.now(), name: nombres[jugadores.length - 1] || "Jugador", course: "2° Básico", pos: 0, avatar: "👤" });
-renderListaJugadoresMenu();
-}
-function removerJugador(id) {
-if(confirm("¿Estás seguro de que quieres quitar a este integrante del juego?")) {
-jugadores = jugadores.filter(p => p.id !== id);
-renderListaJugadoresMenu();
-}
-}
-function actualizarNombreJugador(id, val) { jugadores.forEach(p => { if(p.id === id) p.name = val; }); }
-function actualizarCursoJugador(id, val) { jugadores.forEach(p => { if(p.id === id) p.course = val; }); }
-// --- ARMA EL CAMINO EN S ---
-function construirCaminoTablero() {
-const track = document.getElementById('board-track');
-track.innerHTML = "";
-// Mapeo manual de coordenadas porcentuales para simular el trayecto serpenteante exacto de tu imagen
-const coordenadas = [
-{x: 10, y: 85}, {x: 30, y: 85}, {x: 50, y: 85}, {x: 70, y: 85}, {x: 85, y: 72},
-{x: 85, y: 53}, {x: 65, y: 53}, {x: 45, y: 53}, {x: 25, y: 53}, {x: 10, y: 40},
-{x: 10, y: 22}, {x: 32, y: 22}, {x: 52, y: 22}, {x: 72, y: 22}, {x: 88, y: 8}
+const JOKE='¿Qué hace una abeja en el gimnasio? ¡Zumba! 🐝';
+const SKINS=[
+{name:'Gorra de Travesura',desc:'Orejas moradas',cost:5,icon:'😈'},
+{name:'Polerón del Experimento',desc:'Capucha azul',cost:10,icon:'💙'},
+{name:'Corona de Flores de la Isla',desc:'Flores tropicales',cost:15,icon:'🌺'},
+{name:'Overol de Minion',desc:'Jardinera y lentes',cost:20,icon:'🤓'},
+{name:'Traje de Guerrera Pop',desc:'Estilo estrella musical',cost:25,icon:'🎤'},
+{name:'Capa de Vampiro Fiestero',desc:'Capa nocturna',cost:30,icon:'🦇'},
+{name:'Diadema de Unicornio Mágico',desc:'Brillo fantástico',cost:35,icon:'🦄'},
+{name:'Banda del Guerrero Dragón',desc:'Espíritu de combate',cost:40,icon:'🐼'}
 ];
-coordenadas.forEach((coord, i) => {
-let esCofre = (i > 0 && i % 4 === 0);
-let htmlCasilla = esCofre ? '🎁' : '?';
-let estiloClase = esCofre ? 'bg-amber-400 border-amber-600 text-amber-950 font-black' : 'bg-slate-300 border-slate-400 text-slate-500 font-bold';
-track.innerHTML += <div id="tile-${i}" class="absolute w-11 h-11 rounded-xl border-b-4 flex items-center justify-center text-xs shadow-md transition-all duration-300 z-10 ${estiloClase}" style="left: ${coord.x}%; top: ${coord.y}%; transform: translate(-50%, -50%);"> ${htmlCasilla} </div>;
-});
-// Dibujar Avatares de Jugadores
-jugadores.forEach(p => {
-const tileNode = document.getElementById(tile-${p.pos});
-if(tileNode) {
-tileNode.innerHTML += <span class="absolute -top-3 -right-2 text-lg drop-shadow bg-white/80 rounded-full w-6 h-6 flex items-center justify-center border border-slate-200 avatar-node">${p.avatar}</span>;
+const DEFAULT_STATE={stars:0,level:1,unlocked:1,owned:['Básico'],equipped:{},players:[{id:'p1',name:'Leonor',course:'2° Básico',pos:0}],mode:'individual',revealed:{},usedQuestions:[],chestCount:0,selectedTopics:['tablas','calculo','nvmb','comprension','gramatica','cuerpo','animales','vocabulario','sonidos']};
+function loadState(){try{const s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(!s)return structuredCloneSafe(DEFAULT_STATE);return {...structuredCloneSafe(DEFAULT_STATE),...s,players:Array.isArray(s.players)&&s.players.length?s.players:structuredCloneSafe(DEFAULT_STATE.players)}}catch(e){return structuredCloneSafe(DEFAULT_STATE)}}
+function structuredCloneSafe(x){return JSON.parse(JSON.stringify(x))}
+let state=loadState(), turn=0, question=null, selected=null, hintUsed=false, resolved=false, moving=false, rollBusy=false, toastTimer=null, jokeNext=false, activeMode=state.mode||'individual';
+function save(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(state))}catch(e){showToast('No se pudo guardar. Revisa el espacio disponible del dispositivo.')}}
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function norm(s){return String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim()}
+function showToast(msg){const t=$('toast');t.textContent=msg;t.classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.add('hidden'),2500)}
+function updateStars(){['header-stars','board-stars','shop-stars'].forEach(id=>{if($(id))$(id).textContent=state.stars})}
+function subjectForTopic(id){return SUBJECTS.find(s=>s.topics.some(t=>t.id===id))}
+function renderSubjects(){
+ $('subjects').innerHTML=SUBJECTS.map(s=>`<div class="subject"><label class="subject-head"><input type="checkbox" data-subject="${esc(s.id)}" ${s.topics.some(t=>state.selectedTopics.includes(t.id))?'checked':''}><span>${s.icon} ${s.id}</span></label><div class="subtopics">${s.topics.map(t=>`<label class="subtopic"><input type="checkbox" data-topic="${t.id}" ${state.selectedTopics.includes(t.id)?'checked':''}><span>${t.name}</span></label>`).join('')}</div></div>`).join('');
+ $('subjects').querySelectorAll('[data-subject]').forEach(el=>el.addEventListener('change',()=>{const s=SUBJECTS.find(x=>x.id===el.dataset.subject);s.topics.forEach(t=>{const c=$('subjects').querySelector(`[data-topic="${t.id}"]`);c.checked=el.checked;setTopic(t.id,el.checked)});}));
+ $('subjects').querySelectorAll('[data-topic]').forEach(el=>el.addEventListener('change',()=>{setTopic(el.dataset.topic,el.checked);const sub=subjectForTopic(el.dataset.topic);const head=$('subjects').querySelector(`[data-subject="${sub.id}"]`);head.checked=sub.topics.some(t=>state.selectedTopics.includes(t.id));}));
 }
-});
+function setTopic(id,on){state.selectedTopics=on?[...new Set([...state.selectedTopics,id])]:state.selectedTopics.filter(x=>x!==id);save()}
+function renderPlayers(){
+ $('players').innerHTML=state.players.map((p,i)=>`<div class="player-config"><input class="field" aria-label="Nombre jugador ${i+1}" maxlength="20" value="${esc(p.name)}" data-name="${p.id}"><select class="field" aria-label="Curso de ${esc(p.name)}" data-course="${p.id}">${COURSE_LIST.map(c=>`<option ${p.course===c?'selected':''}>${c}</option>`).join('')}</select>${i?`<button class="btn small" type="button" data-remove="${p.id}" aria-label="Quitar jugador">✕</button>`:'<span></span>'}</div>`).join('');
+ $('players').querySelectorAll('[data-name]').forEach(el=>el.addEventListener('change',()=>{const p=state.players.find(p=>p.id===el.dataset.name);p.name=el.value.trim()||'Jugador';save();renderPlayers()}));
+ $('players').querySelectorAll('[data-course]').forEach(el=>el.addEventListener('change',()=>{const p=state.players.find(p=>p.id===el.dataset.course);p.course=el.value;save()}));
+ $('players').querySelectorAll('[data-remove]').forEach(el=>el.addEventListener('click',()=>{state.players=state.players.filter(p=>p.id!==el.dataset.remove);if(turn>=state.players.length)turn=0;save();renderPlayers()}));
+ $('add-player').disabled=activeMode==='individual'||state.players.length>=4;
 }
-// --- FLUJO DE JUEGO PRINCIPAL ---
-function iniciarJuego() {
-// Guardar filtros activos
-config.asignaturas = [];
-if(document.getElementById('chk-mat').checked) config.asignaturas.push("Matemáticas");
-if(document.getElementById('chk-len').checked) config.asignaturas.push("Lenguaje");
-if(document.getElementById('chk-cie').checked) config.asignaturas.push("Ciencias");
-if(document.getElementById('chk-ing').checked) config.asignaturas.push("Inglés");
-if(config.asignaturas.length === 0) {
-alert("Por favor activa al menos una asignatura para comenzar a estudiar.");
-return;
+function setMode(mode){activeMode=mode;state.mode=mode;if(mode==='individual'&&state.players.length>1)state.players=state.players.slice(0,1);$('mode-ind').classList.toggle('active',mode==='individual');$('mode-fam').classList.toggle('active',mode==='familiar');renderPlayers();save()}
+function getCurrent(){return state.players[turn]||state.players[0]}
+function getCourseNum(course){return parseInt(course,10)||2}
+function activeTopicsFor(p){const n=getCourseNum(p.course);return state.selectedTopics.filter(id=>QUESTIONS.some(q=>q.topic===id&&q.course===n))}
+function renderBoard(){
+ const track=$('track');track.innerHTML='';
+ const n=20, pts=[];
+ for(let i=0;i<n;i++){
+   let x,y;
+   if(i<5){x=8+i*20;y=83}
+   else if(i<10){x=88;y=83-(i-4)*15}
+   else if(i<15){x=88-(i-9)*20;y=8}
+   else{x=8;y=8+(i-14)*15}
+   pts.push({x,y});
+ }
+ state.players.forEach(p=>{if(p.pos>=n)p.pos=n-1});
+ for(let i=0;i<n;i++){
+   const chest=i>0&&i%5===0&&i<n-1;
+   const tile=document.createElement('div');tile.className='tile'+(chest?' chest':'');tile.style.left=pts[i].x+'%';tile.style.top=pts[i].y+'%';tile.dataset.pos=i;
+   if(chest)tile.textContent='🎁';
+   else if(i===0)tile.textContent='🚩';
+   else if(i===n-1)tile.textContent='🏰';
+   else {
+     const rev=state.revealed[i];
+     if(rev){tile.classList.add('revealed');tile.style.background=rev.color;tile.textContent=rev.icon;tile.title=rev.subject}
+     else tile.textContent='?';
+   }
+   const here=state.players.filter(p=>p.pos===i);
+   if(here.length){const av=document.createElement('span');av.className='avatars';av.textContent=here.map(p=>state.equipped[p.id]||'👧').join('');tile.appendChild(av)}
+   track.appendChild(tile);
+ }
+ const p=getCurrent();$('turn-name').textContent=p.name;$('turn-course').textContent=p.course;$('turn-avatar').textContent=state.equipped[p.id]||'👧';
+ $('level-label').textContent=`${state.level} / 10`;$('level-progress').style.width=(state.level*10)+'%';$('position-label').textContent=`Casilla ${p.pos+1} de ${n}`;$('subject-count').textContent=`Temas activos: ${activeTopicsFor(p).length}`;updateStars();
 }
-document.getElementById('screen-menu').classList.add('hidden');
-document.getElementById('screen-board').classList.remove('hidden');
-document.getElementById('board-stars').innerText = estrellasGlobales;
-document.getElementById('board-lvl').innerText = Nivel ${nivelGlobal}/10;
-indexTurno = 0;
-actualizarTurnoInterfaz();
-construirCaminoTablero();
+function startGame(){
+ if(!state.selectedTopics.length){showToast('Activa al menos un subtema para jugar.');return}
+ if(activeMode==='individual'&&state.players.length>1)state.players=state.players.slice(0,1);
+ state.players.forEach(p=>{p.pos=Number.isInteger(p.pos)?p.pos:0});
+ $('screen-menu').classList.add('hidden');$('screen-board').classList.remove('hidden');turn=0;renderBoard();
 }
-function actualizarTurnoInterfaz() {
-let p = jugadores[indexTurno];
-document.getElementById('player-turn-name').innerText = p.name;
-document.getElementById('player-turn-course').innerText = p.course;
-document.getElementById('player-turn-avatar').innerText = p.avatar;
+function openModal(){ $('modal-wrap').classList.remove('hidden');$('modal-hint').classList.add('hidden');$('modal-feedback').classList.add('hidden');$('modal-extra').textContent='';$('continue-btn').classList.add('hidden');$('validate-btn').classList.remove('hidden');$('hint-btn').classList.remove('hidden');resolved=false;hintUsed=false;selected=null; }
+function closeModal(){if(!resolved){showToast('Primero presiona “Enviar respuesta” para terminar el desafío.');return} $('modal-wrap').classList.add('hidden');advanceTurn()}
+function chooseQuestion(p){
+ const n=getCourseNum(p.course), topics=activeTopicsFor(p);
+ let pool=QUESTIONS.filter(q=>q.course===n&&topics.includes(q.topic)&&!state.usedQuestions.includes(q.id));
+ if(!pool.length){
+   const available=QUESTIONS.filter(q=>q.course===n&&topics.includes(q.topic));
+   if(available.length){state.usedQuestions=state.usedQuestions.filter(id=>!available.some(q=>q.id===id));pool=available}
+ }
+ if(!pool.length)return null;
+ const q=pool[Math.floor(Math.random()*pool.length)];state.usedQuestions.push(q.id);save();return q;
 }
-// --- SISTEMA DEL DADO DE IMPACTO ---
-function lanzarDadoLoco() {
-document.getElementById('btn-roll').disabled = true;
-const overlay = document.getElementById('dice-overlay');
-const pDice = document.getElementById('physical-dice');
-const crack = document.getElementById('crack-effect');
-const finalNumLbl = document.getElementById('dice-final-number');
-overlay.classList.remove('hidden');
-crack.classList.add('hidden');
-finalNumLbl.classList.add('hidden');
-pDice.classList.remove('hidden');
-let count = 0;
-let finalRoll = Math.floor(Math.random() * 4) + 1; // Avance balanceado de 1 a 4 casillas
-let loop = setInterval(() => {
-let rx = Math.random() * (window.innerWidth - 100);
-let ry = Math.random() * (window.innerHeight - 100);
-pDice.style.left = rx + 'px';
-pDice.style.top = ry + 'px';
-pDice.innerText = Math.floor(Math.random() * 6) + 1;
-count++;
-if(count > 18) {
-clearInterval(loop);
-// Azote central final
-pDice.classList.add('hidden');
-crack.classList.remove('hidden');
-finalNumLbl.innerText = finalRoll;
-finalNumLbl.classList.remove('hidden');
-setTimeout(() => {
-overlay.classList.add('hidden');
-document.getElementById('btn-roll').disabled = false;
-moverAvatarTurno(finalRoll);
-}, 1800);
+function revealTile(pos,subject){
+ const s=SUBJECTS.find(x=>x.id===subject);if(!s)return;
+ state.revealed[pos]={subject:s.id,icon:s.icon,color:s.color};save();renderBoard();
+ const tile=$('track').querySelector(`[data-pos="${pos}"]`);if(tile){tile.classList.add('shake');setTimeout(()=>tile.classList.remove('shake'),350)}
 }
-}, 70);
+function openChallenge(){
+ const p=getCurrent(),pos=p.pos, isChest=pos>0&&pos%5===0&&pos<19;
+ openModal();
+ if(isChest){openChest();return}
+ const q=chooseQuestion(p);
+ if(!q){$('modal-kicker').textContent='¡Tema por preparar!';$('modal-title').textContent='No hay preguntas para esta selección';$('modal-question').textContent=`Todavía no hay preguntas de ${p.course} para los subtemas seleccionados. Elige otro subtema compatible con el curso o vuelve al menú.`;$('modal-options').innerHTML='';$('hint-btn').classList.add('hidden');$('validate-btn').textContent='Continuar';$('validate-btn').onclick=()=>{resolved=true;$('modal-wrap').classList.add('hidden');advanceTurn()};return}
+ question={type:'academic',data:q};revealTile(pos,q.subject);
+ $('modal-kicker').textContent=`${SUBJECTS.find(s=>s.id===q.subject).icon} ${q.subject} · ${p.course}`;$('modal-title').textContent=topicName(q.topic);$('modal-question').textContent=q.text;
+ $('modal-options').innerHTML=q.opts.map((o,i)=>`<button type="button" class="option" data-option="${i}">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join('');
+ $('modal-options').querySelectorAll('[data-option]').forEach((b,i)=>b.addEventListener('click',()=>{if(resolved)return;selected=q.opts[i];$('modal-options').querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')}));
+ $('modal-input').classList.add('hidden');$('modal-hint').textContent=q.hint;$('hint-btn').onclick=showHint;$('validate-btn').textContent='Enviar respuesta';$('validate-btn').onclick=validateAnswer;
 }
-function moverAvatarTurno(pasos) {
-let p = jugadores[indexTurno];
-let targetPos = p.pos + pasos;
-if(targetPos >= 15) targetPos = 14; // Limite del fin del tablero
-let stepInterval = setInterval(() => {
-if(p.pos < targetPos) {
-p.pos++;
-construirCaminoTablero();
-} else {
-clearInterval(stepInterval);
-evaluarCasillaDestino();
+function topicName(id){for(const s of SUBJECTS){const t=s.topics.find(t=>t.id===id);if(t)return t.name}return 'Desafío'}
+function openChest(){
+ state.chestCount++;save();const riddle=Math.random()<.5;
+ if(!riddle){question={type:'joke'};$('modal-kicker').textContent='🎁 Cofre sorpresa';$('modal-title').textContent='¡Momento divertido!';$('modal-question').textContent=JOKE;$('modal-options').innerHTML='';$('modal-input').classList.add('hidden');$('modal-extra').textContent='¡Por encontrar el cofre recibes 2 estrellas!';$('hint-btn').classList.add('hidden');$('validate-btn').textContent='¡Reclamar estrellas!';$('validate-btn').onclick=validateAnswer;return}
+ const r=RIDDLES[Math.floor(Math.random()*RIDDLES.length)];question={type:'riddle',data:r};$('modal-kicker').textContent='🎁 Cofre sorpresa';$('modal-title').textContent='🧩 ¡Adivina, adivinador!';$('modal-question').textContent=r.q;$('modal-options').innerHTML='';$('modal-input').value='';$('modal-input').classList.remove('hidden');$('modal-input').setAttribute('placeholder','Escribe tu respuesta aquí...');$('hint-btn').classList.remove('hidden');$('hint-btn').textContent='💡 Pedir pista';$('hint-btn').onclick=showHint;$('validate-btn').textContent='Validar';$('validate-btn').onclick=validateAnswer;
 }
-}, 350);
+function showHint(){if(!question||resolved)return;$('modal-hint').textContent=question.type==='academic'?question.data.hint:question.type==='riddle'?question.data.h:'¡Lee con calma y busca una pista en las palabras!';$('modal-hint').classList.remove('hidden');hintUsed=true}
+function validateAnswer(){
+ if(!question||resolved)return;
+ let correct=false;
+ if(question.type==='academic'){if(!selected){showToast('Elige una respuesta antes de validar.');return}correct=selected===question.data.right}
+ else if(question.type==='riddle'){const value=norm($('modal-input').value);if(!value){showToast('Escribe tu respuesta antes de validar.');return}correct=question.data.a.some(a=>norm(a)===value|| (value.length>=5&&norm(a).includes(value)))}
+ else if(question.type==='joke')correct=true;
+ resolved=true;
+ $('modal-options').querySelectorAll('button').forEach(b=>b.disabled=true);$('modal-input').disabled=true;$('validate-btn').classList.add('hidden');$('hint-btn').classList.add('hidden');$('continue-btn').classList.remove('hidden');$('continue-btn').onclick=()=>{$('modal-wrap').classList.add('hidden');advanceTurn()};
+ if(correct){
+   const reward=question.type==='joke'?2:3;state.stars+=reward;save();updateStars();$('modal-feedback').className='feedback good';$('modal-feedback').textContent=`🎉 ¡Excelente! ${question.type==='joke'?'¡Un chiste para alegrar la aventura!':`Respuesta correcta: ${question.type==='riddle'?question.data.a[0]:question.data.right}.`} Ganaste ${reward} estrellas ⭐`;confetti();
+ }else{
+   $('modal-feedback').className='feedback try';$('modal-feedback').textContent='¡Buen intento! Estuviste muy cerca. Tu cerebro se está haciendo más fuerte, ¡en la próxima casilla lo lograrás! 💪';
+   if(question.type==='academic')$('modal-extra').textContent='La respuesta correcta era: '+question.data.right+'. ¡Ahora ya lo sabes!';
+   else if(question.type==='riddle')$('modal-extra').textContent='La respuesta era: '+question.data.a[0]+'. ¡Puedes volver a intentarlo en otra aventura!';
+ }
+ $('modal-feedback').classList.remove('hidden');
 }
-// --- DISPARO PEDAGÓGICO / RECREATIVO ---
-function evaluarCasillaDestino() {
-let p = jugadores[indexTurno];
-let esCofre = (p.pos > 0 && p.pos % 4 === 0);
-const modal = document.getElementById('modal-game');
-const subLbl = document.getElementById('modal-subject');
-const qText = document.getElementById('modal-question-text');
-const optionsBox = document.getElementById('modal-options-container');
-const inpText = document.getElementById('modal-input-text');
-const hintBox = document.getElementById('modal-hint-box');
-optionsBox.innerHTML = "";
-inpText.classList.add('hidden');
-hintBox.classList.add('hidden');
-modal.classList.remove('hidden');
-document.getElementById('btn-modal-hint').classList.remove('hidden');
-if(esCofre) {
-// Cofre sorpresa alterno estricto
-subLbl.innerText = "¡Cofre Recreativo! 🎁";
-let usarAdivinanza = Math.random() > 0.4;
-if(usarAdivinanza) {
-let item = RIDDLES_POOL[Math.floor(Math.random() * RIDDLES_POOL.length)];
-preguntaActual = { type: 'riddle', right: item.a, hint: item.h };
-qText.innerText = 🧩 ADIVINANZA:\n\n"${item.q}";
-inpText.value = "";
-inpText.classList.remove('hidden');
-} else {
-// Chiste único aprobado de la abeja
-preguntaActual = { type: 'joke' };
-qText.innerText = 🐝 ¡MOMENTO DIVERTIDO!\n\n"${JOKES_POOL[0]}";
-document.getElementById('btn-modal-hint').classList.add('hidden');
-optionsBox.innerHTML = <p class="text-emerald-600 font-bold text-sm text-center">¡Qué buen chiste! Ganas 2 estrellas por caer aquí. 😊</p>;
+function confetti(){for(let i=0;i<42;i++){const e=document.createElement('i');e.className='confetti';e.style.left=Math.random()*100+'vw';e.style.background=['#fbbf24','#2dd4bf','#fb7185','#a78bfa','#60a5fa'][i%5];e.style.animationDelay=Math.random()*.45+'s';e.style.transform=`rotate(${Math.random()*180}deg)`;document.body.appendChild(e);setTimeout(()=>e.remove(),2300)}}
+function openDiceOverlay(){return new Promise(resolve=>{
+ const overlay=$('dice-overlay'),die=$('flying-die'),crack=$('crack-card');overlay.classList.remove('hidden');crack.classList.add('hidden');die.classList.remove('hidden');
+ let ticks=0;const final=Math.floor(Math.random()*6)+1;const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const interval=setInterval(()=>{die.style.left=Math.max(0,Math.random()*(innerWidth-80))+'px';die.style.top=Math.max(0,Math.random()*(innerHeight-80))+'px';die.style.transform=`rotate(${Math.random()*360}deg)`;die.textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][Math.floor(Math.random()*6)];ticks++;if(ticks>=(reduce?2:16)){clearInterval(interval);die.classList.add('hidden');crack.classList.remove('hidden');$('dice-number').textContent=final;setTimeout(()=>{overlay.classList.add('hidden');resolve(final)},reduce?200:2000)}},reduce?100:115);
+ })}
+async function rollDice(){if(rollBusy||moving||!$('screen-board').classList.contains('hidden')===false&&$('modal-wrap').classList.contains('hidden')===false)return;rollBusy=true;$('btn-roll').disabled=true;try{const roll=await openDiceOverlay();await movePlayer(roll)}finally{rollBusy=false;$('btn-roll').disabled=false}}
+function movePlayer(steps){return new Promise(resolve=>{const p=getCurrent(),target=Math.min(19,p.pos+steps);if(target===p.pos){openChallenge();resolve();return}moving=true;let count=0;const interval=setInterval(()=>{if(p.pos<target){p.pos++;count++;renderBoard();const tile=$('track').querySelector(`[data-pos="${p.pos}"]`);if(tile){tile.style.transform='translate(-50%,-50%) scale(1.12)';setTimeout(()=>tile.style.transform='translate(-50%,-50%)',150)}}else{clearInterval(interval);moving=false;openChallenge();resolve()}},350)})}
+function advanceTurn(){
+ const p=getCurrent();
+ if(p.pos>=19){
+   p.pos=0;
+   if(state.level<10){state.level++;state.unlocked=Math.max(state.unlocked,state.level);showToast(`🏰 ¡Felicidades, ${p.name}! Nivel ${state.level} desbloqueado.`)}
+   else{showToast(`🏆 ¡${p.name}, completaste los 10 niveles! ¡Eres una estrella!`);state.level=10}
+   state.revealed={};state.usedQuestions=[];
+ }
+ turn=(turn+1)%state.players.length;save();renderBoard();
 }
-} else {
-// Pregunta Académica filtrada
-let asigRandom = config.asignaturas[Math.floor(Math.random() * config.asignaturas.length)];
-subLbl.innerText = Estudio: ${asigRandom};
-let listaPreguntas = ACADEMIC_QUESTIONS[asigRandom] || ACADEMIC_QUESTIONS["Matemáticas"];
-let q = listaPreguntas[Math.floor(Math.random() * listaPreguntas.length)];
-preguntaActual = { type: 'academic', right: q.right, hint: q.hint };
-qText.innerText = q.text;
-seleccionAlternativa = null;
-q.opts.forEach(opt => {
-let b = document.createElement('button');
-b.className = "w-full text-left p-3.5 bg-slate-50 border-2 border-slate-200 rounded-xl font-semibold text-slate-700 transition active:bg-teal-50";
-b.innerText = opt;
-b.onclick = () => {
-// Limpiar selecciones previas
-Array.from(optionsBox.children).forEach(c => c.className = "w-full text-left p-3.5 bg-slate-50 border-2 border-slate-200 rounded-xl font-semibold text-slate-700 transition");
-b.className = "w-full text-left p-3.5 bg-teal-50 border-2 border-teal-500 rounded-xl font-bold text-teal-900 transition";
-seleccionAlternativa = opt;
-};
-optionsBox.appendChild(b);
-});
+function confirmReset(){if(confirm('¿Reiniciar las posiciones y preguntas de esta partida? Tus estrellas y trajes se conservarán.')){state.players.forEach(p=>p.pos=0);state.revealed={};state.usedQuestions=[];turn=0;save();renderBoard()}}
+function backMenu(){if(confirm('¿Volver al menú? Tus estrellas y compras se guardan.')){$('screen-board').classList.add('hidden');$('screen-menu').classList.remove('hidden');renderSubjects();renderPlayers()}}
+function openShop(){renderShop();$('shop-wrap').classList.remove('hidden')}
+function renderShop(){
+ $('shop-stars').textContent=state.stars;
+ $('shop-player').innerHTML=state.players.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+ if(!state.shopPlayer||!state.players.some(p=>p.id===state.shopPlayer))state.shopPlayer=state.players[0].id;
+ $('shop-player').value=state.shopPlayer;
+ $('shop-items').innerHTML=SKINS.map(s=>{const owned=state.owned.includes(s.name),equipped=(state.equipped[state.shopPlayer]||'👧')===s.icon;return `<div class="skin"><div class="skin-icon">${s.icon}</div><div class="grow"><div class="skin-name">${s.name}</div><div class="skin-cost">${s.desc} · ${s.cost} ⭐</div></div><button class="btn small ${owned?'light':'gold'}" data-skin="${esc(s.name)}">${owned?(equipped?'Equipado ✓':'Equipar'):`Comprar ${s.cost} ⭐`}</button></div>`}).join('');
+ $('shop-items').querySelectorAll('[data-skin]').forEach(b=>b.addEventListener('click',()=>skinAction(b.dataset.skin)));
 }
+function skinAction(name){const s=SKINS.find(x=>x.name===name);if(!s)return;const playerId=$('shop-player').value;state.shopPlayer=playerId;
+ if(!state.owned.includes(name)){if(state.stars<s.cost){showToast('Aún te faltan estrellas. ¡Sigue jugando!');return}state.stars-=s.cost;state.owned.push(name);state.equipped[playerId]=s.icon;showToast('¡Traje comprado y equipado!')}
+ else{state.equipped[playerId]=s.icon;showToast('¡Traje equipado!')}
+ save();renderShop();renderBoard();updateStars()
 }
-function activarSugerencia() {
-const hintBox = document.getElementById('modal-hint-box');
-hintBox.innerText = preguntaActual?.hint || "¡Tú puedes lograrlo, lee la pregunta con mucha calma!";
-hintBox.classList.remove('hidden');
+function init(){
+ if(!state.equipped)state.equipped={};
+ renderSubjects();setMode(state.mode||'individual');renderPlayers();updateStars();
+ $('mode-ind').addEventListener('click',()=>setMode('individual'));$('mode-fam').addEventListener('click',()=>setMode('familiar'));
+ $('add-player').addEventListener('click',()=>{if(activeMode==='individual'){showToast('Cambia al modo Familiar para añadir jugadores.');return}if(state.players.length>=4)return;state.players.push({id:'p'+Date.now(),name:['Papá','Mamá','Abuela'][state.players.length-1]||'Jugador',course:'2° Básico',pos:0});save();renderPlayers()});
+ $('start-game').addEventListener('click',startGame);$('open-shop').addEventListener('click',openShop);$('shop-close').addEventListener('click',()=>$('shop-wrap').classList.add('hidden'));$('shop-player').addEventListener('change',()=>{state.shopPlayer=$('shop-player').value;renderShop()});
+ $('btn-roll').addEventListener('click',rollDice);$('back-menu').addEventListener('click',backMenu);$('reset-game').addEventListener('click',confirmReset);$('modal-close').addEventListener('click',closeModal);
+ $('modal-wrap').addEventListener('click',e=>{if(e.target===$('modal-wrap'))closeModal()});$('shop-wrap').addEventListener('click',e=>{if(e.target===$('shop-wrap'))$('shop-wrap').classList.add('hidden')});
+ // If the saved course has no question for chosen topics, do not silently switch subjects/courses.
 }
-function validarRespuesta() {
-const modal = document.getElementById('modal-game');
-let gano = false;
-if(preguntaActual.type === 'joke') {
-gano = true;
-estrellasGlobales += 2;
-} else if(preguntaActual.type === 'riddle') {
-let rUsuario = document.getElementById('modal-input-text').value.toLowerCase().trim();
-// Limpieza de acentos básica chilena
-rUsuario = rUsuario.normalize("NFD").replace(/[\u0300-\u036f]/, "");
-if(rUsuario.includes(preguntaActual.right)) gano = true;
-} else if(preguntaActual.type === 'academic') {
-if(seleccionAlternativa === preguntaActual.right) gano = true;
-}
-if(gano) {
-confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
-if(preguntaActual.type !== 'joke') estrellasGlobales += 3;
-localStorage.setItem('stars_geo', estrellasGlobales);
-document.getElementById('board-stars').innerText = estrellasGlobales;
-alert("🎉 ¡Súper bien hecho! Tu respuesta es correcta. ¡Te ganaste estrellas!");
-} else {
-// Aliento total contra la frustración
-alert("¡Buen intento, estuviste súper cerca! 💖 Tu cerebro se está haciendo más fuerte y aprendiendo mucho. ¡En la próxima casilla lo lograrás!");
-}
-modal.classList.add('hidden');
-avanzarTurnoOPartida();
-}
-function avanzarTurnoOPartida() {
-let p = jugadores[indexTurno];
-// Comprobar si llegó al final del mapa (Meta Castillo)
-if(p.pos >= 14) {
-alert(¡Felicidades ${p.name}! Llegaste al Castillo Mágico. Completaste el nivel.);
-p.pos = 0;
-if(indexTurno === 0) {
-nivelGlobal++;
-if(nivelGlobal > 10) nivelGlobal = 1;
-localStorage.setItem('lvl_geo', nivelGlobal);
-document.getElementById('board-lvl').innerText = Nivel ${nivelGlobal}/10;
-}
-}
-indexTurno++;
-if(indexTurno >= jugadores.length) indexTurno = 0;
-actualizarTurnoInterfaz();
-construirCaminoTablero();
-}
-// --- CONTROLES DE ESCAPE ---
-function confirmarSalida() {
-if(confirm("¿Quieres guardar la partida y regresar al menú principal para cambiar de jugadores o materias?")) {
-document.getElementById('screen-board').classList.add('hidden');
-document.getElementById('screen-menu').classList.remove('hidden');
-}
-}
-function confirmarReiniciar() {
-if(confirm("¿Quieres reiniciar los personajes a la casilla de inicio? (No perderás tus estrellas del armario).")) {
-jugadores.forEach(p => p.pos = 0);
-indexTurno = 0;
-actualizarTurnoInterfaz();
-construirCaminoTablero();
-}
-}
-// --- SISTEMA DEL ARMARIO / TIENDA ---
-function abrirTienda() {
-document.getElementById('modal-shop').classList.remove('hidden');
-document.getElementById('shop-stars-lbl').innerText = estrellasGlobales;
-const list = document.getElementById('shop-items-list');
-list.innerHTML = "";
-SKINS_DATA.forEach(item => {
-let comprado = trajesComprados.includes(item.name);
-let btnHtml = "";
-if(comprado) {
-let equipado = jugadores[0].avatar === item.icon;
-btnHtml = <button onclick="equiparTraje('${item.name}', '${item.icon}')" class="px-4 py-2 text-xs font-bold rounded-xl ${equipado?'bg-emerald-600 text-white':'bg-slate-100 text-slate-700'}">${equipado?'Puesto':'Equipar'}</button>;
-} else {
-btnHtml = <button onclick="comprarTraje('${item.name}', ${item.cost})" class="px-4 py-2 text-xs font-black bg-amber-400 text-amber-950 rounded-xl shadow-xs">🛒 ${item.cost} ⭐</button>;
-}
-list.innerHTML += <div class="flex items-center justify-between p-3 bg-slate-50 border rounded-xl"> <div class="flex items-center gap-3"> <span class="text-3xl bg-white p-1 rounded-xl shadow-xs">${item.icon}</span> <div> <h4 class="font-bold text-sm text-slate-700">${item.name}</h4> <p class="text-xs text-slate-400">${comprado ? '¡Ya lo tienes!' : 'Disponible en la tienda'}</p> </div> </div> ${btnHtml} </div>;
-});
-}
-function comprarTraje(name, cost) {
-if(estrellasGlobales < cost) {
-alert("¡Te faltan unas pocas estrellas! Sigue respondiendo casillas para poder vestirte como tu personaje favorito.");
-return;
-}
-estrellasGlobales -= cost;
-trajesComprados.push(name);
-localStorage.setItem('stars_geo', estrellasGlobales);
-localStorage.setItem('skins_geo', JSON.stringify(trajesComprados));
-abrirTienda();
-}
-function equiparTraje(name, icon) {
-trajeEquipado = icon;
-localStorage.setItem('equipped_geo', icon);
-jugadores[0].avatar = icon;
-abrirTienda();
-alert("¡Traje equipado con éxito! Ahora te verás genial en el tablero.");
-}
-function cerrarTienda() { document.getElementById('modal-shop').classList.add('hidden'); }
-// Inicializar la App al cargar
 init();
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) { window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {})); }
+</script>
+</body>
+</html>
